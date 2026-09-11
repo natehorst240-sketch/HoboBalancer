@@ -1,0 +1,29 @@
+# --- build output -----------------------------------------------------------
+**/.pio/
+BalancerREF/firmware/build/
+BalancerREF/firmware/release/
+__pycache__/
+*.pyc
+
+# --- virtualenvs ------------------------------------------------------------
+.venv-firmware/
+.venv/
+
+# --- snapshot archives ------------------------------------------------------
+# Point-in-time zips of the projects. Git tracks revision history itself, and
+# these are large binaries it cannot diff.
+*.zip
+*-backups/
+archives/
+
+# --- scratch ----------------------------------------------------------------
+# Working directory from another tool; holds a stale duplicate of the Balancer
+# project that would be confusing to anyone browsing this repo.
+.codex-parts/
+
+# --- KiCad per-user state ---------------------------------------------------
+# .kicad_prl is local UI state (open sheet, zoom, last-used layers), not design
+# data. Lock files are runtime only.
+*.kicad_prl
+~*.lck
+fp-info-cache

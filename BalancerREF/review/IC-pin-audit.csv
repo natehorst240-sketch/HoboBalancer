@@ -1,0 +1,142 @@
+Reference,Physical pad,Manufacturer function,KiCad net,Unused rationale
+U1,1,GND,GND,
+U1,2,GND,GND,
+U1,3,3V3,/+3V3,
+U1,4,GPIO0,/BOOT,
+U1,5,GPIO1,/GPS_UART_TX,
+U1,6,GPIO2,/GPS_UART_RX,
+U1,7,GPIO3,unconnected-(U1-IO3-Pad7),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,8,GPIO4,unconnected-(U1-IO4-Pad8),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,9,GPIO5,unconnected-(U1-IO5-Pad9),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,10,GPIO6,/ACCEL_DRDY,
+U1,11,GPIO7,/MAG_TACH,
+U1,12,GPIO8,/OPT_TACH,
+U1,13,GPIO9,/OPT_LED_EN,
+U1,14,GPIO10,/ACQUIRE_BUTTON,
+U1,15,GPIO11,/STATUS_LED,
+U1,16,GPIO12,/SUPPLY_SENSE,
+U1,17,GPIO13,/GPS_PPS,
+U1,18,GPIO14,/ACCEL_SCK,
+U1,19,GPIO15,/ACCEL_MOSI,
+U1,20,GPIO16,/ACCEL_MISO,
+U1,21,GPIO17,/ACCEL_CS,
+U1,22,GPIO18,unconnected-(U1-IO18-Pad22),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,23,GPIO19/USB_D-,Net-(U1-USB_D-),
+U1,24,GPIO20/USB_D+,Net-(U1-USB_D+),
+U1,25,GPIO21,unconnected-(U1-IO21-Pad25),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,26,GPIO26,unconnected-(U1-IO26-Pad26),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,27,GPIO47,unconnected-(U1-IO47-Pad27),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,28,GPIO33,unconnected-(U1-IO33-Pad28),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,29,GPIO34,unconnected-(U1-IO34-Pad29),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,30,GPIO48,unconnected-(U1-IO48-Pad30),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,31,GPIO35,unconnected-(U1-IO35-Pad31),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,32,GPIO36,unconnected-(U1-IO36-Pad32),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,33,GPIO37,unconnected-(U1-IO37-Pad33),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,34,GPIO38,unconnected-(U1-IO38-Pad34),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,35,GPIO39,unconnected-(U1-IO39-Pad35),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,36,GPIO40,unconnected-(U1-IO40-Pad36),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,37,GPIO41,unconnected-(U1-IO41-Pad37),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,38,GPIO42,unconnected-(U1-IO42-Pad38),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,39,TXD0/GPIO43,unconnected-(U1-TXD0-Pad39),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,40,RXD0/GPIO44,unconnected-(U1-RXD0-Pad40),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,41,GPIO45,unconnected-(U1-IO45-Pad41),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,42,GND,GND,
+U1,43,GND,GND,
+U1,44,GPIO46,unconnected-(U1-IO46-Pad44),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,45,EN,Net-(U1-EN),
+U1,46,GND,GND,
+U1,47,GND,GND,
+U1,48,GND,GND,
+U1,49,GND,GND,
+U1,50,GND,GND,
+U1,51,GND,GND,
+U1,52,GND,GND,
+U1,53,GND,GND,
+U1,54,GND,GND,
+U1,55,GND,GND,
+U1,56,GND,GND,
+U1,57,GND,GND,
+U1,58,GND,GND,
+U1,59,GND,GND,
+U1,60,GND,GND,
+U1,61,GND,GND,
+U1,62,GND,GND,
+U1,63,GND,GND,
+U1,64,GND,GND,
+U1,65,GND,GND,
+U2,1,SDO/SA0,/ACCEL_MISO,
+U2,2,RES->VDDIO_or_GND,GND,
+U2,3,RES->VDDIO_or_GND,GND,
+U2,4,INT1,/ACCEL_DRDY,
+U2,5,VDD_IO,/+3V3,
+U2,6,GND,GND,
+U2,7,GND,GND,
+U2,8,VDD,/+3V3,
+U2,9,INT2,unconnected-(U2-INT2-Pad9),INT2 unused
+U2,10,RES->VDDIO_or_open,unconnected-(U2-RES-Pad10),Reserved pad: leave unconnected per ST DS12569
+U2,11,RES->VDDIO_or_open,unconnected-(U2-RES-Pad11),Reserved pad: leave unconnected per ST DS12569
+U2,12,CS,/ACCEL_CS,
+U2,13,SPC/SCL,/ACCEL_SCK,
+U2,14,SDI/SDA,/ACCEL_MOSI,
+U3,1,NC,unconnected-(U3-NC-Pad1),No internal connection per TI
+U3,2,GND,GND,
+U3,3,VIN,Net-(U3-VR_IN),
+U3,4,NC,unconnected-(U3-NC-Pad4),No internal connection per TI
+U3,5,MODE,unconnected-(U3-MODE-Pad5),Intentional open selects adaptive Mode 1 per TI; not a missing bias
+U3,6,NC,unconnected-(U3-NC-Pad6),No internal connection per TI
+U3,7,PEAK_DETECTOR,Net-(U3-PEAK_DET),
+U3,8,VCC,/+3V3,
+U3,9,TIMING_INPUT,GND,
+U3,10,GATED_OUTPUT,unconnected-(U3-GATED_OUT-Pad10),Unused gated output; using open-collector reference pulse on pin 12
+U3,11,INPUT_SELECT,GND,
+U3,12,REFERENCE_PULSE_OC,/MAG_TACH,
+U3,13,NC,unconnected-(U3-NC-Pad13),No internal connection per TI
+U3,14,RC_TIMING,Net-(U3-RC_TIMING),
+U4,1,OUT,Net-(R28-Pad1),
+U4,2,VCC-,GND,
+U4,3,IN+,Net-(U4-+),
+U4,4,IN-,/OPT_AMP,
+U4,5,VCC+,/+3V3,
+U5,1,STAT,unconnected-(U5-STAT-Pad1),Optional STAT omitted; MCP73831 tri-state output can rise to VDD
+U5,2,VSS,GND,
+U5,3,VBAT,/BAT,
+U5,4,VDD,/USB_VBUS,
+U5,5,PROG,Net-(U5-PROG),
+U6,1,VOUT,/+3V3,
+U6,2,L2,Net-(U6-L2),
+U6,3,PGND,GND,
+U6,4,L1,Net-(U6-L1),
+U6,5,VIN,/SYS_SW,
+U6,6,EN,/SYS_SW,
+U6,7,PS/SYNC,/SYS_SW,
+U6,8,VINA,/SYS_SW,
+U6,9,GND,GND,
+U6,10,FB,/+3V3,
+U6,11,EXPOSED_PAD/PGND,GND,
+U7,1,I/O,/USB_CONN_D-,
+U7,2,VN/GND,GND,
+U7,3,I/O,/USB_CONN_D+,
+U7,4,I/O,unconnected-(U7-IO3-Pad4),Unused ESD channel
+U7,5,VP,/USB_VBUS,
+U7,6,I/O,unconnected-(U7-IO4-Pad6),Unused ESD channel
+U8,1,OUT1,Net-(C21-Pad2),
+U8,2,IN1-,Net-(PD1-A),
+U8,3,IN1+,/OPT_VREF,
+U8,4,V-,GND,
+U8,5,IN2+,/OPT_VREF,
+U8,6,IN2-,Net-(U8B--),
+U8,7,OUT2,/OPT_AMP,
+U8,8,V+,/+3V3,
+U9,1,A,Net-(R28-Pad1),
+U9,2,B,Net-(C26-Pad1),
+U9,3,GND,GND,
+U9,4,Y,Net-(U10-B),
+U9,5,VCC,/+3V3,
+U10,1,A,GND,
+U10,2,B,Net-(U10-B),
+U10,3,CLR,/+3V3,
+U10,4,GND,GND,
+U10,5,Q,/OPT_TACH,
+U10,6,Cext,Net-(U10-Cext),
+U10,7,Rext/Cext,Net-(U10-RCext),
+U10,8,VCC,/+3V3,

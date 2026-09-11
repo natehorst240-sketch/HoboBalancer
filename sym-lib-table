@@ -1,0 +1,1 @@
+(sym_lib_table (version 7) (lib (name "Balancer_Parts") (type "KiCad") (uri "${KIPRJMOD}/Balancer_Parts.kicad_sym") (options "") (descr "Verified Balancer parts and footprints")) (lib (name "Balancer_RevA") (type "KiCad") (uri "${KIPRJMOD}/Balancer_RevA.kicad_sym") (options "") (descr "Balancer Rev A circuit symbols")))

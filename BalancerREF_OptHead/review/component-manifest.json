@@ -1,0 +1,207 @@
+{
+  "C20": {
+    "lib_id": "Device:C",
+    "value": "100u / 6.3V",
+    "footprint": "Capacitor_SMD:C_1210_3225Metric"
+  },
+  "R18": {
+    "lib_id": "Device:R",
+    "value": "3R0 1206 0.5W",
+    "footprint": "Resistor_SMD:R_1206_3216Metric"
+  },
+  "#PWR001": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "D1": {
+    "lib_id": "Device:LED",
+    "value": "XPEBRD-L1 625nm",
+    "footprint": "LED_SMD:LED_Cree-XP"
+  },
+  "Q1": {
+    "lib_id": "Transistor_FET:AO3400A",
+    "value": "AO3400A",
+    "footprint": "Package_TO_SOT_SMD:SOT-23"
+  },
+  "#PWR002": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "R19": {
+    "lib_id": "Device:R",
+    "value": "100R",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "R20": {
+    "lib_id": "Device:R",
+    "value": "100k",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "#PWR003": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "PD1": {
+    "lib_id": "Sensor_Optical:BPW34",
+    "value": "BPW34S",
+    "footprint": "OptoDevice:Osram_BPW34S-SMD"
+  },
+  "U8": {
+    "lib_id": "Amplifier_Operational:TLV9062xD",
+    "value": "TLV9062IDR",
+    "footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
+  },
+  "R21": {
+    "lib_id": "Device:R",
+    "value": "10k",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "C21": {
+    "lib_id": "Device:C",
+    "value": "10p C0G",
+    "footprint": "Capacitor_SMD:C_0805_2012Metric"
+  },
+  "C22": {
+    "lib_id": "Device:C",
+    "value": "10n",
+    "footprint": "Capacitor_SMD:C_0805_2012Metric"
+  },
+  "R22": {
+    "lib_id": "Device:R",
+    "value": "10k",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "R23": {
+    "lib_id": "Device:R",
+    "value": "120k",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "#PWR004": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "C24": {
+    "lib_id": "Device:C",
+    "value": "100n",
+    "footprint": "Capacitor_SMD:C_0805_2012Metric"
+  },
+  "#PWR005": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "R24": {
+    "lib_id": "Device:R",
+    "value": "10k",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "R25": {
+    "lib_id": "Device:R",
+    "value": "10k",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "C23": {
+    "lib_id": "Device:C",
+    "value": "100n",
+    "footprint": "Capacitor_SMD:C_0805_2012Metric"
+  },
+  "#PWR006": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "#PWR007": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "U4": {
+    "lib_id": "BalancerREF_OptHead:TS3021IYLT",
+    "value": "TS3021IYLT",
+    "footprint": "Package_TO_SOT_SMD:SOT-23-5"
+  },
+  "R26": {
+    "lib_id": "Device:R",
+    "value": "22k",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "R27": {
+    "lib_id": "Device:R",
+    "value": "10k",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "R28": {
+    "lib_id": "Device:R",
+    "value": "470k",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "R32": {
+    "lib_id": "Device:R",
+    "value": "33R",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "C25": {
+    "lib_id": "Device:C",
+    "value": "100n",
+    "footprint": "Capacitor_SMD:C_0805_2012Metric"
+  },
+  "#PWR008": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "#PWR009": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "#PWR010": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "J5": {
+    "lib_id": "Connector_Generic:Conn_01x07",
+    "value": "TO MAIN BOARD",
+    "footprint": "Connector_JST:JST_GH_SM07B-GHS-TB_1x07-1MP_P1.25mm_Horizontal"
+  },
+  "#PWR011": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "#PWR012": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "#PWR013": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "#FLG001": {
+    "lib_id": "power:PWR_FLAG",
+    "value": "PWR_FLAG",
+    "footprint": ""
+  },
+  "#FLG002": {
+    "lib_id": "power:PWR_FLAG",
+    "value": "PWR_FLAG",
+    "footprint": ""
+  },
+  "#FLG003": {
+    "lib_id": "power:PWR_FLAG",
+    "value": "PWR_FLAG",
+    "footprint": ""
+  },
+  "#PWR014": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  }
+}

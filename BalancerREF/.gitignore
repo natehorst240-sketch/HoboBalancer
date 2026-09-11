@@ -1,0 +1,5 @@
+.venv-firmware/
+firmware/.pio/
+firmware/build/
+firmware/sdkconfig*
+!firmware/sdkconfig.defaults

@@ -1,0 +1,4 @@
+STMicroelectronics/iis3dwb-pid
+Commit: f83e74fb9945fc4dde4e058e7fcd2bdbded357b5
+Retrieved: 2026-09-09
+Unmodified manufacturer driver; see LICENSE (same BSD-3 terms as the lis2dw12-pid driver it replaced in firmware 0.4.0).

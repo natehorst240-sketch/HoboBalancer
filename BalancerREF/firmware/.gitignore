@@ -1,0 +1,6 @@
+.pio/
+build/
+sdkconfig
+sdkconfig.old
+sdkconfig.balancerref
+__pycache__/

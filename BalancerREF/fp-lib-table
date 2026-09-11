@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "BalancerREF_Parts")(type "KiCad")(uri "${KIPRJMOD}/BalancerREF_Parts.pretty")(options "")(descr "Project-local footprints: Wuerth WS-SLTV slide switch copied from KiCad 10 Button_Switch_THT"))
+)

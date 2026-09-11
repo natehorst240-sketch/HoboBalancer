@@ -1,0 +1,84 @@
+{
+  "status": "user-supplied reference metadata; not an approved maintenance procedure or automatic correction solver",
+  "geometry": {
+    "photoeye_view": "from aircraft centerline looking left/outboard",
+    "rotation_in_photoeye_view": "counterclockwise",
+    "weight_angles_in_photoeye_view": "clockwise",
+    "maintenance_view": "left of aircraft looking inward toward centerline",
+    "rotation_in_maintenance_view": "clockwise",
+    "weight_angles_in_maintenance_view": "counterclockwise",
+    "reflective_tape_blade": 1,
+    "photoeye_above_shaft_inches": 7,
+    "photoeye_forward_of_shaft_inches": 4,
+    "photoeye_to_tape_inches": 18,
+    "latest_stated_tach_intercept_rotation_deg": 30,
+    "vertical_positive": "up",
+    "earlier_two_oclock_description": "retained as context; latest 30-degree description is not converted into an automatic phase offset"
+  },
+  "flange": {
+    "diagram_T_physical_zero_hole": 2,
+    "holes": 12,
+    "hole_spacing_deg": 30,
+    "chart_ray_number_matches_hole_number": true,
+    "adding_at_matching_ray": "moves inward from that ray; not inward from every starting vector",
+    "max_installed_bolts": 4,
+    "max_each_assembly_g_including_bolt_nut_washers": 25,
+    "max_total_flange_g": 100,
+    "washers": [
+      "AN960-10",
+      "AN970-3"
+    ],
+    "bolt_range": [
+      "AN3-3A",
+      "AN3-7A"
+    ],
+    "nominal_ips_change_per_gram": 0.02
+  },
+  "hub": {
+    "user_stated_positions_deg": [
+      60,
+      300
+    ],
+    "allowed_weights": [
+      "light",
+      "medium",
+      "heavy"
+    ],
+    "both_positions_require_a_weight": true,
+    "independent_selection": true,
+    "nominal_ips_change_per_adjacent_size_step": 0.18
+  },
+  "blade": {
+    "user_stated_positions_deg": [
+      15,
+      345,
+      165,
+      195
+    ],
+    "each_head_or_nut_weight_g": {
+      "min": 5,
+      "max": 16,
+      "fixed_increment": null
+    },
+    "each_blade_total_g": {
+      "min": 10,
+      "max": 32
+    },
+    "head_and_nut_can_differ": true,
+    "nominal_ips_change_per_gram": 0.25
+  },
+  "response_variation": {
+    "user_estimate_plus_minus_ips": 0.1,
+    "depends_on": "total hub and blade assembly weights",
+    "not_a_statistical_confidence_interval": true,
+    "calibrated_reference_comparison_pending": true
+  },
+  "operator_convention": {
+    "primary_angle_frame": "rotor degrees: 0 at the flange hole aligned with blade 1 (manufacturer diagram hole 2), 30-degree increments 0-330",
+    "hub_and_blade_angles_are_in_this_frame": true,
+    "manufacturer_ray_lookup": "ray = (degrees / 30 + 2) mod 12, with 0 shown as 12; display only, nobody references holes by ray number in practice",
+    "chart_display": "0 degrees at top, rings every 0.2 IPS to 2.0 like the manufacturer chart",
+    "nominal_flange_influence": "weight at angle A moves the vibration vector toward angle A+180 by 0.02 IPS per gram; starting estimate only, replaced by learned influence coefficients",
+    "recorded": "2026-09-07"
+  }
+}

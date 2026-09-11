@@ -1,0 +1,112 @@
+﻿Reference,Value,Manufacturer Part Number,Footprint,PCB Component,Notes
+J3,USB4105-GF-A,USB4105-GF-A,Connector_USB:USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal,Yes,
+R16,5.1k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R17,5.1k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+U4,BQ24074RGTR,BQ24074RGTR,Package_DFN_QFN:VQFN-16-1EP_3x3mm_P0.5mm_EP1.6x1.6mm,Yes,
+R11,10k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R18,1.18k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R19,46.4k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R20,3.01k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R21,1.78k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R22,100k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R23,100k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+C6,1u / 10V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C7,4.7u / 10V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C8,4.7u / 10V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+U5,TPS61023DRLR,TPS61023DRLR,Package_TO_SOT_SMD:SOT-563,Yes,
+L1,1uH / DFE322520FD,DFE322520FD-1R0M=P2,Balancer_Parts:L_Murata_DFE322520FD,Yes,
+R12,732k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R13,100k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+C9,10p / C0G,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C10,10u / 10V,,Capacitor_SMD:C_1210_3225Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C11,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C12,22u / 10V,,Capacitor_SMD:C_1210_3225Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C13,22u / 10V,,Capacitor_SMD:C_1210_3225Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C14,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+U6,TLV75533PDBVR,TLV75533PDBVR,Package_TO_SOT_SMD:SOT-23-5,Yes,
+C15,1u / 10V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C16,4.7u / 10V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C17,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+FB1,BLM21PG221SN1D,BLM21PG221SN1D,Inductor_SMD:L_0805_2012Metric,Yes,
+C18,4.7u / 10V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C19,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+U7,TPS61041DBVR,TPS61041DBVR,Package_TO_SOT_SMD:SOT-23-5,Yes,
+L2,10uH / LQH32PN100MN0L,LQH32PN100MN0L,Balancer_Parts:L_Murata_LQH32PN,Yes,
+D2,SS14FL-TP,SS14FL-TP,Balancer_Parts:D_MCC_DO-221AC,Yes,
+R14,1.85M,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R15,100k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+C20,10p / C0G,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C21,4.7u / 10V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C22,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C23,2.2u / 50V,C2012X7R1H225K125AC,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C24,2.2u / 50V,C2012X7R1H225K125AC,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C25,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+J1,ACCEL / MS3112E8-4S,MS3112E8-4S,,No,
+Q1,SST507 / 1.8mA,SST507 SOT-23 3L ROHS,Package_TO_SOT_SMD:SOT-23,Yes,
+C1,1u / 50V X7R,C0805C105K5RACTU,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+R1,10k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+U2,OPA2320AIDR,OPA2320AIDR,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,Yes,
+R2,1M,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R3,10k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R4,10k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+C2,10u / 10V,,Capacitor_SMD:C_1210_3225Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C3,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C26,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C27,1u / 10V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+U1,ADS131M02IPWR,ADS131M02IPWR,Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm,Yes,
+R5,1k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R6,1k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+C4,10n / C0G,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+D1,BAT54S,BAT54S,Package_TO_SOT_SMD:SOT-23,Yes,
+R24,1k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R25,1k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+C28,1u / 10V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C29,1u / 10V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C30,220n / 16V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+X1,ECS 8.192MHz,ECS-2520MVLC-081.92-BN-TR3,Oscillator:Oscillator_SMD_ECS_2520MV-xxx-xx-4Pin_2.5x2.0mm,Yes,
+R7,33,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R8,33,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+C31,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+U8,STM32G491CET6,STM32G491CET6,Package_QFP:LQFP-48_7x7mm_P0.5mm,Yes,
+C32,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C33,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C34,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C35,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C36,4.7u / 10V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C37,1u / 10V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C38,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+R26,100k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R27,10k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+C39,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+J2,TACH / MS3112E8-4S,MS3112E8-4S,,No,
+R9,4.7k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+U3,74LVC1G17W5-7,74LVC1G17W5-7,Package_TO_SOT_SMD:SOT-23-5,Yes,
+R10,10k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+C5,1n / C0G,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C40,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+F1,100mA hold / MF-MSMF010-2,MF-MSMF010-2,Fuse:Fuse_1812_4532Metric,Yes,
+FB2,BLM21PG221SN1D,BLM21PG221SN1D,Inductor_SMD:L_0805_2012Metric,Yes,
+C41,10u / 10V,,Capacitor_SMD:C_1210_3225Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+C42,100n / 50V,,Capacitor_SMD:C_0805_2012Metric,Yes,Select purchasing MPN; verify effective capacitance at operating bias
+DS1,NHD-2.8C-CSXP-BREAKOUT,NHD-2.8C-CSXP-BREAKOUT,Balancer_Parts:NHD-2.8C-CSXP-BREAKOUT,Yes,
+BT1,Adafruit 258 / 1200mAh,Adafruit 258,,No,
+J4,BATTERY JST-PH,B2B-PH-K-S,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,Yes,
+SW1,POWER / >=1A DC,,,No,"Off-board power switch; select mechanical part, rated at least 1A DC"
+J6,POWER SWITCH,,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,Yes,
+J5,SWD / ST-LINK,,Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical,Yes,
+SW2,ACQUIRE,,Button_Switch_THT:SW_PUSH_6mm,Yes,
+R28,10k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+SW3,BACK / FUNCTION,,Button_Switch_THT:SW_PUSH_6mm,Yes,
+R29,10k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+R30,1k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+D3,GREEN,,LED_SMD:LED_0805_2012Metric,Yes,
+R31,1k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; select purchasing MPN for stated value, 1%"
+D4,RED,,LED_SMD:LED_0805_2012Metric,Yes,
+TP1,SWO,,TestPoint:TestPoint_Pad_D1.5mm,Yes,
+U9,TPS62260DDCR,TPS62260DDCR,Package_TO_SOT_SMD:SOT-23-5,Yes,3.3 V display buck; 600 mA
+L3,2.2uH,DFE322520FD-2R2M=P2,Balancer_Parts:L_Murata_DFE322520FD,Yes,
+C43,10u / 10V,,Capacitor_SMD:C_1210_3225Metric,Yes,Select purchasing MPN; buck input cap
+C44,10u / 10V,,Capacitor_SMD:C_1210_3225Metric,Yes,Select purchasing MPN; buck output cap
+C45,22p,,Capacitor_SMD:C_0805_2012Metric,Yes,Feed-forward across R32
+R32,453k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; 1%"
+R33,100k,,Resistor_SMD:R_0805_2012Metric,Yes,"0805 resistor; 1%"

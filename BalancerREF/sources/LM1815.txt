@@ -1,0 +1,808 @@
+
+=== PAGE 1 ===
+LM1815
+www.ti.com
+SNOSBU8F –SEPTEMBER 2000–REVISED MARCH 2013
+LM1815 Adaptive Variable Reluctance Sensor Amplifier
+Check for Samples: LM1815
+1FEATURES
+DESCRIPTION
+The LM1815 is an adaptive sense amplifier and
+2•
+Adaptive Hysteresis
+default gating circuit for motor control applications.
+•
+Single Supply Operation
+The sense amplifier provides a one-shot pulse output
+•
+Ground Referenced Input
+whose leading edge coincides with the negative-
+going zero crossing of a ground referenced input
+•
+True Zero Crossing Timing Reference
+signal such as from a variable reluctance magnetic
+•
+Operates from 2V to 12V Supply Voltage
+pick-up coil.
+•
+Handles Inputs from 100 mVP-P to over 120VP-P
+In normal operation, this timing reference signal is
+with External Resistor
+processed (delayed) externally and returned to the
+•
+CMOS Compatible Logic
+LM1815. A Logic input is then able to select either
+the timing reference or the processed signal for
+APPLICATIONS
+transmission to the output driver stage.
+•
+Position Sensing with Notched Wheels
+The adaptive sense amplifier operates with a positive-
+going threshold which is derived by peak detecting
+•
+Zero Crossing Switch
+the incoming signal and dividing this down. Thus the
+•
+Motor Speed Control
+input hysteresis varies with input signal amplitude.
+•
+Tachometer
+This enables the circuit to sense in situations where
+•
+Engine Testing
+the high speed noise is greater than the low speed
+signal amplitude. Minimum input signal is 150mVP-P.
+Connection Diagram
+Figure 1. Top View
+14-Lead SOIC or PDIP
+See D or NFF0014A Package
+These devices have limited built-in ESD protection. The leads should be shorted together or the device placed in conductive foam
+during storage or handling to prevent electrostatic damage to the MOS gates.
+1
+Please be aware that an important notice concerning availability, standard warranty, and use in critical applications of
+Texas Instruments semiconductor products and disclaimers thereto appears at the end of this data sheet.
+2All trademarks are the property of their respective owners.
+PRODUCTION DATA information is current as of publication date.
+Copyright © 2000–2013, Texas Instruments Incorporated
+Products conform to specifications per the terms of the Texas
+Instruments standard warranty. Production processing does not
+necessarily include testing of all parameters.
+
+
+=== PAGE 2 ===
+LM1815
+SNOSBU8F –SEPTEMBER 2000–REVISED MARCH 2013
+www.ti.com
+Absolute Maximum Ratings(1)(2)
+Supply Voltage
+12V
+Power Dissipation(3)
+1250 mW
+Operating Temperature Range
+−40°C ≤TA ≤+125°C
+Storage Temperature Range
+−65°C ≤TJ ≤+150°C
+Junction Temperature
++150°C
+Input Current
+±30 mA
+Lead Temperature (Soldering, 10 sec.)
+260°C
+(1)
+“Absolute Maximum Ratings” are those values beyond which the safety of the device cannot be ensured. They are not meant to imply
+that the devices should be operated at these limits. The table of “Electrical Characteristics” specifies conditions of device operation.
+(2)
+If Military/Aerospace specified devices are required, please contact the Texas Instruments Sales Office/Distributors for availability and
+specifications.
+(3)
+For operation at elevated temperatures, the device must be derated based on a 150°C maximum junction temperature and a thermal
+resistance of 80°C/W (DIP), 120°C/W (SO-14) junction to ambient.
+Electrical Characteristics
+(TA = 25°C, VCC = 10V, unless otherwise specified, see Figure 17)
+Parameter
+Conditions
+Min
+Typ
+Max
+Units
+Operating Supply Voltage
+2.5
+10
+12
+V
+Supply Current
+Pin 3 = -0.1V, Pin 9 = 2V, Pin 11 = 0.8V
+3.6
+6
+mA
+Reference Pulse Width
+fIN = 1Hz to 2kHz, R = 150kΩ, C = 0.001µF
+70
+100
+130
+µs
+Logic Input Bias Current
+VIN = 2V, (Pin 9 and Pin 11)
+5
+µA
+Signal Input Bias Current
+VIN = 0V dc, (Pin 3)
+-200
+nA
+Logic Threshold
+(Pin 9 and Pin 11)
+0.8
+1.1
+2.0
+V
+VOUT High
+RL = 1kΩ, (Pin 10)
+7.5
+8.6
+V
+VOUT Low
+ISINK = 0.1mA, (Pin 10)
+0.3
+0.4
+V
+Output Leakage Pin 12
+V12 = 11V
+0.01
+10
+µA
+Saturation Voltage P12
+I12 = 2mA
+0.2
+0.4
+V
+Input Zero Crossing Threshold
+All Modes, VSIGNAL = 1V pk-pk
+-25
+0
+25
+mV(1)
+Mode 1, Pin 5 = Open
+30
+45
+60
+mV(1)
+Minimum Input Arming Threshold
+Mode 2, Pin 5 = VCC
+200
+300
+450
+mV(1)
+Mode 3, Pin 5 = Gnd
+-25
+0
+25
+mV(1)
+Mode 1, Pin 5 = Open
+40
+80
+90
+%(1)
+VSIGNAL ≥230mV pk-pk(2)
+Mode 2, Pin 5 = VCC
+Adaptive Input Arming Threshold
+80
+%(1)
+VSIGNAL ≥1.0V pk-pk(2)
+Mode 3, Pin 5 = Gnd
+80
+%(1)
+VSIGNAL ≥150mV pk-pk(2)
+(1)
+The Min/Typ Max limits are relative to the positive voltage peak seen at VIN Pin 3.
+(2)
+Tested per Figure 17, VSIGNAL is a Sine Wave; FSIGNAL is 1000Hz.
+2
+Submit Documentation Feedback
+Copyright © 2000–2013, Texas Instruments Incorporated
+Product Folder Links: LM1815
+
+
+=== PAGE 3 ===
+LM1815
+www.ti.com
+SNOSBU8F –SEPTEMBER 2000–REVISED MARCH 2013
+Typical Performance Characteristics
+Mode 1 Minimum Arming Threshold
+Mode 2 Minimum Arming Threshold
+vs Temperature
+vs Temperature
+Figure 2.
+Figure 3.
+Mode 3 Minimum Arming Threshold
+vs Temperature
+Mode 1 Minimum Arming Threshold vs VCC
+Figure 4.
+Figure 5.
+Mode 2 Minimum Arming Threshold vs VCC
+Pin 3 VIN vs VSIGNAL
+Figure 6.
+Figure 7.
+Copyright © 2000–2013, Texas Instruments Incorporated
+Submit Documentation Feedback
+3
+Product Folder Links: LM1815
+
+
+=== PAGE 4 ===
+LM1815
+SNOSBU8F –SEPTEMBER 2000–REVISED MARCH 2013
+www.ti.com
+Typical Performance Characteristics (continued)
+Pin 3 VIN vs VSIGNAL, RIN = 10kΩ
+Pin 3 VIN vs VSIGNAL, RIN = 20kΩ
+Figure 8.
+Figure 9.
+Pin 3 VIN vs VSIGNAL, RIN = 50kΩ
+Pin 3 Bias Current vs Temperature
+Figure 10.
+Figure 11.
+Peak Detector Charge Current
+vs Temperature
+Peak Detector Charge Current vs VCC
+Figure 12.
+Figure 13.
+4
+Submit Documentation Feedback
+Copyright © 2000–2013, Texas Instruments Incorporated
+Product Folder Links: LM1815
+
+
+=== PAGE 5 ===
+LM1815
+www.ti.com
+SNOSBU8F –SEPTEMBER 2000–REVISED MARCH 2013
+Typical Performance Characteristics (continued)
+Peak Detector Voltage
+Peak Detector Voltage
+vs Pin 3 VIN, Mode 1
+vs Pin 3 VIN, Mode 2
+Figure 14.
+Figure 15.
+Peak Detector Voltage
+vs Pin 3 VIN, Mode 3
+Figure 16.
+Copyright © 2000–2013, Texas Instruments Incorporated
+Submit Documentation Feedback
+5
+Product Folder Links: LM1815
+
+
+=== PAGE 6 ===
+LM1815
+SNOSBU8F –SEPTEMBER 2000–REVISED MARCH 2013
+www.ti.com
+TRUTH TABLE
+Signal Input
+RC Timing
+Input Select
+Timing Input
+Gated Output
+Pin 3
+Pin 14
+Pin 11
+Pin 9
+Pin 10
+± Pulses
+RC
+L
+X
+Pulses = RC
+X
+X
+H
+H
+H
+X
+X
+H
+L
+L
+± Pulses
+L
+L
+L
+Zero Crossing
+Figure 17. LM1815 Adaptive Sense Amplifier
+6
+Submit Documentation Feedback
+Copyright © 2000–2013, Texas Instruments Incorporated
+Product Folder Links: LM1815
+
+
+=== PAGE 7 ===
+LM1815
+www.ti.com
+SNOSBU8F –SEPTEMBER 2000–REVISED MARCH 2013
+Schematic Diagram
+Copyright © 2000–2013, Texas Instruments Incorporated
+Submit Documentation Feedback
+7
+Product Folder Links: LM1815
+
+
+=== PAGE 8 ===
+LM1815
+SNOSBU8F –SEPTEMBER 2000–REVISED MARCH 2013
+www.ti.com
+APPLICATION HINTS
+Figure 18. LM1815 Oscillograms
+INPUT VOLTAGE CLAMP
+The signal input voltage at pin 3 is internally clamped. Current limit for the Input pin is provided by an external
+resistor which should be selected to allow a peak current of ±3 mA in normal operation. Positive inputs are
+clamped by a 1kΩresistor and series diode (see R4 and Q12 in the internal schematic diagram), while an active
+clamp limits pin 3 to typically 350mV below Ground for negative inputs (see R2, R3, Q10, and Q11 in the internal
+schematic diagram). Thus for input signal transitions that are more than 350mV below Ground, the input pin
+current (up to 3mA) will be pulled from the V+ supply. If the V+ pin is not adequately bypassed the resulting
+voltage ripple at the V+ pin will disrupt normal device operation. Likewise, for input signal transitions that are
+more than 500mV above Ground, the input pin current will be dumped to Ground through device pin 2. Slight
+shifts in the Ground potential at device pin 2, due to poor grounding techniques relative to the input signal
+ground, can cause unreliable operation. As always, adequate device grounding, and V+ bypassing, needs to be
+considered across the entire input voltage and frequency range for the intended application.
+INPUT CURRENT LIMITING
+As stated earlier, current limiting for the Input pin is provided by a user supplied external resistor. For purposes of
+selecting the appropriate resistor value the Input pin should be considered to be a zero ohm connection to
+ground. For applications where the input voltage signal is not symmetrical with relationship to Ground the worst
+case voltage peak should be used.
+Minimum Rext = [(Vin peak)/3mA]
+In the application example shown in Figure 17 (Rext = 18kΩ) the recommended maximum input signal voltage is
+±54V (i.e. 108Vp-p).
+OPERATION OF ZERO CROSSING DETECTOR
+The LM1815 is designed to operate as a zero crossing detector, triggering an internal one shot on the negative-
+going edge of the input signal. Unlike other zero crossing detectors, the LM1815 cannot be triggered until the
+input signal has crossed an "arming" threshold on the positive-going portion of the waveform. The arming circuit
+is reset when the chip is triggered, and subsequent zero crossings are ignored until the arming threshold is
+exceeded again. This threshold varies depending on the connection at pin 5. Three different modes of operation
+are possible:
+8
+Submit Documentation Feedback
+Copyright © 2000–2013, Texas Instruments Incorporated
+Product Folder Links: LM1815
+
+
+=== PAGE 9 ===
+LM1815
+www.ti.com
+SNOSBU8F –SEPTEMBER 2000–REVISED MARCH 2013
+MODE 1, PIN 5 OPEN
+The adaptive mode is selected by leaving device pin 5 open circuit. For input signals of less than ±135mV (i.e.
+270 mVp-p) and greater than typically ±75mV (i.e. 150mVp-p), the input arming threshold is typically at 45mV.
+Under these conditions the input signal must first cross the 45mV threshold in the positive direction to arm the
+zero crossing detector, and then cross zero in the negative direction to trigger it.
+If the signal is less than 30mV peak (minimum rating in Electrical Characteristics), the one shot is ensured to not
+trigger.
+Input signals of greater than ±230mV (i.e. 460 mVp-p) will cause the arming threshold to track at 80% of the
+peak input voltage. A peak detector capacitor at device pin 7 stores a value relative to the positive input peaks to
+establish the arming threshold. Input signals must exceed this threshold in the positive direction to arm the zero
+crossing detector, which can then be triggered by a negative-going zero crossing.
+The peak detector tracks rapidly as the input signal amplitude increases, and decays by virtue of the resistor
+connected externally at pin 7 track decreases in the input signal.
+If the input signal amplitude falls faster than the voltage stored on the peak detector capacitor there may be a
+loss of output signal until the capacitor voltage has decayed to an appropriate level.
+Note that since the input voltage is clamped, the waveform observed at pin 3 is not identical to the waveform
+observed at the variable reluctance sensor. Similarly, the voltage stored at pin 7 is not identical to the peak
+voltage appearing at pin 3.
+MODE 2, PIN 5 CONNECTED TO V+
+The input arming threshold is fixed at 200mV minimum when device pin 5 is connected to the positive supply.
+The chip has no output for signals of less than ±200 mV (i.e. 400mVp-p) and triggers on the next negative-going
+zero crossing when the arming threshold is has been exceeded.
+MODE 3, PIN 5 GROUNDED
+With pin 5 grounded, the input arming threshold is set to 0V, ±25mV maximum. Positive-going zero crossings
+arm the chip, and the next negative-going zero crossing triggers it. This is the very basic form of zero-crossing
+detection.
+ONE SHOT TIMING
+The one shot timing is set by a resistor and capacitor connected to pin 14. The recommended maximum resistor
+value is 150kohms. The capacitor value can be changed as needed, as long as the capacitor type does not
+present any signfigant leakage that would adversely affect the RC time constant.
+The output pulse width is:
+pulse width = 0.673 x R x C
+(1)
+For a given One Shot pulse width, the recommended maximum input signal frequency is:
+Fin(max) = 1/(1.346 x R x C)
+(2)
+In the application example shown in Figure 17 (R=150kohms, C=0.001µF) the recommended maximum input
+frequency will typically be 5kHz. Operating with input frequencies above the recommended Fin (max) value may
+result in unreliable performance of the One Shot circuitry. For those applications where the One Shot circuit is
+not required, device pin 14 can be tied directly to Ground.
+LOGIC INPUTS
+In some systems it is necessary to externally generate pulses, such as during stall conditions when the variable
+reluctance sensor has no output. External pulse inputs at pin 9 are gated through to pin 10 when Input Select
+(pin 11) is pulled high. Pin 12 is a direct output for the one shot and is unaffected by the status of pin 11.
+Input/output pins 9, 11, 10, and 12 are all CMOS logic compatible. In addition, pins 9, 11, and 12 are TTL
+compatible. Pin 10 is not ensured to drive a TTL load.
+Pins 1, 4, 6 and 13 have no internal connections and can be grounded.
+Copyright © 2000–2013, Texas Instruments Incorporated
+Submit Documentation Feedback
+9
+Product Folder Links: LM1815
+
+
+=== PAGE 10 ===
+LM1815
+SNOSBU8F –SEPTEMBER 2000–REVISED MARCH 2013
+www.ti.com
+REVISION HISTORY
+Changes from Revision E (March 2013) to Revision F
+Page
+•
+Changed layout of National Data Sheet to TI format ............................................................................................................ 9
+10
+Submit Documentation Feedback
+Copyright © 2000–2013, Texas Instruments Incorporated
+Product Folder Links: LM1815
+
+
+=== PAGE 11 ===
+PACKAGE OPTION ADDENDUM
+www.ti.com
+11-Nov-2025
+PACKAGING INFORMATION
+Orderable part number
+Status
+(1)
+Material type
+(2)
+Package | Pins
+Package qty | Carrier
+RoHS
+(3)
+Lead finish/
+Ball material
+(4)
+MSL rating/
+Peak reflow
+(5)
+Op temp (°C)
+Part marking
+(6)
+LM1815M/NOPB
+Obsolete
+Production
+SOIC (D) | 14
+-
+-
+Call TI
+Call TI
+-40 to 125
+LM1815M
+LM1815MX/NOPB
+Active
+Production
+SOIC (D) | 14
+2500 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-40 to 125
+LM1815M
+LM1815MX/NOPB.B
+Active
+Production
+SOIC (D) | 14
+2500 | LARGE T&R
+Yes
+SN
+Level-1-260C-UNLIM
+-40 to 125
+LM1815M
+LM1815N/NOPB
+Obsolete
+Production
+PDIP (NFF) | 14
+-
+-
+Call TI
+Call TI
+-
+LM1815N
+ 
+(1) Status:  For more details on status, see our product life cycle.
+ 
+(2) Material type:  When designated, preproduction parts are prototypes/experimental devices, and are not yet approved or released for full production. Testing and final process, including without limitation quality assurance,
+reliability performance testing, and/or process qualification, may not yet be complete, and this item is subject to further changes or possible discontinuation. If available for ordering, purchases will be subject to an additional
+waiver at checkout, and are intended for early internal evaluation purposes only. These items are sold without warranties of any kind.
+ 
+(3) RoHS values:  Yes, No, RoHS Exempt. See the TI RoHS Statement for additional information and value definition.
+ 
+(4) Lead finish/Ball material:  Parts may have multiple material finish options. Finish options are separated by a vertical ruled line. Lead finish/Ball material values may wrap to two lines if the finish value exceeds the maximum
+column width.
+ 
+(5) MSL rating/Peak reflow:  The moisture sensitivity level ratings and peak solder (reflow) temperatures. In the event that a part has multiple moisture sensitivity ratings, only the lowest level per JEDEC standards is shown.
+Refer to the shipping label for the actual reflow temperature that will be used to mount the part to the printed circuit board.
+ 
+(6) Part marking:  There may be an additional marking, which relates to the logo, the lot trace code information, or the environmental category of the part.
+ 
+Multiple part markings will be inside parentheses. Only one part marking contained in parentheses and separated by a "~" will appear on a part. If a line is indented then it is a continuation of the previous line and the two
+combined represent the entire part marking for that device.
+ 
+Important Information and Disclaimer:The information provided on this page represents TI's knowledge and belief as of the date that it is provided. TI bases its knowledge and belief on information provided by third parties, and
+makes no representation or warranty as to the accuracy of such information. Efforts are underway to better integrate information from third parties. TI has taken and continues to take reasonable steps to provide representative
+and accurate information but may not have conducted destructive testing or chemical analysis on incoming materials and chemicals. TI and TI suppliers consider certain information to be proprietary, and thus CAS numbers
+and other limited information may not be available for release.
+ 
+In no event shall TI's liability arising out of such information exceed the total purchase price of the TI part(s) at issue in this document sold by TI to Customer on an annual basis.
+ 
+Addendum-Page 1
+
+
+=== PAGE 12 ===
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+31-Oct-2024
+TAPE AND REEL INFORMATION
+Reel Width (W1)
+REEL DIMENSIONS
+A0
+B0
+K0
+W
+Dimension designed to accommodate the component length
+Dimension designed to accommodate the component thickness
+Overall width of the carrier tape
+Pitch between successive cavity centers
+Dimension designed to accommodate the component width
+TAPE DIMENSIONS
+K0
+ P1
+B0 W
+A0
+Cavity
+QUADRANT ASSIGNMENTS FOR PIN 1 ORIENTATION IN TAPE
+Pocket Quadrants
+Sprocket Holes
+Q1
+Q1
+Q2
+Q2
+Q3
+Q3
+Q4
+Q4
+User Direction of Feed
+P1
+Reel
+Diameter
+ 
+*All dimensions are nominal
+Device
+Package
+Type
+Package
+Drawing
+Pins
+SPQ
+Reel
+Diameter
+(mm)
+Reel
+Width
+W1 (mm)
+A0
+(mm)
+B0
+(mm)
+K0
+(mm)
+P1
+(mm)
+W
+(mm)
+Pin1
+Quadrant
+LM1815MX/NOPB
+SOIC
+D
+14
+2500
+330.0
+16.4
+6.5
+9.35
+2.3
+8.0
+16.0
+Q1
+Pack Materials-Page 1
+
+
+=== PAGE 13 ===
+PACKAGE MATERIALS INFORMATION
+ 
+ 
+www.ti.com
+31-Oct-2024
+TAPE AND REEL BOX DIMENSIONS
+Width (mm)
+W
+L
+H
+ 
+*All dimensions are nominal
+Device
+Package Type
+Package Drawing
+Pins
+SPQ
+Length (mm)
+Width (mm)
+Height (mm)
+LM1815MX/NOPB
+SOIC
+D
+14
+2500
+367.0
+367.0
+35.0
+Pack Materials-Page 2
+
+
+=== PAGE 14 ===
+www.ti.com
+PACKAGE OUTLINE
+C
+ TYP
+6.2
+5.8
+1.75 MAX
+12X 1.27
+14X 0.51
+0.31
+2X
+7.62
+ TYP
+0.25
+0.13
+0 - 8
+0.25
+0.10
+0.25
+GAGE PLANE
+1.27
+0.40
+A
+NOTE 3
+8.75
+8.55
+B
+NOTE 4
+4.0
+3.8
+4220718/A   09/2016
+SOIC - 1.75 mm max height
+D0014A
+SMALL OUTLINE INTEGRATED CIRCUIT
+NOTES: 
+ 
+1. All linear dimensions are in millimeters. Dimensions in parenthesis are for reference only. Dimensioning and tolerancing
+    per ASME Y14.5M. 
+2. This drawing is subject to change without notice. 
+3. This dimension does not include mold flash, protrusions, or gate burrs. Mold flash, protrusions, or gate burrs shall not
+    exceed 0.15 mm, per side. 
+4. This dimension does not include interlead flash. Interlead flash shall not exceed 0.43 mm, per side.
+5. Reference JEDEC registration MS-012, variation AB.
+ 
+1
+14
+0.25
+C A B
+8
+7
+PIN 1 ID
+AREA
+SEATING PLANE
+0.1 C
+ SEE DETAIL A
+DETAIL A
+TYPICAL
+SCALE  1.800
+
+
+=== PAGE 15 ===
+www.ti.com
+EXAMPLE BOARD LAYOUT
+(5.4)
+0.07 MAX
+ALL AROUND
+0.07 MIN
+ALL AROUND
+14X (1.55)
+14X (0.6)
+12X (1.27)
+(R0.05)
+TYP
+4220718/A   09/2016
+SOIC - 1.75 mm max height
+D0014A
+SMALL OUTLINE INTEGRATED CIRCUIT
+SYMM
+SYMM
+LAND PATTERN EXAMPLE
+SCALE:8X
+1
+7
+8
+14
+NOTES: (continued)
+ 
+6. Publication IPC-7351 may have alternate designs. 
+7. Solder mask tolerances between and around signal pads can vary based on board fabrication site.
+ 
+METAL
+SOLDER MASK
+OPENING
+NON SOLDER MASK
+DEFINED
+SOLDER MASK DETAILS
+SOLDER MASK
+OPENING
+METAL UNDER
+SOLDER MASK
+SOLDER MASK
+DEFINED
+
+
+=== PAGE 16 ===
+www.ti.com
+EXAMPLE STENCIL DESIGN
+(5.4)
+12X (1.27)
+14X (0.6)
+14X (1.55)
+4220718/A   09/2016
+SOIC - 1.75 mm max height
+D0014A
+SMALL OUTLINE INTEGRATED CIRCUIT
+NOTES: (continued)
+ 
+8. Laser cutting apertures with trapezoidal walls and rounded corners may offer better paste release. IPC-7525 may have alternate
+    design recommendations.   
+9. Board assembly site may have different recommendations for stencil design.
+ 
+SYMM
+SYMM
+1
+7
+8
+14
+SOLDER PASTE EXAMPLE
+BASED ON 0.125 mm THICK STENCIL
+SCALE:8X
+
+
+=== PAGE 17 ===
+MECHANICAL DATA
+N0014A
+www.ti.com
+N14A (Rev G)
+NFF0014A
+
+
+=== PAGE 18 ===
+IMPORTANT NOTICE AND DISCLAIMER
+TI PROVIDES TECHNICAL AND RELIABILITY DATA (INCLUDING DATASHEETS), DESIGN RESOURCES (INCLUDING REFERENCE 
+DESIGNS), APPLICATION OR OTHER DESIGN ADVICE, WEB TOOLS, SAFETY INFORMATION, AND OTHER RESOURCES “AS IS” 
+AND WITH ALL FAULTS, AND DISCLAIMS ALL WARRANTIES, EXPRESS AND IMPLIED, INCLUDING WITHOUT LIMITATION ANY 
+IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT OF THIRD 
+PARTY INTELLECTUAL PROPERTY RIGHTS.
+These resources are intended for skilled developers designing with TI products. You are solely responsible for (1) selecting the appropriate 
+TI products for your application, (2) designing, validating and testing your application, and (3) ensuring your application meets applicable 
+standards, and any other safety, security, regulatory or other requirements.
+These resources are subject to change without notice. TI grants you permission to use these resources only for development of an 
+application that uses the TI products described in the resource. Other reproduction and display of these resources is prohibited. No license 
+is granted to any other TI intellectual property right or to any third party intellectual property right. TI disclaims responsibility for, and you fully 
+indemnify TI and its representatives against any claims, damages, costs, losses, and liabilities arising out of your use of these resources.
+TI’s products are provided subject to TI’s Terms of Sale, TI’s General Quality Guidelines, or other applicable terms available either on 
+ti.com or provided in conjunction with such TI products. TI’s provision of these resources does not expand or otherwise alter TI’s applicable 
+warranties or warranty disclaimers for TI products. Unless TI explicitly designates a product as custom or customer-specified, TI products 
+are standard, catalog, general purpose devices.
+TI objects to and rejects any additional or different terms you may propose.
+IMPORTANT NOTICE
+Copyright © 2025, Texas Instruments Incorporated
+Last updated 10/2025
