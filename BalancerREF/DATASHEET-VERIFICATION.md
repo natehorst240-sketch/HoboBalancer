@@ -85,6 +85,24 @@ Table 7-2 is indexed **(EN2, EN1)** — the reverse of the order the pins are na
 
 When the input is out of range, OUT is connected to VBAT (unless SYSOFF is high). That is what makes `SUPPLY_SENSE` on SYS_SW a battery reading while running unplugged — and why it is not one while charging.
 
+## U9 — TI SN74LVC1G132 (was SN74LVC1G08)
+
+[Manufacturer datasheet SLVS322](https://www.ti.com/lit/ds/symlink/sn74lvc1g132.pdf), Pin Functions table and Figure 4-1. Original PDF saved as `sources/SN74LVC1G132.pdf`.
+
+DBV (SOT-23-5): 1 A, 2 B, 3 GND, 4 Y, 5 VCC — **identical to the SN74LVC1G08 it replaces**, so the footprint, the supply pins and the board land pattern are untouched.
+
+Why it changed: R29/C26 form a 0.47 µs RC delay feeding this gate. The SN74LVC1G08 specifies a maximum input transition rate of 10 ns/V; that edge crosses the logic threshold region at roughly 250 ns/V, about 25× outside the datasheet. An LVC input driven slowly through its linear region can oscillate and draws shoot-through current. The 1G132 has Schmitt-trigger inputs and conditions **both** inputs, not just the RC branch.
+
+It is a NAND, so Y now falls on a detection where the AND rose. U10's trigger moved to match:
+
+| | before | after |
+|---|---|---|
+| U10 pin 1 (~A) | GND | U9 Y |
+| U10 pin 2 (B) | U9 Y | +3V3 |
+| triggers on | B rising, ~A low | ~A falling, B high |
+
+The SN74LVC1G123 supports both edges, so this is a rewire rather than a redesign. Idle state is unchanged: with no emitter pulse, or a pulse with no tape return, Y sits high and ~A sees no falling edge.
+
 ## U6 — TI TPS63031DSKR
 
 [Manufacturer datasheet SLVS696D](https://www.ti.com/lit/ds/symlink/tps63031.pdf), pin table/page 3 and fixed-output reference circuit. Original PDF saved.
@@ -132,6 +150,90 @@ Expected states: USB absent/OFF = puck off; USB absent/ON = battery powers puck;
 ## J4 GPS header (2026-09-07)
 
 Generic 1x05 2.54 mm header; no manufacturer pinout to verify. Assignment follows the common u-blox breakout order VCC, GND, TX, RX, PPS. GPIO1/GPIO2 are ordinary IOs on the ESP32-S3-MINI-1 (pads 5/6) routed to UART1 through the GPIO matrix; GPIO13 (pad 17) is the PPS input. GPIO3/45/46 strapping pins remain unloaded. Module must be 3.3 V logic and is supplied from the 3.3 V rail (about 30 mA active).
+
+## Rev F — repo review responses (2026-09-13)
+
+An external review of the repo raised the items below. Each was checked against the
+manufacturer source rather than accepted or dismissed on its face.
+
+**Confirmed and fixed.**
+
+- **D1 peak current on USB.** The head runs from SYS_SW. With the BQ24075 regulating OUT
+  to 5.5 V, R18 at 3.0 Ω gave roughly 1.1 A peak against D1's 1 A absolute maximum. The
+  BOM note had only ever checked the 4.2 V battery case — it literally read "check peak
+  at 4.2 V is under 1 A" — and the swap from the old Schottky path, which held SYS near
+  4.55 V, is what pushed it over. **R18 is now 3.9 Ω**, chosen to keep the 500 mA design
+  point at a full cell:
+
+  | SYS_SW | peak into D1 (Vf ~2.2–2.45 V) |
+  |---|---|
+  | 3.3 V (low cell) | ~0.29 A |
+  | 4.2 V (full cell) | ~0.49 A — the bench-set design point |
+  | 5.0 V (USB typical) | ~0.66 A |
+  | 5.5 V (BQ24075 OUT ceiling, low-Vf bin) | ~0.90 A, under the 1 A maximum |
+
+- **Charger stuck at USB100.** EN1/EN2 have ~285 kΩ internal pulldowns and firmware never
+  drove them, so the input limit sat at 100 mA — which covers system load *and* charge
+  current together. `setupCharger()` now runs at boot and selects USB500 (EN2=0, EN1=1).
+  USB500 is the ceiling on purpose: 500 mA is the most a non-negotiated port must supply,
+  and this board has no USB-PD or BC1.2.
+
+- **U6 switcher parts on the wrong face.** L1 and C4–C7 were on the back while U6 is on
+  the front, putting vias in a 2.4 MHz switching loop. All five moved to the front; the
+  BQ24075's C2/C3/C30 followed. The general "ICs front, passives back" rule does not
+  survive contact with a switching converter.
+
+- **U1 decoupling not at the 3V3 pad.** C8/C9 sat near x 125–127 while pad 3 is at
+  x 118. They stay on the back — U1's body owns that part of the front — but C8 is now
+  0.38 mm from the pad instead of ~9 mm.
+
+- **Head board emitter loop.** R18 was at x 121 with Q1/C20 at x 103, so the ~0.5 A pulse
+  loop spanned the board. The three now cluster in 6.9 × 3.3 mm. R21/C21 moved from 4 mm
+  away from Q1 to 16 mm, and sit 3.6/3.9 mm from U8 pins 1 and 2. The residual ~8 mm run
+  from the cluster up to D1 is set by D1's provisional 8 mm lens keepout and cannot be
+  shortened until that keepout is confirmed against the real Ledil TINA holder.
+
+**Confirmed, accepted as a trade-off.**
+
+- **SW1 carries the whole system current.** Fetched the datasheet the review could not:
+  Würth WS-SLTV 450301014042 is rated **300 mA switching, 24 V DC**, gold-plated copper
+  contacts (`sources/WS-SLTV-450301014042.pdf`). Steady draw is about 180 mA — TPS63031
+  input ~130 mA plus the head's ~50 mA average — so it is inside the rating in normal
+  operation. ESP32-S3 BLE TX bursts push the regulator input to roughly 400 mA at a low
+  cell, and switch-on inrush into C4/C5/C30 is briefly amps. The rating governs contact
+  erosion over rated life and carry capability exceeds switching capability, so the
+  consequence is reduced switch life rather than a failure. Accepted deliberately; the
+  alternative was moving SW1 to the TPS63031 EN pin with a PFET for the head supply,
+  which would have cost the physical power-cut behaviour the slide switch exists for.
+
+- **Deep sleep is not low power.** Confirmed from the local datasheet: the LM1815's
+  supply current is **3.6 mA typical, 6 mA maximum**, and it sits on the always-on 3V3
+  rail along with the head's op-amp and comparator. A sleeping puck therefore draws
+  milliamps, so a 500 mAh cell lasts days, not months. Recorded rather than fixed — a
+  load switch on the LM1815 and head supply is the fix if flight logging ever depends on
+  long sleeps.
+
+**Not confirmed.**
+
+- **U1 footprint.** The review suggested switching from `RF_Module:ESP32-S2-MINI-1` to an
+  S3 footprint "since the S3 footprint exists in KiCad 10". It does not: KiCad 10.0.3
+  ships `ESP32-S3-WROOM-1`, `-1U` and `-2`, but no `ESP32-S3-MINI-1`. The only MINI-1
+  land patterns in `RF_Module.pretty` are the S2 ones. The ESP32-S3-MINI-1 and
+  ESP32-S2-MINI-1 are the same 15.4 × 20.5 mm module with the same 65-pad pattern, so
+  the S2 footprint is correct, not merely tolerable. Left as is; this note exists so the
+  question does not get re-raised at the next review.
+
+- **SUPPLY_SENSE on ADC2.** Agreed with the review's own conclusion: BLE alone does not
+  block ADC2 oneshot reads in ESP-IDF 5.x, and Wi-Fi is never started. Already noted in
+  `board.hpp`; no redesign.
+
+**Outstanding — firmware, not blocking layout.**
+
+- `readBlock` rejects any FIFO block whose level is not exactly 16, so interrupt latency
+  above ~37 µs discards the block. Reading exactly 16 and leaving the remainder would be
+  robust at the cost of a negligible one-sample timestamp shift.
+- The emitter runs whenever TR-VERT is selected, idle or not, at roughly 90 mA average.
+  Gating it on acquisition plus a settle window would help battery life.
 
 ## Rev E parts and changes (2026-09-13)
 
@@ -196,7 +298,7 @@ Generic 1x05 2.54 mm header; no manufacturer pinout to verify. Assignment follow
 
 - **U2 ST IIS3DWBTR**, DS12569 Rev 4 Table 1 (page 3): 1 SDO/SA0, 2 RES, 3 RES (connect to VDD_IO or GND; wired to GND), 4 INT1, 5 VDD_IO, 6 GND, 7 GND, 8 VDD, 9 INT2, 10 RES, 11 RES (connect to VDD_IO or leave unconnected; left open and soldered), 12 CS, 13 SPC/SCL, 14 SDI/SDO/SDA. Only SPI supports full-rate operation; I2C is single-axis only and not used. 100 nF on VDD and VDD_IO. KiCad footprint Package_LGA:LGA-14_3x2.5mm_P0.5mm_LayoutBorder3x4y (14 pads).
 - **U10 TI SN74LVC1G123DCTR**, SCES586E Table 4-1: 1 A (falling-edge trigger, held low), 2 B (rising-edge trigger, from U9), 3 CLR (active low, tied to VCC), 4 GND, 5 Q, 6 Cext, 7 Rext/Cext, 8 VCC. Rext 100k from Rext/Cext to VCC, Cext 1 nF between Cext and Rext/Cext; nominal output about 100 us, retriggerable.
-- **U9 TI SN74LVC1G08DBVR** SOT-23-5: 1 A, 2 B, 3 GND, 4 Y, 5 VCC (standard KiCad symbol).
+- **U9 TI SN74LVC1G08DBVR** SOT-23-5: 1 A, 2 B, 3 GND, 4 Y, 5 VCC (standard KiCad symbol). *Superseded in Rev F by the SN74LVC1G132 - same pinout, Schmitt inputs, NAND instead of AND. Do not order from this line.*
 - **U8 TI TLV9062IDR** SOIC-8 standard dual op amp pinout (1 OUT1, 2 IN1-, 3 IN1+, 4 V-, 5 IN2+, 6 IN2-, 7 OUT2, 8 V+); KiCad Amplifier_Operational:TLV9062xD units A/B/C.
 - **PD1 Vishay BPW34S**: KiCad Sensor_Optical:BPW34, pin 1 cathode (to +3V3), pin 2 anode (to the transimpedance input); footprint OptoDevice:Osram_BPW34S-SMD.
 - **D1 Cree XPEBRD-L1** red XP-E2: KiCad Device:LED numbering 1 K / 2 A on LED_SMD:LED_Cree-XP; Vf about 2.2 V, 1 A absolute maximum; driven at about 500 mA peak, 10 percent duty.

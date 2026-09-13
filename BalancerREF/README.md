@@ -2,7 +2,7 @@
 
 ESP32-S3 firmware is in [firmware/README.md](firmware/README.md), including build/flash instructions, MR-VERT/TR-VERT controls, BLE/USB protocol, and a MicroVib comparison logger. Its measurement accuracy remains subject to bench validation.
 
-Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev E (2026-09-13), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers, placed but not routed. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815, TS3021 and BQ24075RGT have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
+Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev F (2026-09-13), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers, placed but not routed. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815, TS3021 and BQ24075RGT have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
 
 This is a reference/troubleshooting instrument for approximate RPM, 1/rev vibration magnitude, phase, stability and trends. Maintenance balancing remains with calibrated MicroVib/DynaVibe equipment. Firmware and physical performance have not been validated by schematic ERC.
 
@@ -25,6 +25,54 @@ All local functional circuits use real wires. Labels carry signals between compl
 | MR-VERT | External isolated two-wire VR pickup at J3 / J_MAG | Off | Internal IIS3DWB on SPI, all axes available |
 | TR-VERT | Onboard pulsed-red synchronous-detection optical tach (retroreflective tape) | 20 kHz pulses | Same sensor |
 
+### Rev F changes (2026-09-13)
+
+Rev F is the **repo-review revision**: no new function, but several things that had to
+be right before any copper is routed. Every claim was checked against the manufacturer
+source, and two of them did not survive that check (see DATASHEET-VERIFICATION.md for
+the full record, including what was deliberately NOT changed).
+
+- **R18 3.0 -> 3.9 ohm on the head board.** The emitter runs from SYS_SW, and the
+  BQ24075 regulates OUT to 5.5 V, so the old value gave about 1.1 A peak into D1's 1 A
+  absolute maximum. The BOM note had only checked the 4.2 V battery case. This is a
+  regression introduced by Rev E: the Schottky it removed had been holding SYS near
+  4.55 V. 3.9 ohm keeps the 500 mA design point at a full cell and lands at about
+  0.90 A worst case.
+- **U9 SN74LVC1G08 -> SN74LVC1G132.** R29/C26 fed the AND gate a 0.47 us edge against a
+  10 ns/V input transition spec. The 1G132 is a Schmitt NAND on the identical SOT-23-5
+  pinout, so the footprint is untouched, and it conditions both inputs rather than only
+  the RC branch. It inverts, so U10's trigger moved from B rising to ~A falling - the
+  SN74LVC1G123 supports both edges.
+- **Switching loop off the vias.** L1 and C4-C7 were on the back with U6 on the front,
+  so a 2.4 MHz switching node and both its input and output caps reached the IC through
+  vias. They moved to U6's face, and C1/C2/C3/C30 followed for the BQ24075. The
+  "ICs front, passives back" rule does not survive contact with a switching converter.
+  Two follow-on corrections came out of review: aim at the **pin**, not the net, and
+  place the fastest part first. U6 pins 5-8 are all on SYS_SW, so targeting "the input
+  net" had put the caps next to EN and PS/SYNC - logic inputs that happen to be strapped
+  high - rather than VIN and VINA; and the 10u bulk had taken the close spot while the
+  100n sat 4.4 mm out. C5 now sits 2.07 mm from VINA and C4 2.68 mm from VIN. C1, the
+  100n bypass on the BQ24075's IN pin, turned out to be **24 mm away on the back of the
+  board**, which is the same as not fitting it; it is now 5.3 mm out on the front.
+  TP6 and TP10 were squatting immediately left of U6 - the side VIN and PGND are on -
+  and were the reason the bulk input cap could not get near its pins. They moved beside
+  the circuits they actually probe.
+- **U1 decoupling at the pad.** C8 is now 0.38 mm from the 3V3 pad rather than about
+  9 mm. Both caps stay on the back, since U1's body owns that part of the front.
+- **Head board loop and TIA.** C20/R18/Q1 now cluster in 6.9 x 3.3 mm instead of
+  spanning the board width, and R21/C21 moved from 4 mm off Q1 to 16 mm, sitting
+  3.6/3.9 mm from U8 pins 1 and 2. The remaining ~8 mm up to D1 is set by its
+  provisional lens keepout, which is why those parts sat at the board edges to begin
+  with.
+- **Firmware drives the charger.** EN1/EN2 were left to their internal pulldowns, so the
+  input limit sat at USB100 - 100 mA covering system load and charge current together.
+  `setupCharger()` selects USB500 at boot and status reports `input_present`/`charging`.
+- Accepted rather than fixed, both recorded with numbers: SW1's 300 mA switching rating
+  against a ~180 mA steady draw with larger transients, and the LM1815's 3.6 mA on the
+  always-on rail making deep sleep a milliamp affair.
+
+The head board is **Rev B** as of this revision - its first change since creation.
+
 ### Rev E changes (2026-09-13)
 
 - **BQ24075 replaces the MCP73831 charger**, and D2, Q3, R27 and R31 go with it. The
@@ -40,8 +88,9 @@ All local functional circuits use real wires. Labels carry signals between compl
 - **Charger control on four GPIOs**: EN1 = GPIO5, EN2 = GPIO18, PGOOD = GPIO21,
   CHG = GPIO38. Note that the datasheet's current-limit table is indexed (EN2, EN1),
   the reverse of the naming order. Both EN pins have 285k internal pulldowns, so the
-  limit sits at USB100 (100 mA) until firmware raises it - the puck will charge out of
-  the box, slowly.
+  part powers up in USB100 (100 mA). *Rev F added `setupCharger()`, which selects
+  USB500 at boot; before that, firmware never drove these and the puck charged at
+  100 mA - a limit that covers system load and charge current together.*
 - **BAT sense divider removed**: R33, R34, C31 and the `BAT_SENSE` net are gone. They
   existed only to infer USB presence by comparing SYS_SW against BAT. PGOOD reports a
   valid input source directly from the device that arbitrates it, which is both simpler
@@ -61,9 +110,10 @@ All local functional circuits use real wires. Labels carry signals between compl
   carries the entire system load; it did not exist under the old topology and would
   otherwise have routed at the 0.20 mm default, rated 0.74 A.
 
-**Firmware 0.4.0 does not drive the charger yet.** `board.hpp` carries the four new
-pins and `tests/check_pinmap.py` verifies them against the KiCad pad audit, but no code
-reads PGOOD or raises the input current limit.
+**At Rev E firmware did not drive the charger.** `board.hpp` carried the four pins and
+`tests/check_pinmap.py` verified them against the KiCad pad audit, but nothing read
+PGOOD or raised the input current limit. Rev F fixed that - see the Rev F section
+above.
 
 ### Rev D changes (2026-09-13)
 

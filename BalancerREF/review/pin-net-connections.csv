@@ -217,8 +217,8 @@ U1,65,GND
 U1,7,unconnected-(U1-IO3-Pad7)
 U1,8,unconnected-(U1-IO4-Pad8)
 U1,9,/CHG_EN1
-U10,1,GND
-U10,2,Net-(U10-B)
+U10,1,Net-(U10-~{A})
+U10,2,/+3V3
 U10,3,/+3V3
 U10,4,GND
 U10,5,/OPT_TACH
@@ -290,5 +290,5 @@ U7,6,unconnected-(U7-IO4-Pad6)
 U9,1,/OPT_COMP
 U9,2,Net-(C26-Pad1)
 U9,3,GND
-U9,4,Net-(U10-B)
+U9,4,Net-(U10-~{A})
 U9,5,/+3V3

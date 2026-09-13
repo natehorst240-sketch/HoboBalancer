@@ -17,8 +17,8 @@ KiCad 9 will not open them.
 | Directory | Board | Revision | State |
 |---|---|---|---|
 | `.` (root) | `Balancer` — STM32 balancer | Rev A | Schematic only; `Balancer.kicad_pcb` is an empty stub |
-| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev E** | 50 × 50 mm, 4 layer, placed, unrouted |
-| `BalancerREF_OptHead/` | Optical tach head | Rev A | 25 × 50 mm, 2 layer, placed, unrouted |
+| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev F** | 50 × 50 mm, 4 layer, placed, unrouted |
+| `BalancerREF_OptHead/` | Optical tach head | **Rev B** | 25 × 50 mm, 2 layer, placed, unrouted |
 
 Both boards are **placed but not routed**. Placement is machine-generated and then
 meant to be refined by hand — decoupling is paired to its IC and connectors are
@@ -41,6 +41,11 @@ a 10 °C rise (0.20 mm ≈ 0.74 A, 0.50 mm ≈ 1.45 A, 0.80 mm ≈ 2.03 A):
 | Switch | 0.80 mm | `U6-L1` `U6-L2` — main board only |
 | USB | 0.20 mm | `D+`/`D-` both sides, diff pair 0.20/0.15 |
 | Emitter | 0.80 mm | `SYS_SW` `D1-A` `D1-K` — head board only |
+
+The emitter resistor is sized at the **top** of the SYS_SW range, not at the battery.
+The BQ24075 regulates OUT to 5.5 V, so R18 is 3.9 Ω for about 0.49 A at a full cell and
+about 0.90 A worst case — under D1's 1 A absolute maximum. At the old 3.0 Ω the USB case
+reached roughly 1.1 A.
 
 Two caveats. **Switch clearance stays at 0.20 mm**, not the 0.25 the wider track might
 suggest: the TPS63031's WSON-10 places its own L1/L2 pads 0.20 mm from its thermal
@@ -75,7 +80,15 @@ DS12569's orientation figure — firmware can also identify it at runtime, since
 vertical axis reads a static 1 g when the puck is mounted upright.
 
 Three switches: SW1 power slide, SW2 acquire, SW3 boot. There is no reset button —
-SW1 feeds U6's VIN and EN, so the power slide already power-cycles the MCU.
+SW1 feeds U6's VIN and EN, so the power slide already power-cycles the MCU. SW1 is a
+Würth WS-SLTV rated 300 mA switching; steady draw through it is about 180 mA, but BLE
+TX bursts and switch-on inrush exceed that briefly. That is accepted as reduced switch
+life rather than designed out — see DATASHEET-VERIFICATION.md.
+
+**Sleep is not low power.** The LM1815 draws 3.6 mA typical (6 mA max) and sits on the
+always-on 3V3 rail, as do the head's op-amp and comparator, so a sleeping puck draws
+milliamps and a 500 mAh cell lasts days rather than months. If flight logging ever
+depends on long sleeps, the fix is a load switch on the LM1815 and the head supply.
 
 **Power path and charging.** A BQ24075 runs the input: it charges the cell and powers
 the system from the same input independently, so charge termination is correct while
@@ -189,6 +202,7 @@ gets that snapshot.
 | `revC` | single board, optical front end on the main PCB, no layout |
 | `revD` | optical head split out; SW4 and R5 dropped; BAT sense divider added; both boards placed |
 | `revE` | MCP73831 + D2 + Q3 + R27 + R31 replaced by a BQ24075; BAT sense divider removed |
+| `revF` | repo-review fixes: R18 3.9 ohm, U9 Schmitt NAND, switcher and TIA placement |
 
 Rev D was defined by the **battery/supply sensing change** — `BAT_SENSE` on GPIO4
 alongside `SUPPLY_SENSE`, to let firmware tell USB from battery. The board split and the
@@ -197,6 +211,18 @@ two part deletions rode along in the same revision.
 Rev E is the **charge-management change**, and it removed Rev D's divider again: with a
 BQ24075 arbitrating the input, `PGOOD` answers "am I on USB?" directly and the
 two-divider comparison had nothing left to do. Five discrete parts went with it.
+
+Rev F is the **repo-review revision** — no new function, but a set of corrections that
+had to land before any copper is routed. One of them cleans up after Rev E: removing the
+USB Schottky raised `SYS_SW`, which pushed the head's emitter resistor past D1's absolute
+maximum current. The others are a logic part run outside its input-transition spec and
+three placement problems, the worst being a 2.4 MHz switching loop routed through vias.
+Rev F is also the first revision of the optical head since it was created, so that board
+moves from Rev A to **Rev B**.
+
+Two review items were checked and deliberately **not** changed — SW1's current rating
+and U1's footprint. `BalancerREF/DATASHEET-VERIFICATION.md` records why, so they are not
+re-raised at the next review.
 
 ## Not in this repo
 

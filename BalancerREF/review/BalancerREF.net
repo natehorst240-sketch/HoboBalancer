@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "C:\\Users\\nateh\\hgs-linux\\Balancer\\BalancerREF\\BalancerREF.kicad_sch")
-		(date "2026-09-13T08:23:47")
+		(date "2026-09-13T14:34:53")
 		(tool "Eeschema 10.0.3")
 		(sheet
 			(number "1")
@@ -11,7 +11,7 @@
 			(title_block
 				(title "HoboVibe Hobby Helicopter Dynamic Balancer")
 				(company)
-				(rev "E")
+				(rev "F")
 				(date "2026-09-13")
 				(source "BalancerREF.kicad_sch")
 				(comment
@@ -5018,24 +5018,24 @@
 		)
 		(comp
 			(ref "U9")
-			(value "SN74LVC1G08DBVR")
+			(value "SN74LVC1G132DBVR")
 			(footprint "Package_TO_SOT_SMD:SOT-23-5")
-			(datasheet "https://www.ti.com/lit/ds/symlink/sn74lvc1g08.pdf")
+			(datasheet "https://www.ti.com/lit/ds/symlink/sn74lvc1g132.pdf")
 			(fields
 				(field
 					(name "MPN") "SN74LVC1G08DBVR")
 				(field
 					(name "Footprint") "Package_TO_SOT_SMD:SOT-23-5")
 				(field
-					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/sn74lvc1g08.pdf")
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/sn74lvc1g132.pdf")
 				(field
 					(name "Description")
 				)
 			)
 			(libsource
-				(lib "74xGxx")
-				(part "74LVC1G08")
-				(description "Single AND Gate, Low-Voltage CMOS")
+				(lib "BalancerREF")
+				(part "SN74LVC1G132")
+				(description "Single 2-input NAND gate with Schmitt-trigger inputs, SOT-23-5")
 			)
 			(property
 				(name "MPN")
@@ -5051,7 +5051,7 @@
 			)
 			(property
 				(name "ki_keywords")
-				(value "Single Gate AND LVC CMOS")
+				(value "Single Gate NAND LVC CMOS")
 			)
 			(property
 				(name "ki_fp_filters")
@@ -5159,58 +5159,6 @@
 	(groups)
 	(variants)
 	(libparts
-		(libpart
-			(lib "74xGxx")
-			(part "74LVC1G08")
-			(description "Single AND Gate, Low-Voltage CMOS")
-			(docs "https://www.ti.com/lit/ds/symlink/sn74lvc1g08.pdf")
-			(footprints
-				(fp "SOT?23*")
-				(fp "Texas?R-PDSO-G5?DCK*")
-				(fp "Texas?R-PDSO-N5?DRL*")
-				(fp "Texas?X2SON*0.8x0.8mm*P0.48mm*")
-			)
-			(fields
-				(field
-					(name "Reference") "U")
-				(field
-					(name "Value") "74LVC1G08")
-				(field
-					(name "Footprint")
-				)
-				(field
-					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/sn74lvc1g08.pdf")
-				(field
-					(name "Description") "Single AND Gate, Low-Voltage CMOS")
-			)
-			(pins
-				(pin
-					(num "1")
-					(name "")
-					(type "input")
-				)
-				(pin
-					(num "2")
-					(name "")
-					(type "input")
-				)
-				(pin
-					(num "3")
-					(name "GND")
-					(type "power_in")
-				)
-				(pin
-					(num "4")
-					(name "")
-					(type "output")
-				)
-				(pin
-					(num "5")
-					(name "VCC")
-					(type "power_in")
-				)
-			)
-		)
 		(libpart
 			(lib "BalancerREF")
 			(part "BQ24075RGT")
@@ -5551,6 +5499,58 @@
 				)
 				(pin
 					(num "8")
+					(name "VCC")
+					(type "power_in")
+				)
+			)
+		)
+		(libpart
+			(lib "BalancerREF")
+			(part "SN74LVC1G132")
+			(description "Single 2-input NAND gate with Schmitt-trigger inputs, SOT-23-5")
+			(docs "https://www.ti.com/lit/ds/symlink/sn74lvc1g132.pdf")
+			(footprints
+				(fp "SOT?23*")
+				(fp "Texas?R-PDSO-G5?DCK*")
+				(fp "Texas?R-PDSO-N5?DRL*")
+				(fp "Texas?X2SON*0.8x0.8mm*P0.48mm*")
+			)
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "SN74LVC1G132")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/sn74lvc1g132.pdf")
+				(field
+					(name "Description") "Single 2-input NAND gate with Schmitt-trigger inputs, SOT-23-5")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "")
+					(type "input")
+				)
+				(pin
+					(num "2")
+					(name "")
+					(type "input")
+				)
+				(pin
+					(num "3")
+					(name "GND")
+					(type "power_in")
+				)
+				(pin
+					(num "4")
+					(name "")
+					(type "output")
+				)
+				(pin
+					(num "5")
 					(name "VCC")
 					(type "power_in")
 				)
@@ -6595,10 +6595,6 @@
 	)
 	(libraries
 		(library
-			(logical "74xGxx")
-			(uri "${KICAD10_SYMBOL_DIR}/74xGxx.kicad_sym")
-		)
-		(library
 			(logical "BalancerREF")
 			(uri "${KIPRJMOD}/BalancerREF.kicad_sym")
 		)
@@ -6762,6 +6758,12 @@
 				(pin "3")
 				(pinfunction "3V3_3")
 				(pintype "power_in")
+			)
+			(node
+				(ref "U10")
+				(pin "2")
+				(pinfunction "B_2")
+				(pintype "input")
 			)
 			(node
 				(ref "U10")
@@ -7923,12 +7925,6 @@
 			)
 			(node
 				(ref "U10")
-				(pin "1")
-				(pinfunction "~{A}_1")
-				(pintype "input")
-			)
-			(node
-				(ref "U10")
 				(pin "4")
 				(pinfunction "GND_4")
 				(pintype "power_in")
@@ -8305,22 +8301,6 @@
 		)
 		(net
 			(code "47")
-			(name "Net-(U10-B)")
-			(class "Default")
-			(node
-				(ref "U10")
-				(pin "2")
-				(pinfunction "B_2")
-				(pintype "input")
-			)
-			(node
-				(ref "U9")
-				(pin "4")
-				(pintype "output")
-			)
-		)
-		(net
-			(code "48")
 			(name "Net-(U10-Cext)")
 			(class "Default")
 			(node
@@ -8336,7 +8316,7 @@
 			)
 		)
 		(net
-			(code "49")
+			(code "48")
 			(name "Net-(U10-RCext)")
 			(class "Default")
 			(node
@@ -8354,6 +8334,22 @@
 				(pin "7")
 				(pinfunction "RCext_7")
 				(pintype "passive")
+			)
+		)
+		(net
+			(code "49")
+			(name "Net-(U10-~{A})")
+			(class "Default")
+			(node
+				(ref "U10")
+				(pin "1")
+				(pinfunction "~{A}_1")
+				(pintype "input")
+			)
+			(node
+				(ref "U9")
+				(pin "4")
+				(pintype "output")
 			)
 		)
 		(net

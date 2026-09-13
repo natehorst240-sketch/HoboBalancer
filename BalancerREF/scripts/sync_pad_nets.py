@@ -7,19 +7,89 @@ worse - U1 pin 8 was never actually joined to the BAT_SENSE divider, because tha
 change assigned nets to the new passives but not to the MCU pad. The schematic netlist
 verified clean throughout; only the board was wrong.
 
-Reads the pad->net map exported from the schematic and asserts the board matches it
-exactly afterwards, so a silent miss is not possible.
+It exports the netlist from the schematic itself on every run and asserts the board
+matches it exactly afterwards, so a silent miss is not possible.
+
+It used to read the pad->net map from a JSON file left in the temp directory by an
+earlier step, and that is exactly how it went wrong: after U9 became a Schmitt NAND and
+U10's trigger moved to ~A, this script cheerfully reported "0 pads needing a change"
+while the board still had U10.1 on GND and U10.2 on the old gate net. Comparing an
+artifact against another artifact of unknown age proves nothing - the schematic is the
+source of truth, so it gets re-exported here rather than trusted from a file.
+
+KiCad's bundled Python has no sexpdata, hence the small reader below.
 
 Dry run by default. Pass --apply to write.
 """
-import sys, os, json
+import sys, os, subprocess, tempfile
 import pcbnew
 
 APPLY = '--apply' in sys.argv
-PCB = r'C:\Users\nateh\hgs-linux\Balancer\BalancerREF\BalancerREF.kicad_pcb'
-MAP = r'C:\Users\nateh\AppData\Local\Temp\claude\padnets.json'
+ROOT = r'C:\Users\nateh\hgs-linux\Balancer\BalancerREF'
+PCB = os.path.join(ROOT, 'BalancerREF.kicad_pcb')
+SCH = os.path.join(ROOT, 'BalancerREF.kicad_sch')
+KC = r'C:\Program Files\KiCad\10.0\bin\kicad-cli.exe'
 
-want = {tuple(k.split('|', 1)): v for k, v in json.load(open(MAP)).items()}
+
+def sexp(text):
+    """Minimal s-expression reader: lists, bare atoms, quoted strings."""
+    i, n = 0, len(text)
+
+    def parse():
+        nonlocal i
+        while i < n and text[i] in ' \t\r\n':
+            i += 1
+        if text[i] == '(':
+            i += 1
+            out = []
+            while True:
+                while i < n and text[i] in ' \t\r\n':
+                    i += 1
+                if text[i] == ')':
+                    i += 1
+                    return out
+                out.append(parse())
+        if text[i] == '"':
+            i += 1
+            buf = []
+            while text[i] != '"':
+                if text[i] == '\\':
+                    i += 1
+                buf.append(text[i])
+                i += 1
+            i += 1
+            return ''.join(buf)
+        start = i
+        while i < n and text[i] not in ' \t\r\n()':
+            i += 1
+        return text[start:i]
+
+    return parse()
+
+
+def kids(node, tag):
+    return [a for a in node if isinstance(a, list) and a and a[0] == tag]
+
+
+def one_(node, tag):
+    return next((a for a in node if isinstance(a, list) and a and a[0] == tag), None)
+
+
+tmp = os.path.join(tempfile.mkdtemp(), 'sync.net')
+r = subprocess.run([KC, 'sch', 'export', 'netlist', '--format', 'kicadsexpr',
+                    '-o', tmp, SCH], capture_output=True, text=True)
+assert r.returncode == 0 and os.path.exists(tmp), \
+    'netlist export failed: %s %s' % (r.returncode, (r.stderr or '').strip())
+with open(tmp, encoding='utf8') as fh:
+    doc = sexp(fh.read())
+
+want = {}
+for net in kids(one_(doc, 'nets'), 'net'):
+    name = one_(net, 'name')[1]
+    for nd in kids(net, 'node'):
+        want[(one_(nd, 'ref')[1], one_(nd, 'pin')[1])] = name
+print('schematic netlist: %d pads across %d nets (freshly exported)'
+      % (len(want), len(kids(one_(doc, 'nets'), 'net'))))
 board = pcbnew.LoadBoard(PCB)
 nets = {}
 for f in board.GetFootprints():
