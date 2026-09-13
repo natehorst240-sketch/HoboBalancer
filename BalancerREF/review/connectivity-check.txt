@@ -1,1 +1,1 @@
-PASS: 53 exact circuit nets; 331 pin endpoints; 141 IC pads; 36 documented unused pins.
+PASS: 43 exact circuit nets; 280 pin endpoints; 128 IC pads; 36 documented unused pins.

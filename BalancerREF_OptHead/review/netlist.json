@@ -1,0 +1,165 @@
+{
+ "comps": {
+  "C20": [
+   "100u / 6.3V",
+   "Capacitor_SMD:C_1210_3225Metric"
+  ],
+  "C21": [
+   "10p C0G",
+   "Capacitor_SMD:C_0805_2012Metric"
+  ],
+  "C22": [
+   "10n",
+   "Capacitor_SMD:C_0805_2012Metric"
+  ],
+  "C23": [
+   "100n",
+   "Capacitor_SMD:C_0805_2012Metric"
+  ],
+  "C24": [
+   "100n",
+   "Capacitor_SMD:C_0805_2012Metric"
+  ],
+  "C25": [
+   "100n",
+   "Capacitor_SMD:C_0805_2012Metric"
+  ],
+  "D1": [
+   "XPEBRD-L1 625nm",
+   "LED_SMD:LED_Cree-XP"
+  ],
+  "J5": [
+   "TO MAIN BOARD",
+   "Connector_JST:JST_GH_SM07B-GHS-TB_1x07-1MP_P1.25mm_Horizontal"
+  ],
+  "PD1": [
+   "BPW34S",
+   "OptoDevice:Osram_BPW34S-SMD"
+  ],
+  "Q1": [
+   "AO3400A",
+   "Package_TO_SOT_SMD:SOT-23"
+  ],
+  "R18": [
+   "3R0 1206 0.5W",
+   "Resistor_SMD:R_1206_3216Metric"
+  ],
+  "R19": [
+   "100R",
+   "Resistor_SMD:R_0603_1608Metric"
+  ],
+  "R20": [
+   "100k",
+   "Resistor_SMD:R_0603_1608Metric"
+  ],
+  "R21": [
+   "10k",
+   "Resistor_SMD:R_0603_1608Metric"
+  ],
+  "R22": [
+   "10k",
+   "Resistor_SMD:R_0603_1608Metric"
+  ],
+  "R23": [
+   "120k",
+   "Resistor_SMD:R_0603_1608Metric"
+  ],
+  "R24": [
+   "10k",
+   "Resistor_SMD:R_0603_1608Metric"
+  ],
+  "R25": [
+   "10k",
+   "Resistor_SMD:R_0603_1608Metric"
+  ],
+  "R26": [
+   "22k",
+   "Resistor_SMD:R_0603_1608Metric"
+  ],
+  "R27": [
+   "10k",
+   "Resistor_SMD:R_0603_1608Metric"
+  ],
+  "R28": [
+   "470k",
+   "Resistor_SMD:R_0603_1608Metric"
+  ],
+  "R32": [
+   "33R",
+   "Resistor_SMD:R_0603_1608Metric"
+  ],
+  "U4": [
+   "TS3021IYLT",
+   "Package_TO_SOT_SMD:SOT-23-5"
+  ],
+  "U8": [
+   "TLV9062IDR",
+   "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
+  ]
+ },
+ "nets": {
+  "C24|1": "/+3V3",
+  "C25|1": "/+3V3",
+  "J5|7": "/+3V3",
+  "PD1|1": "/+3V3",
+  "R24|1": "/+3V3",
+  "R26|1": "/+3V3",
+  "U4|5": "/+3V3",
+  "U8|8": "/+3V3",
+  "C22|2": "/AC_COUPLED",
+  "R22|2": "/AC_COUPLED",
+  "R22|1": "/AMP_INV",
+  "R23|2": "/AMP_INV",
+  "U8|6": "/AMP_INV",
+  "R28|1": "/CMP_OUT",
+  "R32|1": "/CMP_OUT",
+  "U4|1": "/CMP_OUT",
+  "R26|2": "/CMP_THRESHOLD",
+  "R27|1": "/CMP_THRESHOLD",
+  "R28|2": "/CMP_THRESHOLD",
+  "U4|3": "/CMP_THRESHOLD",
+  "Q1|1": "/MOS_GATE",
+  "R19|1": "/MOS_GATE",
+  "R20|1": "/MOS_GATE",
+  "R23|1": "/OPT_AMP",
+  "U4|4": "/OPT_AMP",
+  "U8|7": "/OPT_AMP",
+  "J5|5": "/OPT_COMP",
+  "R32|2": "/OPT_COMP",
+  "J5|3": "/OPT_LED_EN",
+  "R19|2": "/OPT_LED_EN",
+  "C23|1": "/OPT_VREF",
+  "R24|2": "/OPT_VREF",
+  "R25|1": "/OPT_VREF",
+  "U8|3": "/OPT_VREF",
+  "U8|5": "/OPT_VREF",
+  "C21|1": "/PD_TIA_IN",
+  "PD1|2": "/PD_TIA_IN",
+  "R21|2": "/PD_TIA_IN",
+  "U8|2": "/PD_TIA_IN",
+  "C20|1": "/SYS_SW",
+  "J5|1": "/SYS_SW",
+  "R18|1": "/SYS_SW",
+  "C21|2": "/TIA_OUT",
+  "C22|1": "/TIA_OUT",
+  "R21|1": "/TIA_OUT",
+  "U8|1": "/TIA_OUT",
+  "C20|2": "GND",
+  "C23|2": "GND",
+  "C24|2": "GND",
+  "C25|2": "GND",
+  "J5|2": "GND",
+  "J5|4": "GND",
+  "J5|6": "GND",
+  "Q1|2": "GND",
+  "R20|2": "GND",
+  "R25|2": "GND",
+  "R27|2": "GND",
+  "U4|2": "GND",
+  "U8|4": "GND",
+  "D1|2": "Net-(D1-A)",
+  "R18|2": "Net-(D1-A)",
+  "D1|1": "Net-(D1-K)",
+  "Q1|3": "Net-(D1-K)"
+ }
+}

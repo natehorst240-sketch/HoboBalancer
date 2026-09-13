@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "C:\\Users\\nateh\\hgs-linux\\Balancer\\BalancerREF\\BalancerREF.kicad_sch")
-		(date "2026-09-09T22:58:19")
+		(date "2026-09-13T00:41:37")
 		(tool "Eeschema 10.0.3")
 		(sheet
 			(number "1")
@@ -1195,366 +1195,6 @@
 			)
 		)
 		(comp
-			(ref "C20")
-			(value "100u / 6.3V")
-			(footprint "Capacitor_SMD:C_1210_3225Metric")
-			(fields
-				(field
-					(name "MPN") "100u / 6.3V")
-				(field
-					(name "Footprint") "Capacitor_SMD:C_1210_3225Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "C")
-				(description "Unpolarized capacitor")
-			)
-			(property
-				(name "MPN")
-				(value "100u / 6.3V")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "cap capacitor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "C_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "1cfcf50f-761a-44cc-9d06-1ee84164743b")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "C21")
-			(value "10p C0G")
-			(footprint "Capacitor_SMD:C_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "10p C0G")
-				(field
-					(name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "C")
-				(description "Unpolarized capacitor")
-			)
-			(property
-				(name "MPN")
-				(value "10p C0G")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "cap capacitor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "C_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "b5ffa664-a8f2-4440-986c-1661585a0437")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "C22")
-			(value "10n")
-			(footprint "Capacitor_SMD:C_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "10n")
-				(field
-					(name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "C")
-				(description "Unpolarized capacitor")
-			)
-			(property
-				(name "MPN")
-				(value "10n")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "cap capacitor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "C_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "4e00a4cd-a41b-4e22-8655-53f077420d66")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "C23")
-			(value "100n")
-			(footprint "Capacitor_SMD:C_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "100n")
-				(field
-					(name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "C")
-				(description "Unpolarized capacitor")
-			)
-			(property
-				(name "MPN")
-				(value "100n")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "cap capacitor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "C_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "b89744de-6f10-4e26-85b0-e8697049b189")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "C24")
-			(value "100n")
-			(footprint "Capacitor_SMD:C_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "100n")
-				(field
-					(name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "C")
-				(description "Unpolarized capacitor")
-			)
-			(property
-				(name "MPN")
-				(value "100n")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "cap capacitor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "C_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "ffab59f2-f5f7-4d83-8a6f-f0fffef29b6a")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "C25")
-			(value "100n")
-			(footprint "Capacitor_SMD:C_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "100n")
-				(field
-					(name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "C")
-				(description "Unpolarized capacitor")
-			)
-			(property
-				(name "MPN")
-				(value "100n")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "cap capacitor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "C_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "36886864-b8d7-4556-9077-9de27f586da4")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
 			(ref "C26")
 			(value "470p C0G")
 			(footprint "Capacitor_SMD:C_0805_2012Metric")
@@ -1840,66 +1480,6 @@
 				(tstamps "/")
 			)
 			(tstamps "b73aa7d7-2584-474b-ab11-609bd22a16ae")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "D1")
-			(value "XPEBRD-L1 625nm")
-			(footprint "LED_SMD:LED_Cree-XP")
-			(fields
-				(field
-					(name "MPN") "XPEBRD-L1-0000-00501")
-				(field
-					(name "Footprint") "LED_SMD:LED_Cree-XP")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "LED")
-				(description "Light emitting diode")
-			)
-			(property
-				(name "MPN")
-				(value "XPEBRD-L1-0000-00501")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "LED diode")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "LED* LED_SMD:* LED_THT:*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "8c6a0266-43cd-4bbd-b432-b5fe97cd3c7f")
 			(units
 				(unit
 					(name "A")
@@ -2329,6 +1909,81 @@
 			)
 		)
 		(comp
+			(ref "J5")
+			(value "OPTICAL HEAD 7-WAY")
+			(footprint "Connector_JST:JST_GH_SM07B-GHS-TB_1x07-1MP_P1.25mm_Horizontal")
+			(fields
+				(field
+					(name "MPN") "SM07B-GHS-TB")
+				(field
+					(name "Footprint") "Connector_JST:JST_GH_SM07B-GHS-TB_1x07-1MP_P1.25mm_Horizontal")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Connector_Generic")
+				(part "Conn_01x07")
+				(description "Generic connector, single row, 01x07, script generated (kicad-library-utils/schlib/autogen/connector/)")
+			)
+			(property
+				(name "MPN")
+				(value "SM07B-GHS-TB")
+			)
+			(property
+				(name "Sheetname")
+				(value "")
+			)
+			(property
+				(name "Sheetfile")
+				(value "BalancerREF.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "connector")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Connector*:*_1x??_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "ad009b9b-653a-4946-b70e-f50cc1e6b93e")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "7")
+						)
+					)
+				)
+			)
+		)
+		(comp
 			(ref "L1")
 			(value "1.5uH")
 			(footprint "Inductor_SMD:L_Murata_DFE201610P")
@@ -2391,12 +2046,12 @@
 		(comp
 			(ref "LED1")
 			(value "STATUS GREEN")
-			(footprint "LED_SMD:LED_0805_2012Metric")
+			(footprint "LED_SMD:LED_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "STATUS GREEN")
 				(field
-					(name "Footprint") "LED_SMD:LED_0805_2012Metric")
+					(name "Footprint") "LED_SMD:LED_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -2440,129 +2095,6 @@
 					(pins
 						(pin
 							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "PD1")
-			(value "BPW34S")
-			(footprint "OptoDevice:Osram_BPW34S-SMD")
-			(datasheet "http://www.vishay.com/docs/81521/bpw34.pdf")
-			(fields
-				(field
-					(name "MPN") "BPW34S")
-				(field
-					(name "Footprint") "OptoDevice:Osram_BPW34S-SMD")
-				(field
-					(name "Datasheet") "http://www.vishay.com/docs/81521/bpw34.pdf")
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Sensor_Optical")
-				(part "BPW34")
-				(description "Silicon PIN Photodiode")
-			)
-			(property
-				(name "MPN")
-				(value "BPW34S")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "opto PIN photodiode")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "Osram*DIL2*4.3x4.65mm*P5.08*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "f3c19cb5-c96a-48b7-8638-34cc5c859a37")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "Q1")
-			(value "AO3400A")
-			(footprint "Package_TO_SOT_SMD:SOT-23")
-			(datasheet "http://www.aosmd.com/pdfs/datasheet/AO3400A.pdf")
-			(fields
-				(field
-					(name "MPN") "AO3400A")
-				(field
-					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
-				(field
-					(name "Datasheet") "http://www.aosmd.com/pdfs/datasheet/AO3400A.pdf")
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Transistor_FET")
-				(part "AO3400A")
-				(description "30V Vds, 5.7A Id, N-Channel MOSFET, SOT-23")
-			)
-			(property
-				(name "MPN")
-				(value "AO3400A")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "N-Channel MOSFET")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "SOT?23*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "2b5d0b69-5083-449a-ba8c-d94ce5d32cc0")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "3")
 						)
 						(pin
 							(num "2")
@@ -2700,12 +2232,12 @@
 		(comp
 			(ref "R1")
 			(value "5.1k 1%")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "5.1k 1%")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -2760,12 +2292,12 @@
 		(comp
 			(ref "R2")
 			(value "5.1k 1%")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "5.1k 1%")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -2820,12 +2352,12 @@
 		(comp
 			(ref "R3")
 			(value "4.02k 1%")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "4.02k 1%")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -2880,12 +2412,12 @@
 		(comp
 			(ref "R4")
 			(value "10k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "10k")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -2938,74 +2470,14 @@
 			)
 		)
 		(comp
-			(ref "R5")
-			(value "10k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "10k")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "MPN")
-				(value "10k")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "9444ee58-b7ff-4132-86f8-b9f3be8f7be1")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
 			(ref "R6")
 			(value "22R")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "22R")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -3060,12 +2532,12 @@
 		(comp
 			(ref "R7")
 			(value "22R")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "22R")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -3120,12 +2592,12 @@
 		(comp
 			(ref "R8")
 			(value "10k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "10k")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -3180,12 +2652,12 @@
 		(comp
 			(ref "R9")
 			(value "10k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "10k")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -3240,12 +2712,12 @@
 		(comp
 			(ref "R10")
 			(value "1k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "1k")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -3300,12 +2772,12 @@
 		(comp
 			(ref "R11")
 			(value "100k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "100k")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -3360,12 +2832,12 @@
 		(comp
 			(ref "R12")
 			(value "100k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "100k")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -3540,12 +3012,12 @@
 		(comp
 			(ref "R15")
 			(value "5.6k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "5.6k")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -3600,12 +3072,12 @@
 		(comp
 			(ref "R16")
 			(value "150k 1%")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "150k 1%")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -3660,12 +3132,12 @@
 		(comp
 			(ref "R17")
 			(value "1.6M")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "1.6M")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -3718,674 +3190,14 @@
 			)
 		)
 		(comp
-			(ref "R18")
-			(value "3R0 1206 0.5W")
-			(footprint "Resistor_SMD:R_1206_3216Metric")
-			(fields
-				(field
-					(name "MPN") "3R0 1206 0.5W")
-				(field
-					(name "Footprint") "Resistor_SMD:R_1206_3216Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "MPN")
-				(value "3R0 1206 0.5W")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "e5059a27-86be-41e3-ac50-d00c2e71eda2")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "R19")
-			(value "100R")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "100R")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "MPN")
-				(value "100R")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "30496b2a-5063-43d3-9f95-0741ec28c0f0")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "R20")
-			(value "100k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "100k")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "MPN")
-				(value "100k")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "49d2329c-75cd-4123-9ce1-6b6fd49391f6")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "R21")
-			(value "10k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "10k")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "MPN")
-				(value "10k")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "4983e626-15d5-4f37-9153-4eed765c058f")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "R22")
-			(value "10k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "10k")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "MPN")
-				(value "10k")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "6fb91c39-1a85-42af-9ab8-fc76c88cdcdd")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "R23")
-			(value "120k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "120k")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "MPN")
-				(value "120k")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "3f1f41fd-4883-4f50-87f3-4a00ab9b0bde")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "R24")
-			(value "10k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "10k")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "MPN")
-				(value "10k")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "d3c37a76-f528-476b-b60e-08e3a8286a8b")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "R25")
-			(value "10k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "10k")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "MPN")
-				(value "10k")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "b018b2aa-f2e5-41b8-9e98-3be64276bd19")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "R26")
-			(value "22k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "22k")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "MPN")
-				(value "22k")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "9e531248-c9e1-4e01-b8e0-2ff93d98d3c4")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "R27")
-			(value "10k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "10k")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "MPN")
-				(value "10k")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "b12f412c-b4ac-4f96-bb3c-bd25c750937a")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "R28")
-			(value "470k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
-			(fields
-				(field
-					(name "MPN") "470k")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "MPN")
-				(value "470k")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "1d9edad4-9c8a-48f7-938d-283231406da6")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
 			(ref "R29")
 			(value "1k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "1k")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -4440,12 +3252,12 @@
 		(comp
 			(ref "R30")
 			(value "100k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "100k")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -4500,12 +3312,12 @@
 		(comp
 			(ref "R31")
 			(value "1k")
-			(footprint "Resistor_SMD:R_0805_2012Metric")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
 					(name "MPN") "1k")
 				(field
-					(name "Footprint") "Resistor_SMD:R_0805_2012Metric")
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
 					(name "Datasheet")
 				)
@@ -4711,62 +3523,6 @@
 				(tstamps "/")
 			)
 			(tstamps "f0504d35-823c-4e67-b8d4-f0989e32ff77")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "SW4")
-			(value "RESET")
-			(footprint "Button_Switch_THT:SW_PUSH_6mm")
-			(fields
-				(field
-					(name "MPN") "RESET")
-				(field
-					(name "Footprint") "Button_Switch_THT:SW_PUSH_6mm")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Switch")
-				(part "SW_Push")
-				(description "Push button switch, generic, two pins")
-			)
-			(property
-				(name "MPN")
-				(value "RESET")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "switch normally-open pushbutton push-button")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "c2c0229a-adf0-4061-880c-54cf88f4d5f3")
 			(units
 				(unit
 					(name "A")
@@ -5948,75 +4704,6 @@
 			)
 		)
 		(comp
-			(ref "U4")
-			(value "TS3021IYLT")
-			(footprint "Package_TO_SOT_SMD:SOT-23-5")
-			(datasheet "https://www.st.com/resource/en/datasheet/ts3021.pdf")
-			(fields
-				(field
-					(name "MPN") "TS3021IYLT")
-				(field
-					(name "Footprint") "Package_TO_SOT_SMD:SOT-23-5")
-				(field
-					(name "Datasheet") "https://www.st.com/resource/en/datasheet/ts3021.pdf")
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "BalancerREF")
-				(part "TS3021IYLT")
-				(description "Single 1.8V Low-Power Push-Pull Output Comparator, SOT-23-5")
-			)
-			(property
-				(name "MPN")
-				(value "TS3021IYLT")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "cmp")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "SOT?23*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "e80872e2-0383-433b-b255-5de91300ad28")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "3")
-						)
-						(pin
-							(num "4")
-						)
-						(pin
-							(num "5")
-						)
-						(pin
-							(num "2")
-						)
-						(pin
-							(num "1")
-						)
-					)
-				)
-			)
-		)
-		(comp
 			(ref "U5")
 			(value "MCP73831T-2ACI/OT")
 			(footprint "Package_TO_SOT_SMD:SOT-23-5")
@@ -6245,96 +4932,6 @@
 			)
 		)
 		(comp
-			(ref "U8")
-			(value "TLV9062IDR")
-			(footprint "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm")
-			(datasheet "https://www.ti.com/lit/ds/symlink/tlv9062.pdf")
-			(fields
-				(field
-					(name "MPN") "TLV9062IDR")
-				(field
-					(name "Footprint") "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm")
-				(field
-					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/tlv9062.pdf")
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Amplifier_Operational")
-				(part "TLV9062xD")
-				(description "Dual operational amplifier, 300 uV Offset, SOIC-8")
-			)
-			(property
-				(name "MPN")
-				(value "TLV9062IDR")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "dual op-amp low power")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "SOIC*3.9x4.9mm*P1.27mm*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "f22df3ba-996d-4cfe-a614-3b4ea2803045" "c2583f21-c646-4d11-874b-a98d4dceca2d"
-				"a4a32e6b-6729-4af7-bd15-97e526c7af30"
-			)
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "3")
-						)
-						(pin
-							(num "2")
-						)
-						(pin
-							(num "1")
-						)
-					)
-				)
-				(unit
-					(name "B")
-					(pins
-						(pin
-							(num "5")
-						)
-						(pin
-							(num "6")
-						)
-						(pin
-							(num "7")
-						)
-					)
-				)
-				(unit
-					(name "C")
-					(pins
-						(pin
-							(num "8")
-						)
-						(pin
-							(num "4")
-						)
-					)
-				)
-			)
-		)
-		(comp
 			(ref "U9")
 			(value "SN74LVC1G08DBVR")
 			(footprint "Package_TO_SOT_SMD:SOT-23-5")
@@ -6525,69 +5122,6 @@
 				(pin
 					(num "5")
 					(name "VCC")
-					(type "power_in")
-				)
-			)
-		)
-		(libpart
-			(lib "Amplifier_Operational")
-			(part "TLV9062xD")
-			(description "Dual operational amplifier, 300 uV Offset, SOIC-8")
-			(docs "https://www.ti.com/lit/ds/symlink/tlv9062.pdf")
-			(footprints
-				(fp "SOIC*3.9x4.9mm*P1.27mm*")
-			)
-			(fields
-				(field
-					(name "Reference") "U")
-				(field
-					(name "Value") "TLV9062xD")
-				(field
-					(name "Footprint") "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm")
-				(field
-					(name "Datasheet") "https://www.ti.com/lit/ds/symlink/tlv9062.pdf")
-				(field
-					(name "Description") "Dual operational amplifier, 300 uV Offset, SOIC-8")
-			)
-			(pins
-				(pin
-					(num "1")
-					(name "")
-					(type "output")
-				)
-				(pin
-					(num "2")
-					(name "-")
-					(type "input")
-				)
-				(pin
-					(num "3")
-					(name "+")
-					(type "input")
-				)
-				(pin
-					(num "4")
-					(name "V-")
-					(type "power_in")
-				)
-				(pin
-					(num "5")
-					(name "+")
-					(type "input")
-				)
-				(pin
-					(num "6")
-					(name "-")
-					(type "input")
-				)
-				(pin
-					(num "7")
-					(name "")
-					(type "output")
-				)
-				(pin
-					(num "8")
-					(name "V+")
 					(type "power_in")
 				)
 			)
@@ -6828,54 +5362,6 @@
 				(pin
 					(num "8")
 					(name "VCC")
-					(type "power_in")
-				)
-			)
-		)
-		(libpart
-			(lib "BalancerREF")
-			(part "TS3021IYLT")
-			(description "Single 1.8V Low-Power Push-Pull Output Comparator, SOT-23-5")
-			(docs "https://www.st.com/resource/en/datasheet/ts3021.pdf")
-			(footprints
-				(fp "SOT?23*")
-			)
-			(fields
-				(field
-					(name "Reference") "U")
-				(field
-					(name "Value") "TS3021IYLT")
-				(field
-					(name "Footprint") "Package_TO_SOT_SMD:SOT-23-5")
-				(field
-					(name "Datasheet") "https://www.st.com/resource/en/datasheet/ts3021.pdf")
-				(field
-					(name "Description") "Single 1.8V Low-Power Push-Pull Output Comparator, SOT-23-5")
-			)
-			(pins
-				(pin
-					(num "1")
-					(name "")
-					(type "output")
-				)
-				(pin
-					(num "2")
-					(name "V-")
-					(type "power_in")
-				)
-				(pin
-					(num "3")
-					(name "+")
-					(type "input")
-				)
-				(pin
-					(num "4")
-					(name "-")
-					(type "input")
-				)
-				(pin
-					(num "5")
-					(name "V+")
 					(type "power_in")
 				)
 			)
@@ -7146,6 +5632,65 @@
 				(pin
 					(num "5")
 					(name "Pin_5")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Connector_Generic")
+			(part "Conn_01x07")
+			(description "Generic connector, single row, 01x07, script generated (kicad-library-utils/schlib/autogen/connector/)")
+			(footprints
+				(fp "Connector*:*_1x??_*")
+			)
+			(fields
+				(field
+					(name "Reference") "J")
+				(field
+					(name "Value") "Conn_01x07")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Generic connector, single row, 01x07, script generated (kicad-library-utils/schlib/autogen/connector/)")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "Pin_1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "Pin_2")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "Pin_3")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "Pin_4")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "Pin_5")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "Pin_6")
+					(type "passive")
+				)
+				(pin
+					(num "7")
+					(name "Pin_7")
 					(type "passive")
 				)
 			)
@@ -7843,39 +6388,6 @@
 			)
 		)
 		(libpart
-			(lib "Sensor_Optical")
-			(part "BPW34")
-			(description "Silicon PIN Photodiode")
-			(docs "http://www.vishay.com/docs/81521/bpw34.pdf")
-			(footprints
-				(fp "Osram*DIL2*4.3x4.65mm*P5.08*")
-			)
-			(fields
-				(field
-					(name "Reference") "D")
-				(field
-					(name "Value") "BPW34")
-				(field
-					(name "Footprint") "OptoDevice:Osram_DIL2_4.3x4.65mm_P5.08mm")
-				(field
-					(name "Datasheet") "http://www.vishay.com/docs/81521/bpw34.pdf")
-				(field
-					(name "Description") "Silicon PIN Photodiode")
-			)
-			(pins
-				(pin
-					(num "1")
-					(name "K")
-					(type "passive")
-				)
-				(pin
-					(num "2")
-					(name "A")
-					(type "passive")
-				)
-			)
-		)
-		(libpart
 			(lib "Switch")
 			(part "SW_Push")
 			(description "Push button switch, generic, two pins")
@@ -7939,44 +6451,6 @@
 		)
 		(libpart
 			(lib "Transistor_FET")
-			(part "AO3400A")
-			(description "30V Vds, 5.7A Id, N-Channel MOSFET, SOT-23")
-			(docs "http://www.aosmd.com/pdfs/datasheet/AO3400A.pdf")
-			(footprints
-				(fp "SOT?23*")
-			)
-			(fields
-				(field
-					(name "Reference") "Q")
-				(field
-					(name "Value") "AO3400A")
-				(field
-					(name "Footprint") "Package_TO_SOT_SMD:SOT-23")
-				(field
-					(name "Datasheet") "http://www.aosmd.com/pdfs/datasheet/AO3400A.pdf")
-				(field
-					(name "Description") "30V Vds, 5.7A Id, N-Channel MOSFET, SOT-23")
-			)
-			(pins
-				(pin
-					(num "1")
-					(name "G")
-					(type "input")
-				)
-				(pin
-					(num "2")
-					(name "S")
-					(type "passive")
-				)
-				(pin
-					(num "3")
-					(name "D")
-					(type "passive")
-				)
-			)
-		)
-		(libpart
-			(lib "Transistor_FET")
 			(part "AO3401A")
 			(description "-4.0A Id, -30V Vds, P-Channel MOSFET, SOT-23")
 			(docs "http://www.aosmd.com/pdfs/datasheet/AO3401A.pdf")
@@ -8020,10 +6494,6 @@
 			(uri "${KICAD10_SYMBOL_DIR}/74xGxx.kicad_sym")
 		)
 		(library
-			(logical "Amplifier_Operational")
-			(uri "${KICAD10_SYMBOL_DIR}/Amplifier_Operational.kicad_sym")
-		)
-		(library
 			(logical "BalancerREF")
 			(uri "${KIPRJMOD}/BalancerREF.kicad_sym")
 		)
@@ -8058,10 +6528,6 @@
 		(library
 			(logical "Regulator_Switching")
 			(uri "${KICAD10_SYMBOL_DIR}/Regulator_Switching.kicad_sym")
-		)
-		(library
-			(logical "Sensor_Optical")
-			(uri "${KICAD10_SYMBOL_DIR}/Sensor_Optical.kicad_sym")
 		)
 		(library
 			(logical "Switch")
@@ -8103,16 +6569,6 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "C24")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "C25")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
 				(ref "C27")
 				(pin "1")
 				(pintype "passive")
@@ -8149,9 +6605,9 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "PD1")
-				(pin "1")
-				(pinfunction "K_1")
+				(ref "J5")
+				(pin "7")
+				(pinfunction "Pin_7_7")
 				(pintype "passive")
 			)
 			(node
@@ -8165,27 +6621,12 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "R24")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "R26")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
 				(ref "R30")
 				(pin "1")
 				(pintype "passive")
 			)
 			(node
 				(ref "R4")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "R5")
 				(pin "1")
 				(pintype "passive")
 			)
@@ -8242,12 +6683,6 @@
 				(pintype "power_in")
 			)
 			(node
-				(ref "U4")
-				(pin "5")
-				(pinfunction "V+_5")
-				(pintype "power_in")
-			)
-			(node
 				(ref "U6")
 				(pin "1")
 				(pinfunction "VOUT_1")
@@ -8258,12 +6693,6 @@
 				(pin "10")
 				(pinfunction "FB_10")
 				(pintype "input")
-			)
-			(node
-				(ref "U8")
-				(pin "8")
-				(pinfunction "V+_8")
-				(pintype "power_in")
 			)
 			(node
 				(ref "U9")
@@ -8429,11 +6858,6 @@
 			(name "/BOOT")
 			(class "Default")
 			(node
-				(ref "R5")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
 				(ref "R9")
 				(pin "2")
 				(pintype "passive")
@@ -8538,23 +6962,18 @@
 		)
 		(net
 			(code "14")
-			(name "/OPT_AMP")
+			(name "/OPT_COMP")
 			(class "Default")
 			(node
-				(ref "R23")
-				(pin "1")
+				(ref "J5")
+				(pin "5")
+				(pinfunction "Pin_5_5")
 				(pintype "passive")
 			)
 			(node
-				(ref "U4")
-				(pin "4")
-				(pinfunction "-_4")
+				(ref "U9")
+				(pin "1")
 				(pintype "input")
-			)
-			(node
-				(ref "U8")
-				(pin "7")
-				(pintype "output")
 			)
 		)
 		(net
@@ -8562,8 +6981,9 @@
 			(name "/OPT_LED_EN")
 			(class "Default")
 			(node
-				(ref "R19")
-				(pin "2")
+				(ref "J5")
+				(pin "3")
+				(pinfunction "Pin_3_3")
 				(pintype "passive")
 			)
 			(node
@@ -8603,38 +7023,6 @@
 		)
 		(net
 			(code "17")
-			(name "/OPT_VREF")
-			(class "Default")
-			(node
-				(ref "C23")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "R24")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "R25")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "U8")
-				(pin "3")
-				(pinfunction "+_3")
-				(pintype "input")
-			)
-			(node
-				(ref "U8")
-				(pin "5")
-				(pinfunction "+_5")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "18")
 			(name "/STATUS_LED")
 			(class "Default")
 			(node
@@ -8650,7 +7038,7 @@
 			)
 		)
 		(net
-			(code "19")
+			(code "18")
 			(name "/SUPPLY_SENSE")
 			(class "Default")
 			(node
@@ -8676,14 +7064,9 @@
 			)
 		)
 		(net
-			(code "20")
+			(code "19")
 			(name "/SYS_SW")
 			(class "Default")
-			(node
-				(ref "C20")
-				(pin "1")
-				(pintype "passive")
-			)
 			(node
 				(ref "C4")
 				(pin "1")
@@ -8695,12 +7078,13 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "R11")
+				(ref "J5")
 				(pin "1")
+				(pinfunction "Pin_1_1")
 				(pintype "passive")
 			)
 			(node
-				(ref "R18")
+				(ref "R11")
 				(pin "1")
 				(pintype "passive")
 			)
@@ -8736,7 +7120,7 @@
 			)
 		)
 		(net
-			(code "21")
+			(code "20")
 			(name "/USB_CONN_D+")
 			(class "Default")
 			(node
@@ -8770,7 +7154,7 @@
 			)
 		)
 		(net
-			(code "22")
+			(code "21")
 			(name "/USB_CONN_D-")
 			(class "Default")
 			(node
@@ -8804,7 +7188,7 @@
 			)
 		)
 		(net
-			(code "23")
+			(code "22")
 			(name "/USB_VBUS")
 			(class "Default")
 			(node
@@ -8884,7 +7268,7 @@
 			)
 		)
 		(net
-			(code "24")
+			(code "23")
 			(name "GND")
 			(class "Default")
 			(node
@@ -8944,26 +7328,6 @@
 			)
 			(node
 				(ref "C2")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "C20")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "C23")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "C24")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "C25")
 				(pin "2")
 				(pintype "passive")
 			)
@@ -9077,15 +7441,27 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "LED1")
-				(pin "1")
-				(pinfunction "K_1")
+				(ref "J5")
+				(pin "2")
+				(pinfunction "Pin_2_2")
 				(pintype "passive")
 			)
 			(node
-				(ref "Q1")
-				(pin "2")
-				(pinfunction "S_2")
+				(ref "J5")
+				(pin "4")
+				(pinfunction "Pin_4_4")
+				(pintype "passive")
+			)
+			(node
+				(ref "J5")
+				(pin "6")
+				(pinfunction "Pin_6_6")
+				(pintype "passive")
+			)
+			(node
+				(ref "LED1")
+				(pin "1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
@@ -9115,21 +7491,6 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "R20")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "R25")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "R27")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
 				(ref "R3")
 				(pin "2")
 				(pintype "passive")
@@ -9147,12 +7508,6 @@
 			)
 			(node
 				(ref "SW3")
-				(pin "1")
-				(pinfunction "1_1")
-				(pintype "passive")
-			)
-			(node
-				(ref "SW4")
 				(pin "1")
 				(pinfunction "1_1")
 				(pintype "passive")
@@ -9368,12 +7723,6 @@
 				(pintype "input")
 			)
 			(node
-				(ref "U4")
-				(pin "2")
-				(pinfunction "V-_2")
-				(pintype "power_in")
-			)
-			(node
 				(ref "U5")
 				(pin "2")
 				(pinfunction "V_{SS}_2")
@@ -9404,12 +7753,6 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "U8")
-				(pin "4")
-				(pinfunction "V-_4")
-				(pintype "power_in")
-			)
-			(node
 				(ref "U9")
 				(pin "3")
 				(pinfunction "GND_3")
@@ -9417,47 +7760,7 @@
 			)
 		)
 		(net
-			(code "25")
-			(name "Net-(C21-Pad2)")
-			(class "Default")
-			(node
-				(ref "C21")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "C22")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "R21")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "U8")
-				(pin "1")
-				(pintype "output")
-			)
-		)
-		(net
-			(code "26")
-			(name "Net-(C22-Pad2)")
-			(class "Default")
-			(node
-				(ref "C22")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "R22")
-				(pin "2")
-				(pintype "passive")
-			)
-		)
-		(net
-			(code "27")
+			(code "24")
 			(name "Net-(C26-Pad1)")
 			(class "Default")
 			(node
@@ -9477,40 +7780,7 @@
 			)
 		)
 		(net
-			(code "28")
-			(name "Net-(D1-A)")
-			(class "Default")
-			(node
-				(ref "D1")
-				(pin "2")
-				(pinfunction "A_2")
-				(pintype "passive")
-			)
-			(node
-				(ref "R18")
-				(pin "2")
-				(pintype "passive")
-			)
-		)
-		(net
-			(code "29")
-			(name "Net-(D1-K)")
-			(class "Default")
-			(node
-				(ref "D1")
-				(pin "1")
-				(pinfunction "K_1")
-				(pintype "passive")
-			)
-			(node
-				(ref "Q1")
-				(pin "3")
-				(pinfunction "D_3")
-				(pintype "passive")
-			)
-		)
-		(net
-			(code "30")
+			(code "25")
 			(name "Net-(D2-K)")
 			(class "Default")
 			(node
@@ -9538,7 +7808,7 @@
 			)
 		)
 		(net
-			(code "31")
+			(code "26")
 			(name "Net-(J1-CC1)")
 			(class "Default")
 			(node
@@ -9554,7 +7824,7 @@
 			)
 		)
 		(net
-			(code "32")
+			(code "27")
 			(name "Net-(J1-CC2)")
 			(class "Default")
 			(node
@@ -9570,7 +7840,7 @@
 			)
 		)
 		(net
-			(code "33")
+			(code "28")
 			(name "Net-(J2-Pin_1)")
 			(class "Default")
 			(node
@@ -9587,7 +7857,7 @@
 			)
 		)
 		(net
-			(code "34")
+			(code "29")
 			(name "Net-(J3-Pin_1)")
 			(class "Default")
 			(node
@@ -9609,7 +7879,7 @@
 			)
 		)
 		(net
-			(code "35")
+			(code "30")
 			(name "Net-(LED1-A)")
 			(class "Default")
 			(node
@@ -9625,55 +7895,7 @@
 			)
 		)
 		(net
-			(code "36")
-			(name "Net-(PD1-A)")
-			(class "Default")
-			(node
-				(ref "C21")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "PD1")
-				(pin "2")
-				(pinfunction "A_2")
-				(pintype "passive")
-			)
-			(node
-				(ref "R21")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "U8")
-				(pin "2")
-				(pinfunction "-_2")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "37")
-			(name "Net-(Q1-G)")
-			(class "Default")
-			(node
-				(ref "Q1")
-				(pin "1")
-				(pinfunction "G_1")
-				(pintype "input")
-			)
-			(node
-				(ref "R19")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "R20")
-				(pin "1")
-				(pintype "passive")
-			)
-		)
-		(net
-			(code "38")
+			(code "31")
 			(name "Net-(R13-Pad1)")
 			(class "Default")
 			(node
@@ -9688,27 +7910,7 @@
 			)
 		)
 		(net
-			(code "39")
-			(name "Net-(R28-Pad1)")
-			(class "Default")
-			(node
-				(ref "R28")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "U4")
-				(pin "1")
-				(pintype "output")
-			)
-			(node
-				(ref "U9")
-				(pin "1")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "40")
+			(code "32")
 			(name "Net-(U1-EN)")
 			(class "Default")
 			(node
@@ -9719,12 +7921,6 @@
 			(node
 				(ref "R4")
 				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "SW4")
-				(pin "2")
-				(pinfunction "2_2")
 				(pintype "passive")
 			)
 			(node
@@ -9741,7 +7937,7 @@
 			)
 		)
 		(net
-			(code "41")
+			(code "33")
 			(name "Net-(U1-USB_D+)")
 			(class "Default")
 			(node
@@ -9757,7 +7953,7 @@
 			)
 		)
 		(net
-			(code "42")
+			(code "34")
 			(name "Net-(U1-USB_D-)")
 			(class "Default")
 			(node
@@ -9773,7 +7969,7 @@
 			)
 		)
 		(net
-			(code "43")
+			(code "35")
 			(name "Net-(U3-PEAK_DET)")
 			(class "Default")
 			(node
@@ -9794,7 +7990,7 @@
 			)
 		)
 		(net
-			(code "44")
+			(code "36")
 			(name "Net-(U3-RC_TIMING)")
 			(class "Default")
 			(node
@@ -9815,7 +8011,7 @@
 			)
 		)
 		(net
-			(code "45")
+			(code "37")
 			(name "Net-(U3-VR_IN)")
 			(class "Default")
 			(node
@@ -9831,33 +8027,7 @@
 			)
 		)
 		(net
-			(code "46")
-			(name "Net-(U4-+)")
-			(class "Default")
-			(node
-				(ref "R26")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "R27")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "R28")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "U4")
-				(pin "3")
-				(pinfunction "+_3")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "47")
+			(code "38")
 			(name "Net-(U5-PROG)")
 			(class "Default")
 			(node
@@ -9873,7 +8043,7 @@
 			)
 		)
 		(net
-			(code "48")
+			(code "39")
 			(name "Net-(U6-L1)")
 			(class "Default")
 			(node
@@ -9890,7 +8060,7 @@
 			)
 		)
 		(net
-			(code "49")
+			(code "40")
 			(name "Net-(U6-L2)")
 			(class "Default")
 			(node
@@ -9907,28 +8077,7 @@
 			)
 		)
 		(net
-			(code "50")
-			(name "Net-(U8B--)")
-			(class "Default")
-			(node
-				(ref "R22")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "R23")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "U8")
-				(pin "6")
-				(pinfunction "-_6")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "51")
+			(code "41")
 			(name "Net-(U10-B)")
 			(class "Default")
 			(node
@@ -9944,7 +8093,7 @@
 			)
 		)
 		(net
-			(code "52")
+			(code "42")
 			(name "Net-(U10-Cext)")
 			(class "Default")
 			(node
@@ -9960,7 +8109,7 @@
 			)
 		)
 		(net
-			(code "53")
+			(code "43")
 			(name "Net-(U10-RCext)")
 			(class "Default")
 			(node
@@ -9981,7 +8130,7 @@
 			)
 		)
 		(net
-			(code "54")
+			(code "44")
 			(name "unconnected-(J1-SBU1-PadA8)")
 			(class "Default")
 			(node
@@ -9992,7 +8141,7 @@
 			)
 		)
 		(net
-			(code "55")
+			(code "45")
 			(name "unconnected-(J1-SBU2-PadB8)")
 			(class "Default")
 			(node
@@ -10003,7 +8152,7 @@
 			)
 		)
 		(net
-			(code "56")
+			(code "46")
 			(name "unconnected-(U1-IO3-Pad7)")
 			(class "Default")
 			(node
@@ -10014,7 +8163,7 @@
 			)
 		)
 		(net
-			(code "57")
+			(code "47")
 			(name "unconnected-(U1-IO4-Pad8)")
 			(class "Default")
 			(node
@@ -10025,7 +8174,7 @@
 			)
 		)
 		(net
-			(code "58")
+			(code "48")
 			(name "unconnected-(U1-IO5-Pad9)")
 			(class "Default")
 			(node
@@ -10036,7 +8185,7 @@
 			)
 		)
 		(net
-			(code "59")
+			(code "49")
 			(name "unconnected-(U1-IO18-Pad22)")
 			(class "Default")
 			(node
@@ -10047,7 +8196,7 @@
 			)
 		)
 		(net
-			(code "60")
+			(code "50")
 			(name "unconnected-(U1-IO21-Pad25)")
 			(class "Default")
 			(node
@@ -10058,7 +8207,7 @@
 			)
 		)
 		(net
-			(code "61")
+			(code "51")
 			(name "unconnected-(U1-IO26-Pad26)")
 			(class "Default")
 			(node
@@ -10069,7 +8218,7 @@
 			)
 		)
 		(net
-			(code "62")
+			(code "52")
 			(name "unconnected-(U1-IO33-Pad28)")
 			(class "Default")
 			(node
@@ -10080,7 +8229,7 @@
 			)
 		)
 		(net
-			(code "63")
+			(code "53")
 			(name "unconnected-(U1-IO34-Pad29)")
 			(class "Default")
 			(node
@@ -10091,7 +8240,7 @@
 			)
 		)
 		(net
-			(code "64")
+			(code "54")
 			(name "unconnected-(U1-IO35-Pad31)")
 			(class "Default")
 			(node
@@ -10102,7 +8251,7 @@
 			)
 		)
 		(net
-			(code "65")
+			(code "55")
 			(name "unconnected-(U1-IO36-Pad32)")
 			(class "Default")
 			(node
@@ -10113,7 +8262,7 @@
 			)
 		)
 		(net
-			(code "66")
+			(code "56")
 			(name "unconnected-(U1-IO37-Pad33)")
 			(class "Default")
 			(node
@@ -10124,7 +8273,7 @@
 			)
 		)
 		(net
-			(code "67")
+			(code "57")
 			(name "unconnected-(U1-IO38-Pad34)")
 			(class "Default")
 			(node
@@ -10135,7 +8284,7 @@
 			)
 		)
 		(net
-			(code "68")
+			(code "58")
 			(name "unconnected-(U1-IO39-Pad35)")
 			(class "Default")
 			(node
@@ -10146,7 +8295,7 @@
 			)
 		)
 		(net
-			(code "69")
+			(code "59")
 			(name "unconnected-(U1-IO40-Pad36)")
 			(class "Default")
 			(node
@@ -10157,7 +8306,7 @@
 			)
 		)
 		(net
-			(code "70")
+			(code "60")
 			(name "unconnected-(U1-IO41-Pad37)")
 			(class "Default")
 			(node
@@ -10168,7 +8317,7 @@
 			)
 		)
 		(net
-			(code "71")
+			(code "61")
 			(name "unconnected-(U1-IO42-Pad38)")
 			(class "Default")
 			(node
@@ -10179,7 +8328,7 @@
 			)
 		)
 		(net
-			(code "72")
+			(code "62")
 			(name "unconnected-(U1-IO45-Pad41)")
 			(class "Default")
 			(node
@@ -10190,7 +8339,7 @@
 			)
 		)
 		(net
-			(code "73")
+			(code "63")
 			(name "unconnected-(U1-IO46-Pad44)")
 			(class "Default")
 			(node
@@ -10201,7 +8350,7 @@
 			)
 		)
 		(net
-			(code "74")
+			(code "64")
 			(name "unconnected-(U1-IO47-Pad27)")
 			(class "Default")
 			(node
@@ -10212,7 +8361,7 @@
 			)
 		)
 		(net
-			(code "75")
+			(code "65")
 			(name "unconnected-(U1-IO48-Pad30)")
 			(class "Default")
 			(node
@@ -10223,7 +8372,7 @@
 			)
 		)
 		(net
-			(code "76")
+			(code "66")
 			(name "unconnected-(U1-RXD0-Pad40)")
 			(class "Default")
 			(node
@@ -10234,7 +8383,7 @@
 			)
 		)
 		(net
-			(code "77")
+			(code "67")
 			(name "unconnected-(U1-TXD0-Pad39)")
 			(class "Default")
 			(node
@@ -10245,7 +8394,7 @@
 			)
 		)
 		(net
-			(code "78")
+			(code "68")
 			(name "unconnected-(U2-INT2-Pad9)")
 			(class "Default")
 			(node
@@ -10256,7 +8405,7 @@
 			)
 		)
 		(net
-			(code "79")
+			(code "69")
 			(name "unconnected-(U2-RES-Pad10)")
 			(class "Default")
 			(node
@@ -10267,7 +8416,7 @@
 			)
 		)
 		(net
-			(code "80")
+			(code "70")
 			(name "unconnected-(U2-RES-Pad11)")
 			(class "Default")
 			(node
@@ -10278,7 +8427,7 @@
 			)
 		)
 		(net
-			(code "81")
+			(code "71")
 			(name "unconnected-(U3-GATED_OUT-Pad10)")
 			(class "Default")
 			(node
@@ -10289,7 +8438,7 @@
 			)
 		)
 		(net
-			(code "82")
+			(code "72")
 			(name "unconnected-(U3-MODE-Pad5)")
 			(class "Default")
 			(node
@@ -10300,7 +8449,7 @@
 			)
 		)
 		(net
-			(code "83")
+			(code "73")
 			(name "unconnected-(U3-NC-Pad1)")
 			(class "Default")
 			(node
@@ -10311,7 +8460,7 @@
 			)
 		)
 		(net
-			(code "84")
+			(code "74")
 			(name "unconnected-(U3-NC-Pad4)")
 			(class "Default")
 			(node
@@ -10322,7 +8471,7 @@
 			)
 		)
 		(net
-			(code "85")
+			(code "75")
 			(name "unconnected-(U3-NC-Pad6)")
 			(class "Default")
 			(node
@@ -10333,7 +8482,7 @@
 			)
 		)
 		(net
-			(code "86")
+			(code "76")
 			(name "unconnected-(U3-NC-Pad13)")
 			(class "Default")
 			(node
@@ -10344,7 +8493,7 @@
 			)
 		)
 		(net
-			(code "87")
+			(code "77")
 			(name "unconnected-(U5-STAT-Pad1)")
 			(class "Default")
 			(node
@@ -10355,7 +8504,7 @@
 			)
 		)
 		(net
-			(code "88")
+			(code "78")
 			(name "unconnected-(U7-IO3-Pad4)")
 			(class "Default")
 			(node
@@ -10366,7 +8515,7 @@
 			)
 		)
 		(net
-			(code "89")
+			(code "79")
 			(name "unconnected-(U7-IO4-Pad6)")
 			(class "Default")
 			(node

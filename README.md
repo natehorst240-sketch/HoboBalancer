@@ -17,8 +17,12 @@ KiCad 9 will not open them.
 | Directory | Board | Revision | State |
 |---|---|---|---|
 | `.` (root) | `Balancer` — STM32 balancer | Rev A | Schematic only; `Balancer.kicad_pcb` is an empty stub |
-| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev C** | Schematic complete, ERC clean; PCB is placement-in-progress |
-| `BalancerREF_OptHead/` | Optical tach head | Rev A | Schematic only; no PCB yet |
+| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev C** | 50 × 50 mm, 4 layer, placed, unrouted |
+| `BalancerREF_OptHead/` | Optical tach head | Rev A | 25 × 50 mm, 2 layer, placed, unrouted |
+
+Both boards are **placed but not routed**. Placement is machine-generated and then
+meant to be refined by hand — decoupling is paired to its IC and connectors are
+edge-anchored and rotated outward, but nothing is a substitute for a look in pcbnew.
 
 ### BalancerREF (HOBOVibe)
 
@@ -28,6 +32,22 @@ front end, MCP73831 charger with USB/battery power sharing, TPS63031 buck-boost,
 
 Two measurement profiles: **MR-VERT** uses an external isolated two-wire VR pickup;
 **TR-VERT** uses the optical tach against retroreflective tape.
+
+50 × 50 mm, four layers, components on both faces: ICs, connectors, switches and test
+points on the front, passives on the back so each decoupling cap sits under its IC's
+power pins. M2.5 mounting holes at the four corners. U1's antenna deliberately
+overhangs the top edge, which moves its keepout off the board entirely — and is
+required anyway, because the aluminium bracket must not sit behind a PCB antenna.
+
+The puck mounts **vertically, ESP32 to the left and USB-C to the right**. `UP` and
+`LEFT` markers on the front silkscreen record that; with the board vertical the
+accelerometer's vertical axis is in-plane (stiff) and the flexible out-of-plane axis
+carries lateral instead. Which sensor channel that is still needs recording from
+DS12569's orientation figure — firmware can also identify it at runtime, since the
+vertical axis reads a static 1 g when the puck is mounted upright.
+
+Three switches: SW1 power slide, SW2 acquire, SW3 boot. There is no reset button —
+SW1 feeds U6's VIN and EN, so the power slide already power-cycles the MCU.
 
 See [`BalancerREF/README.md`](BalancerREF/README.md) for the circuit description and
 [`BalancerREF/DATASHEET-VERIFICATION.md`](BalancerREF/DATASHEET-VERIFICATION.md) for
@@ -51,6 +71,21 @@ between the two digital lines: emitter-pulse crosstalk onto `OPT_COMP` arrives i
 the synchronous gating window by definition, so the detection logic cannot reject it and
 it has to be stopped at the connector.
 
+25 × 50 mm, two layers, **every part on the front** so B.Cu is an uninterrupted ground
+pour. That is worth more than a clean optical face: the transimpedance summing node is
+the highest-impedance point in the design and sits beside a wire switching 500 mA at
+20 kHz. The cost is that the baffle and the red acrylic window have to clear the
+electronics.
+
+D1 sits centred on the optical axis with PD1 18 mm directly below it. **That spacing
+and the lens keepout radius are estimates** — both are constants at the top of
+`scripts/build_pcb.py` and should be set from the real Ledil TINA holder before anyone
+commits to them. The spacing is the one that affects performance: it sets baffle depth
+and the parallax back to the tape at the 18–24 in working range.
+
+The B.Cu pour is written **unfilled** (KiCad's zone filler cannot be driven from
+standalone pcbnew Python). KiCad fills it on open, or `Edit → Fill All Zones`.
+
 ## Verification
 
 Both boards carry a connectivity checker that compares an exported netlist against
@@ -58,9 +93,22 @@ circuit specifications written by hand — exact net membership, so an unintende
 bypassed series part or a reversed two-terminal part fails rather than passing quietly.
 
 ```bash
+# main board
+cd BalancerREF
+kicad-cli sch export netlist --format kicadsexpr -o review/BalancerREF.net BalancerREF.kicad_sch
+python scripts/verify_netlist.py     # PASS: 43 exact circuit nets, 280 pin endpoints
+
+# optical head
+cd ../BalancerREF_OptHead
 kicad-cli sch export netlist --format kicadsexpr -o review/OptHead.net BalancerREF_OptHead.kicad_sch
-python scripts/verify_head.py
+python scripts/verify_head.py        # PASS: 16 exact circuit nets, 63 pin endpoints
 ```
+
+Each board has its own spec. The main board's covers everything except the optical
+chain and asserts that *every* pin in the netlist belongs to some named net, so a
+wrong connector pinout or a missed part fails rather than passing quietly. Run these
+against a freshly exported netlist — a stale `.net` will report a green that means
+nothing.
 
 Generator scripts under `scripts/` are guarded and refuse to run without
 `--overwrite-hand-layout`: both sheets were laid out by hand after generation, and the

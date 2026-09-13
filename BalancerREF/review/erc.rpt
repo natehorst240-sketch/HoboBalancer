@@ -1,4 +1,4 @@
-ERC report (2026-09-11T11:13:37, Encoding UTF8)
+ERC report (2026-09-12T08:47:40, Encoding UTF8)
 Report includes: Errors, Warnings, Exclusions
 
 ***** Sheet /
@@ -19,9 +19,15 @@ Report includes: Errors, Warnings, Exclusions
     @(184.15 mm, 280.67 mm): Vertical Wire, length 6.35 mm
 [unconnected_wire_endpoint]: Unconnected wire endpoint
     ; warning
+    @(363.22 mm, 271.78 mm): Vertical Wire, length 2.54 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(363.22 mm, 284.48 mm): Vertical Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
     @(477.52 mm, 331.47 mm): Vertical Wire, length 2.54 mm
 
- ** ERC messages: 6  Errors 0  Warnings 6
+ ** ERC messages: 8  Errors 0  Warnings 8
 
  ** Ignored checks:
     - Global label only appears once in the schematic

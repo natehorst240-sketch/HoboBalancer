@@ -49,16 +49,6 @@
     "value": "POWER",
     "footprint": "Button_Switch_THT:SW_Slide-03_Wuerth-WS-SLTV_10x2.5x6.4_P2.54mm"
   },
-  "C20": {
-    "lib_id": "Device:C",
-    "value": "100u / 6.3V",
-    "footprint": "Capacitor_SMD:C_1210_3225Metric"
-  },
-  "R28": {
-    "lib_id": "Device:R",
-    "value": "470k",
-    "footprint": "Resistor_SMD:R_0603_1608Metric"
-  },
   "TP4": {
     "lib_id": "Connector:TestPoint",
     "value": "TP_USB_VBUS",
@@ -89,37 +79,12 @@
     "value": "1n C0G",
     "footprint": "Capacitor_SMD:C_0805_2012Metric"
   },
-  "Q1": {
-    "lib_id": "Transistor_FET:AO3400A",
-    "value": "AO3400A",
-    "footprint": "Package_TO_SOT_SMD:SOT-23"
-  },
-  "#PWR029": {
-    "lib_id": "power:GND",
-    "value": "GND",
-    "footprint": ""
-  },
   "C26": {
     "lib_id": "Device:C",
     "value": "470p C0G",
     "footprint": "Capacitor_SMD:C_0805_2012Metric"
   },
-  "R19": {
-    "lib_id": "Device:R",
-    "value": "100R",
-    "footprint": "Resistor_SMD:R_0603_1608Metric"
-  },
   "C9": {
-    "lib_id": "Device:C",
-    "value": "100n",
-    "footprint": "Capacitor_SMD:C_0805_2012Metric"
-  },
-  "#PWR030": {
-    "lib_id": "power:GND",
-    "value": "GND",
-    "footprint": ""
-  },
-  "C25": {
     "lib_id": "Device:C",
     "value": "100n",
     "footprint": "Capacitor_SMD:C_0805_2012Metric"
@@ -144,35 +109,15 @@
     "value": "GND",
     "footprint": ""
   },
-  "R23": {
-    "lib_id": "Device:R",
-    "value": "120k",
-    "footprint": "Resistor_SMD:R_0603_1608Metric"
-  },
   "R1": {
     "lib_id": "Device:R",
     "value": "5.1k 1%",
     "footprint": "Resistor_SMD:R_0603_1608Metric"
   },
-  "#PWR032": {
-    "lib_id": "power:GND",
-    "value": "GND",
-    "footprint": ""
-  },
   "#PWR037": {
     "lib_id": "power:GND",
     "value": "GND",
     "footprint": ""
-  },
-  "R21": {
-    "lib_id": "Device:R",
-    "value": "10k",
-    "footprint": "Resistor_SMD:R_0603_1608Metric"
-  },
-  "R20": {
-    "lib_id": "Device:R",
-    "value": "100k",
-    "footprint": "Resistor_SMD:R_0603_1608Metric"
   },
   "TP3": {
     "lib_id": "Connector:TestPoint",
@@ -193,11 +138,6 @@
     "lib_id": "power:GND",
     "value": "GND",
     "footprint": ""
-  },
-  "C22": {
-    "lib_id": "Device:C",
-    "value": "10n",
-    "footprint": "Capacitor_SMD:C_0805_2012Metric"
   },
   "#PWR039": {
     "lib_id": "power:GND",
@@ -239,11 +179,6 @@
     "value": "100n / VDDIO",
     "footprint": "Capacitor_SMD:C_0805_2012Metric"
   },
-  "#PWR028": {
-    "lib_id": "power:GND",
-    "value": "GND",
-    "footprint": ""
-  },
   "C29": {
     "lib_id": "Device:C",
     "value": "100n",
@@ -268,11 +203,6 @@
     "lib_id": "Regulator_Switching:TPS63031DSK",
     "value": "TPS63031DSKR",
     "footprint": "Package_SON:WSON-10-1EP_2.5x2.5mm_P0.5mm_EP1.2x2mm"
-  },
-  "R22": {
-    "lib_id": "Device:R",
-    "value": "10k",
-    "footprint": "Resistor_SMD:R_0603_1608Metric"
   },
   "SW2": {
     "lib_id": "Switch:SW_Push",
@@ -309,11 +239,6 @@
     "value": "GND",
     "footprint": ""
   },
-  "#PWR027": {
-    "lib_id": "power:GND",
-    "value": "GND",
-    "footprint": ""
-  },
   "#PWR017": {
     "lib_id": "power:GND",
     "value": "GND",
@@ -339,11 +264,6 @@
     "value": "GND",
     "footprint": ""
   },
-  "D1": {
-    "lib_id": "Device:LED",
-    "value": "XPEBRD-L1 625nm",
-    "footprint": "LED_SMD:LED_Cree-XP"
-  },
   "#PWR007": {
     "lib_id": "power:GND",
     "value": "GND",
@@ -359,11 +279,6 @@
     "value": "100n",
     "footprint": "Capacitor_SMD:C_0805_2012Metric"
   },
-  "R5": {
-    "lib_id": "Device:R",
-    "value": "10k",
-    "footprint": "Resistor_SMD:R_0603_1608Metric"
-  },
   "C12": {
     "lib_id": "Device:C",
     "value": "100n",
@@ -375,11 +290,6 @@
     "footprint": "Package_TO_SOT_SMD:SOT-23"
   },
   "#PWR018": {
-    "lib_id": "power:GND",
-    "value": "GND",
-    "footprint": ""
-  },
-  "#PWR025": {
     "lib_id": "power:GND",
     "value": "GND",
     "footprint": ""
@@ -399,11 +309,6 @@
     "value": "10k 1206 pulse",
     "footprint": "Resistor_SMD:R_1206_3216Metric"
   },
-  "R26": {
-    "lib_id": "Device:R",
-    "value": "22k",
-    "footprint": "Resistor_SMD:R_0603_1608Metric"
-  },
   "#PWR038": {
     "lib_id": "power:GND",
     "value": "GND",
@@ -413,11 +318,6 @@
     "lib_id": "Device:L",
     "value": "1.5uH",
     "footprint": "Inductor_SMD:L_Murata_DFE201610P"
-  },
-  "U8": {
-    "lib_id": "Amplifier_Operational:TLV9062xD",
-    "value": "TLV9062IDR",
-    "footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
   },
   "R14": {
     "lib_id": "Device:R",
@@ -444,16 +344,6 @@
     "value": "10u 10V",
     "footprint": "Capacitor_SMD:C_0805_2012Metric"
   },
-  "R25": {
-    "lib_id": "Device:R",
-    "value": "10k",
-    "footprint": "Resistor_SMD:R_0603_1608Metric"
-  },
-  "R27": {
-    "lib_id": "Device:R",
-    "value": "10k",
-    "footprint": "Resistor_SMD:R_0603_1608Metric"
-  },
   "#PWR009": {
     "lib_id": "power:GND",
     "value": "GND",
@@ -474,11 +364,6 @@
     "value": "TP_USB_D+",
     "footprint": "TestPoint:TestPoint_Pad_D1.0mm"
   },
-  "C21": {
-    "lib_id": "Device:C",
-    "value": "10p C0G",
-    "footprint": "Capacitor_SMD:C_0805_2012Metric"
-  },
   "C30": {
     "lib_id": "Device:C",
     "value": "10u 10V",
@@ -488,11 +373,6 @@
     "lib_id": "Device:R",
     "value": "5.1k 1%",
     "footprint": "Resistor_SMD:R_0603_1608Metric"
-  },
-  "C23": {
-    "lib_id": "Device:C",
-    "value": "100n",
-    "footprint": "Capacitor_SMD:C_0805_2012Metric"
   },
   "C17": {
     "lib_id": "Device:C",
@@ -524,11 +404,6 @@
     "value": "GND",
     "footprint": ""
   },
-  "SW4": {
-    "lib_id": "Switch:SW_Push",
-    "value": "RESET",
-    "footprint": "Button_Switch_THT:SW_PUSH_6mm"
-  },
   "R7": {
     "lib_id": "Device:R",
     "value": "22R",
@@ -549,11 +424,6 @@
     "value": "LM1815MX/NOPB",
     "footprint": "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm"
   },
-  "#PWR033": {
-    "lib_id": "power:GND",
-    "value": "GND",
-    "footprint": ""
-  },
   "R16": {
     "lib_id": "Device:R",
     "value": "150k 1%",
@@ -569,11 +439,6 @@
     "value": "22u 10V",
     "footprint": "Capacitor_SMD:C_0805_2012Metric"
   },
-  "#PWR031": {
-    "lib_id": "power:GND",
-    "value": "GND",
-    "footprint": ""
-  },
   "C7": {
     "lib_id": "Device:C",
     "value": "22u 10V",
@@ -587,11 +452,6 @@
   "R30": {
     "lib_id": "Device:R",
     "value": "100k",
-    "footprint": "Resistor_SMD:R_0603_1608Metric"
-  },
-  "R24": {
-    "lib_id": "Device:R",
-    "value": "10k",
     "footprint": "Resistor_SMD:R_0603_1608Metric"
   },
   "TP6": {
@@ -649,20 +509,10 @@
     "value": "10k",
     "footprint": "Resistor_SMD:R_0603_1608Metric"
   },
-  "R18": {
-    "lib_id": "Device:R",
-    "value": "3R0 1206 0.5W",
-    "footprint": "Resistor_SMD:R_1206_3216Metric"
-  },
   "#FLG04": {
     "lib_id": "power:PWR_FLAG",
     "value": "PWR_FLAG",
     "footprint": ""
-  },
-  "U4": {
-    "lib_id": "BalancerREF:TS3021IYLT",
-    "value": "TS3021IYLT",
-    "footprint": "Package_TO_SOT_SMD:SOT-23-5"
   },
   "#PWR035": {
     "lib_id": "power:GND",
@@ -683,11 +533,6 @@
     "lib_id": "Connector:TestPoint",
     "value": "TP_BOOT",
     "footprint": "TestPoint:TestPoint_Pad_D1.0mm"
-  },
-  "PD1": {
-    "lib_id": "Sensor_Optical:BPW34",
-    "value": "BPW34S",
-    "footprint": "OptoDevice:Osram_BPW34S-SMD"
   },
   "D2": {
     "lib_id": "Device:D_Schottky",
@@ -714,19 +559,29 @@
     "value": "TP_GND",
     "footprint": "TestPoint:TestPoint_Pad_D1.0mm"
   },
-  "#PWR026": {
-    "lib_id": "power:GND",
-    "value": "GND",
-    "footprint": ""
-  },
   "#PWR012": {
     "lib_id": "power:GND",
     "value": "GND",
     "footprint": ""
   },
-  "C24": {
-    "lib_id": "Device:C",
-    "value": "100n",
-    "footprint": "Capacitor_SMD:C_0805_2012Metric"
+  "J5": {
+    "lib_id": "Connector_Generic:Conn_01x07",
+    "value": "OPTICAL HEAD 7-WAY",
+    "footprint": "Connector_JST:JST_GH_SM07B-GHS-TB_1x07-1MP_P1.25mm_Horizontal"
+  },
+  "#PWR701": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "#PWR702": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "#PWR703": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
   }
 }
