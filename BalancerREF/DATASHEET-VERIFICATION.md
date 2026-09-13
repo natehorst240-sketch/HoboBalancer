@@ -96,6 +96,33 @@ Expected states: USB absent/OFF = puck off; USB absent/ON = battery powers puck;
 
 Generic 1x05 2.54 mm header; no manufacturer pinout to verify. Assignment follows the common u-blox breakout order VCC, GND, TX, RX, PPS. GPIO1/GPIO2 are ordinary IOs on the ESP32-S3-MINI-1 (pads 5/6) routed to UART1 through the GPIO matrix; GPIO13 (pad 17) is the PPS input. GPIO3/45/46 strapping pins remain unloaded. Module must be 3.3 V logic and is supplied from the 3.3 V rail (about 30 mA active).
 
+## Rev D parts and changes (2026-09-13)
+
+- **R33/R34 1M, C31 100 nF - BAT sense divider**: `BAT/2` onto U1 pad 8 = GPIO4, which
+  is ADC1_CH3 on the ESP32-S3. ADC1 was chosen over ADC2 because ADC2 is shared with the
+  radio; GPIO3 was avoided because it is a strapping pin. U1 pad 8's no-connect was
+  removed and the pin dropped from `review/unused-pins.json`.
+  SUPPLY_SENSE (100k/100k on SYS_SW) alone cannot separate USB from battery. SYS is fed
+  from USB through D2 or from the cell through Q3. USB at the low end of spec (4.75 V)
+  minus D2's forward drop (PMEG4010CEH, ~0.45 V at a few hundred mA) gives ~4.30 V,
+  against a full cell at 4.20 V - inside 1 percent divider tolerance plus the
+  ESP32-S3's ADC error. Comparing SYS_SW against BAT is a differential test and
+  separates them: `SYS_SW > BAT + ~0.3 V` means USB present.
+  1M/1M, not 100k/100k: this divider sits directly on the cell and drains it whenever
+  SW1 is off. 1M/1M is ~2.1 uA (decades against 500 mAh); 100k/100k would be ~21 uA
+  (under three years). The consequence is a 500k source impedance at the ADC - C31
+  supplies the sampling charge, and firmware must use a long sample time and
+  multisample or the reading will sit low.
+- **SW4 (RESET) deleted**: SW1 feeds U6 (TPS63031) pins 5/6/7/8, i.e. VIN and EN, so the
+  power slide removes power from the regulator and therefore the MCU. A dedicated EN
+  button was redundant. `Net-(U1-EN)` keeps R4 (10k pull-up), C10 (1 uF) and TP13.
+- **R5 deleted**: R5 and R9 were both 10k from `/BOOT` to +3V3 - two pull-ups in
+  parallel, 5k effective. The generator built the BOOT net in two blocks and each added
+  its own. R9 was kept because it sits beside SW3. BOOT is now U1.4, R9.2, SW3.2, TP14.1.
+- **Optical chain moved** to `BalancerREF_OptHead`: D1, PD1, Q1, U4, U8, R18-R28, C20-C25.
+  Their pin verifications above remain valid and are now checked by that project's
+  `scripts/verify_head.py`. What crosses is J5, a 7-way cable.
+
 ## Rev C parts (2026-09-09)
 
 - **U2 ST IIS3DWBTR**, DS12569 Rev 4 Table 1 (page 3): 1 SDO/SA0, 2 RES, 3 RES (connect to VDD_IO or GND; wired to GND), 4 INT1, 5 VDD_IO, 6 GND, 7 GND, 8 VDD, 9 INT2, 10 RES, 11 RES (connect to VDD_IO or leave unconnected; left open and soldered), 12 CS, 13 SPC/SCL, 14 SDI/SDO/SDA. Only SPI supports full-rate operation; I2C is single-axis only and not used. 100 nF on VDD and VDD_IO. KiCad footprint Package_LGA:LGA-14_3x2.5mm_P0.5mm_LayoutBorder3x4y (14 pads).

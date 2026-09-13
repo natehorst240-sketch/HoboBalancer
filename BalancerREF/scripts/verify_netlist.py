@@ -1,7 +1,7 @@
 """Independent schematic requirements checked against KiCad's exported netlist.
 
-Rev C main board, after the optical front end moved to BalancerREF_OptHead
-(2026-09-11), SW4 was dropped and R5's duplicate BOOT pull-up removed. The optical
+Rev D main board: the optical front end moved to BalancerREF_OptHead (2026-09-11),
+SW4 and R5's duplicate BOOT pull-up were dropped, and the BAT_SENSE divider added. The optical
 chain is verified separately by BalancerREF_OptHead/scripts/verify_head.py; the only
 thing crossing between the boards is J5's 7-way cable.
 """

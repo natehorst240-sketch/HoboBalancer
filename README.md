@@ -17,7 +17,7 @@ KiCad 9 will not open them.
 | Directory | Board | Revision | State |
 |---|---|---|---|
 | `.` (root) | `Balancer` — STM32 balancer | Rev A | Schematic only; `Balancer.kicad_pcb` is an empty stub |
-| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev C** | 50 × 50 mm, 4 layer, placed, unrouted |
+| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev D** | 50 × 50 mm, 4 layer, placed, unrouted |
 | `BalancerREF_OptHead/` | Optical tach head | Rev A | 25 × 50 mm, 2 layer, placed, unrouted |
 
 Both boards are **placed but not routed**. Placement is machine-generated and then
@@ -161,8 +161,17 @@ Generator scripts under `scripts/` are guarded and refuse to run without
 ## Revisions
 
 Hardware revisions are marked with git tags rather than in filenames, so the KiCad
-project names stay stable across revisions. `git tag` lists them; `git checkout revC`
+project names stay stable across revisions. `git tag` lists them; `git checkout revD`
 gets that snapshot.
+
+| Tag | Board state |
+|---|---|
+| `revC` | single board, optical front end on the main PCB, no layout |
+| `revD` | optical head split out; SW4 and R5 dropped; BAT sense divider added; both boards placed |
+
+Rev D is defined by the **battery/supply sensing change** — `BAT_SENSE` on GPIO4
+alongside `SUPPLY_SENSE`, which is what finally lets firmware tell USB from battery.
+The board split and the two part deletions rode along in the same revision.
 
 ## Not in this repo
 

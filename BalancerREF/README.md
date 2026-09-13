@@ -2,7 +2,7 @@
 
 ESP32-S3 firmware is in [firmware/README.md](firmware/README.md), including build/flash instructions, MR-VERT/TR-VERT controls, BLE/USB protocol, and a MicroVib comparison logger. Its measurement accuracy remains subject to bench validation.
 
-Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev C (2026-09-09), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"); no PCB was created. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815 and TS3021 have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
+Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev D (2026-09-13), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers, placed but not routed. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815 and TS3021 have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
 
 This is a reference/troubleshooting instrument for approximate RPM, 1/rev vibration magnitude, phase, stability and trends. Maintenance balancing remains with calibrated MicroVib/DynaVibe equipment. Firmware and physical performance have not been validated by schematic ERC.
 
@@ -24,6 +24,31 @@ All local functional circuits use real wires. Labels carry signals between compl
 |---|---|---|---|
 | MR-VERT | External isolated two-wire VR pickup at J3 / J_MAG | Off | Internal IIS3DWB on SPI, all axes available |
 | TR-VERT | Onboard pulsed-red synchronous-detection optical tach (retroreflective tape) | 20 kHz pulses | Same sensor |
+
+### Rev D changes (2026-09-13)
+
+- **BAT sense divider added**: R33/R34 (1M) and C31 (100n) put `BAT/2` on GPIO4
+  (ADC1_CH3) as `BAT_SENSE`. `SUPPLY_SENSE` alone cannot distinguish USB from battery
+  because SYS is fed either from USB through D2 or from the cell through Q3, and the
+  ranges overlap - a USB port at the low end of spec minus D2's drop sits near 4.30 V
+  against a full cell at 4.20 V, inside divider tolerance plus ADC error. Comparing the
+  two separates them: `SYS_SW > BAT + ~0.3 V` means USB present. 1M/1M rather than
+  SUPPLY_SENSE's 100k/100k because this divider hangs on the cell even when the puck is
+  switched off (~2 uA against ~21 uA); the resulting 500k source impedance means
+  firmware must use a long sample time and multisample.
+- **Optical front end split out** to `BalancerREF_OptHead` (2026-09-11), leaving J5, a
+  7-way cable connector. D1/PD1 have no leads to form, so they need their own copper on
+  the bracket's second leg. The cut sits after the comparator so the cable carries only
+  DC rails and digital edges.
+- **SW4 (RESET) removed**: SW1 feeds U6's VIN and EN, so the power slide already
+  power-cycles the MCU. R4/C10/TP13 still hold EN high and keep it probeable.
+- **R5 removed**: it duplicated R9's 10k BOOT pull-up on the same net. The BOOT net is
+  now U1.4, R9.2, SW3.2, TP14.1.
+- Board work: 50 x 50 mm four-layer, M2.5 corner mounting holes, fiducials on both
+  faces, `UP`/`LEFT` orientation silkscreen, and net classes for track widths.
+
+**Firmware 0.4.0 predates this revision** and has no `BAT_SENSE` reader - the pin-map
+test passes only because it checks the 16 signals firmware already knows about.
 
 ### Rev C changes (2026-09-09)
 
