@@ -24,6 +24,31 @@ Both boards are **placed but not routed**. Placement is machine-generated and th
 meant to be refined by hand — decoupling is paired to its IC and connectors are
 edge-anchored and rotated outward, but nothing is a substitute for a look in pcbnew.
 
+Both carry pick-and-place **fiducials** (1 mm dot, 2 mm mask opening): three per
+populated face, at three of the four corners. Never four — a symmetric set gives the
+placement machine no way to tell a 180°-rotated panel from a correct one. The main
+board has them on both faces; the optical head is single-sided so its back has none.
+
+### Track widths
+
+Net classes are set in each `.kicad_pro`, sized from IPC-2221 at 1 oz outer copper and
+a 10 °C rise (0.20 mm ≈ 0.74 A, 0.50 mm ≈ 1.45 A, 0.80 mm ≈ 2.03 A):
+
+| Class | Track | Nets |
+|---|---|---|
+| Default | 0.20 mm | everything else |
+| Power | 0.50 mm | `+3V3` `SYS_SW` `BAT` `USB_VBUS` `GND` `D2-K` |
+| Switch | 0.80 mm | `U6-L1` `U6-L2` — main board only |
+| USB | 0.20 mm | `D+`/`D-` both sides, diff pair 0.20/0.15 |
+| Emitter | 0.80 mm | `SYS_SW` `D1-A` `D1-K` — head board only |
+
+Two caveats. **Switch clearance stays at 0.20 mm**, not the 0.25 the wider track might
+suggest: the TPS63031's WSON-10 places its own L1/L2 pads 0.20 mm from its thermal
+pad, so anything stricter fails inside the package and no routing choice can fix it.
+And the **USB numbers are not an impedance solution** — real 90 Ω differential needs
+the fab's actual stackup. The ESP32-S3's native USB is Full Speed (12 Mbps), where
+that matters far less than it would at High Speed.
+
 ### BalancerREF (HOBOVibe)
 
 The main puck. ESP32-S3-MINI-1, IIS3DWB vibration sensor on SPI, LM1815 magnetic tach
@@ -48,6 +73,25 @@ vertical axis reads a static 1 g when the puck is mounted upright.
 
 Three switches: SW1 power slide, SW2 acquire, SW3 boot. There is no reset button —
 SW1 feeds U6's VIN and EN, so the power slide already power-cycles the MCU.
+
+**Two supply sense dividers, and they only mean something together.** `SUPPLY_SENSE`
+reads `SYS_SW/2` on GPIO12; `BAT_SENSE` reads `BAT/2` on GPIO4 (ADC1_CH3). Neither
+alone can answer "am I on USB?" — SYS is fed either from USB through D2 or from the
+cell through Q3, and those ranges overlap: a USB port at the low end of spec minus
+D2's drop lands near 4.30 V against a full cell at 4.20 V, which divider tolerance and
+the ESP32-S3's ADC error swallow completely. Compared against each other they
+separate cleanly:
+
+```
+SYS_SW ≈ BAT           -> running on battery
+SYS_SW > BAT + ~0.3 V  -> USB present
+```
+
+That is a differential test, so it does not depend on absolute ADC accuracy. BAT_SENSE
+uses 1 M/1 M rather than SUPPLY_SENSE's 100 k/100 k because it hangs directly on the
+cell and drains it even when the puck is off — ~2 µA instead of ~21 µA. The price is a
+500 kΩ source impedance, so **firmware must use a long sample time and multisample**;
+C31 supplies the sampling charge but a fast single conversion will still read low.
 
 See [`BalancerREF/README.md`](BalancerREF/README.md) for the circuit description and
 [`BalancerREF/DATASHEET-VERIFICATION.md`](BalancerREF/DATASHEET-VERIFICATION.md) for
@@ -96,7 +140,7 @@ bypassed series part or a reversed two-terminal part fails rather than passing q
 # main board
 cd BalancerREF
 kicad-cli sch export netlist --format kicadsexpr -o review/BalancerREF.net BalancerREF.kicad_sch
-python scripts/verify_netlist.py     # PASS: 43 exact circuit nets, 280 pin endpoints
+python scripts/verify_netlist.py     # PASS: 44 exact circuit nets, 286 pin endpoints
 
 # optical head
 cd ../BalancerREF_OptHead

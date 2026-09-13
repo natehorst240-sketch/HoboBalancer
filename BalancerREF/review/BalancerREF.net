@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "C:\\Users\\nateh\\hgs-linux\\Balancer\\BalancerREF\\BalancerREF.kicad_sch")
-		(date "2026-09-13T00:41:37")
+		(date "2026-09-13T06:34:33")
 		(tool "Eeschema 10.0.3")
 		(sheet
 			(number "1")
@@ -1480,6 +1480,66 @@
 				(tstamps "/")
 			)
 			(tstamps "b73aa7d7-2584-474b-ab11-609bd22a16ae")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C31")
+			(value "100n")
+			(footprint "Capacitor_SMD:C_0805_2012Metric")
+			(fields
+				(field
+					(name "MPN") "100n")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0805_2012Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "MPN")
+				(value "100n")
+			)
+			(property
+				(name "Sheetname")
+				(value "")
+			)
+			(property
+				(name "Sheetfile")
+				(value "BalancerREF.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "3a54c3bd-8d7d-44ae-8f2e-026c2cdfaed1")
 			(units
 				(unit
 					(name "A")
@@ -3355,6 +3415,126 @@
 				(tstamps "/")
 			)
 			(tstamps "a7df6193-cbc2-4a22-b376-ce01d2db9dc2")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R33")
+			(value "1M")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(fields
+				(field
+					(name "MPN") "100k")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "MPN")
+				(value "100k")
+			)
+			(property
+				(name "Sheetname")
+				(value "")
+			)
+			(property
+				(name "Sheetfile")
+				(value "BalancerREF.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "fff84d34-d3c2-40b8-9b6d-6533a0601f61")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R34")
+			(value "1M")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(fields
+				(field
+					(name "MPN") "100k")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "MPN")
+				(value "100k")
+			)
+			(property
+				(name "Sheetname")
+				(value "")
+			)
+			(property
+				(name "Sheetfile")
+				(value "BalancerREF.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "bedec2ab-cc03-420e-99ba-692883df0c3f")
 			(units
 				(unit
 					(name "A")
@@ -6542,7 +6722,7 @@
 		(net
 			(code "1")
 			(name "/+3V3")
-			(class "Default")
+			(class "Power")
 			(node
 				(ref "C13")
 				(pin "1")
@@ -6822,7 +7002,7 @@
 		(net
 			(code "8")
 			(name "/BAT")
-			(class "Default")
+			(class "Power")
 			(node
 				(ref "C3")
 				(pin "1")
@@ -6841,6 +7021,11 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "R33")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
 				(ref "TP3")
 				(pin "1")
 				(pinfunction "1_1")
@@ -6855,6 +7040,32 @@
 		)
 		(net
 			(code "9")
+			(name "/BAT_SENSE")
+			(class "Default")
+			(node
+				(ref "C31")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R33")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R34")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "8")
+				(pinfunction "IO4_8")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "10")
 			(name "/BOOT")
 			(class "Default")
 			(node
@@ -6882,7 +7093,7 @@
 			)
 		)
 		(net
-			(code "10")
+			(code "11")
 			(name "/GPS_PPS")
 			(class "Default")
 			(node
@@ -6899,7 +7110,7 @@
 			)
 		)
 		(net
-			(code "11")
+			(code "12")
 			(name "/GPS_UART_RX")
 			(class "Default")
 			(node
@@ -6916,7 +7127,7 @@
 			)
 		)
 		(net
-			(code "12")
+			(code "13")
 			(name "/GPS_UART_TX")
 			(class "Default")
 			(node
@@ -6933,7 +7144,7 @@
 			)
 		)
 		(net
-			(code "13")
+			(code "14")
 			(name "/MAG_TACH")
 			(class "Default")
 			(node
@@ -6961,7 +7172,7 @@
 			)
 		)
 		(net
-			(code "14")
+			(code "15")
 			(name "/OPT_COMP")
 			(class "Default")
 			(node
@@ -6977,7 +7188,7 @@
 			)
 		)
 		(net
-			(code "15")
+			(code "16")
 			(name "/OPT_LED_EN")
 			(class "Default")
 			(node
@@ -6999,7 +7210,7 @@
 			)
 		)
 		(net
-			(code "16")
+			(code "17")
 			(name "/OPT_TACH")
 			(class "Default")
 			(node
@@ -7022,7 +7233,7 @@
 			)
 		)
 		(net
-			(code "17")
+			(code "18")
 			(name "/STATUS_LED")
 			(class "Default")
 			(node
@@ -7038,7 +7249,7 @@
 			)
 		)
 		(net
-			(code "18")
+			(code "19")
 			(name "/SUPPLY_SENSE")
 			(class "Default")
 			(node
@@ -7064,9 +7275,9 @@
 			)
 		)
 		(net
-			(code "19")
+			(code "20")
 			(name "/SYS_SW")
-			(class "Default")
+			(class "Power")
 			(node
 				(ref "C4")
 				(pin "1")
@@ -7120,9 +7331,9 @@
 			)
 		)
 		(net
-			(code "20")
+			(code "21")
 			(name "/USB_CONN_D+")
-			(class "Default")
+			(class "USB")
 			(node
 				(ref "J1")
 				(pin "A6")
@@ -7154,9 +7365,9 @@
 			)
 		)
 		(net
-			(code "21")
+			(code "22")
 			(name "/USB_CONN_D-")
-			(class "Default")
+			(class "USB")
 			(node
 				(ref "J1")
 				(pin "A7")
@@ -7188,9 +7399,9 @@
 			)
 		)
 		(net
-			(code "22")
+			(code "23")
 			(name "/USB_VBUS")
-			(class "Default")
+			(class "Power")
 			(node
 				(ref "C1")
 				(pin "1")
@@ -7268,9 +7479,9 @@
 			)
 		)
 		(net
-			(code "23")
+			(code "24")
 			(name "GND")
-			(class "Default")
+			(class "Power")
 			(node
 				(ref "C1")
 				(pin "2")
@@ -7353,6 +7564,11 @@
 			)
 			(node
 				(ref "C30")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C31")
 				(pin "2")
 				(pintype "passive")
 			)
@@ -7497,6 +7713,11 @@
 			)
 			(node
 				(ref "R31")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R34")
 				(pin "2")
 				(pintype "passive")
 			)
@@ -7760,7 +7981,7 @@
 			)
 		)
 		(net
-			(code "24")
+			(code "25")
 			(name "Net-(C26-Pad1)")
 			(class "Default")
 			(node
@@ -7780,9 +8001,9 @@
 			)
 		)
 		(net
-			(code "25")
+			(code "26")
 			(name "Net-(D2-K)")
-			(class "Default")
+			(class "Power")
 			(node
 				(ref "C30")
 				(pin "1")
@@ -7808,7 +8029,7 @@
 			)
 		)
 		(net
-			(code "26")
+			(code "27")
 			(name "Net-(J1-CC1)")
 			(class "Default")
 			(node
@@ -7824,7 +8045,7 @@
 			)
 		)
 		(net
-			(code "27")
+			(code "28")
 			(name "Net-(J1-CC2)")
 			(class "Default")
 			(node
@@ -7840,7 +8061,7 @@
 			)
 		)
 		(net
-			(code "28")
+			(code "29")
 			(name "Net-(J2-Pin_1)")
 			(class "Default")
 			(node
@@ -7857,7 +8078,7 @@
 			)
 		)
 		(net
-			(code "29")
+			(code "30")
 			(name "Net-(J3-Pin_1)")
 			(class "Default")
 			(node
@@ -7879,7 +8100,7 @@
 			)
 		)
 		(net
-			(code "30")
+			(code "31")
 			(name "Net-(LED1-A)")
 			(class "Default")
 			(node
@@ -7895,7 +8116,7 @@
 			)
 		)
 		(net
-			(code "31")
+			(code "32")
 			(name "Net-(R13-Pad1)")
 			(class "Default")
 			(node
@@ -7910,7 +8131,7 @@
 			)
 		)
 		(net
-			(code "32")
+			(code "33")
 			(name "Net-(U1-EN)")
 			(class "Default")
 			(node
@@ -7937,9 +8158,9 @@
 			)
 		)
 		(net
-			(code "33")
+			(code "34")
 			(name "Net-(U1-USB_D+)")
-			(class "Default")
+			(class "USB")
 			(node
 				(ref "R7")
 				(pin "2")
@@ -7953,9 +8174,9 @@
 			)
 		)
 		(net
-			(code "34")
+			(code "35")
 			(name "Net-(U1-USB_D-)")
-			(class "Default")
+			(class "USB")
 			(node
 				(ref "R6")
 				(pin "2")
@@ -7969,7 +8190,7 @@
 			)
 		)
 		(net
-			(code "35")
+			(code "36")
 			(name "Net-(U3-PEAK_DET)")
 			(class "Default")
 			(node
@@ -7990,7 +8211,7 @@
 			)
 		)
 		(net
-			(code "36")
+			(code "37")
 			(name "Net-(U3-RC_TIMING)")
 			(class "Default")
 			(node
@@ -8011,7 +8232,7 @@
 			)
 		)
 		(net
-			(code "37")
+			(code "38")
 			(name "Net-(U3-VR_IN)")
 			(class "Default")
 			(node
@@ -8027,7 +8248,7 @@
 			)
 		)
 		(net
-			(code "38")
+			(code "39")
 			(name "Net-(U5-PROG)")
 			(class "Default")
 			(node
@@ -8043,9 +8264,9 @@
 			)
 		)
 		(net
-			(code "39")
+			(code "40")
 			(name "Net-(U6-L1)")
-			(class "Default")
+			(class "Switch")
 			(node
 				(ref "L1")
 				(pin "1")
@@ -8060,9 +8281,9 @@
 			)
 		)
 		(net
-			(code "40")
+			(code "41")
 			(name "Net-(U6-L2)")
-			(class "Default")
+			(class "Switch")
 			(node
 				(ref "L1")
 				(pin "2")
@@ -8077,7 +8298,7 @@
 			)
 		)
 		(net
-			(code "41")
+			(code "42")
 			(name "Net-(U10-B)")
 			(class "Default")
 			(node
@@ -8093,7 +8314,7 @@
 			)
 		)
 		(net
-			(code "42")
+			(code "43")
 			(name "Net-(U10-Cext)")
 			(class "Default")
 			(node
@@ -8109,7 +8330,7 @@
 			)
 		)
 		(net
-			(code "43")
+			(code "44")
 			(name "Net-(U10-RCext)")
 			(class "Default")
 			(node
@@ -8130,7 +8351,7 @@
 			)
 		)
 		(net
-			(code "44")
+			(code "45")
 			(name "unconnected-(J1-SBU1-PadA8)")
 			(class "Default")
 			(node
@@ -8141,7 +8362,7 @@
 			)
 		)
 		(net
-			(code "45")
+			(code "46")
 			(name "unconnected-(J1-SBU2-PadB8)")
 			(class "Default")
 			(node
@@ -8152,24 +8373,13 @@
 			)
 		)
 		(net
-			(code "46")
+			(code "47")
 			(name "unconnected-(U1-IO3-Pad7)")
 			(class "Default")
 			(node
 				(ref "U1")
 				(pin "7")
 				(pinfunction "IO3_7")
-				(pintype "bidirectional+no_connect")
-			)
-		)
-		(net
-			(code "47")
-			(name "unconnected-(U1-IO4-Pad8)")
-			(class "Default")
-			(node
-				(ref "U1")
-				(pin "8")
-				(pinfunction "IO4_8")
 				(pintype "bidirectional+no_connect")
 			)
 		)

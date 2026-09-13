@@ -16,7 +16,7 @@ for n in children(one(d,'nets'),'net'):
 groups={
 '3V3':'U1.3 U2.8 U2.5 U3.8 U6.1 U6.10 U9.5 U10.8 U10.3 J4.1 J5.7 TP1.1 C6.1 C7.1 C8.1 C9.1 C13.1 C14.1 C15.1 C16.1 C17.1 C27.1 C29.1 R4.1 R8.1 R9.1 R15.1 R16.1 R30.1',
 'VBUS':'J1.A4 J1.A9 J1.B4 J1.B9 U5.4 U7.5 TP4.1 C1.1 C2.1 Q3.1 D2.2 D3.2 R31.1',
-'BAT':'U5.3 Q3.3 Q4.2 TP3.1 C3.1',
+'BAT':'U5.3 Q3.3 Q4.2 TP3.1 C3.1 R33.1',
 'BAT_CONNECTOR':'J2.1 Q4.3',
 'SYS':'D2.1 Q3.2 SW1.1 C30.1',
 'SYS_SW':'R11.1 SW1.2 U6.5 U6.8 U6.6 U6.7 C4.1 C5.1 J5.1',
@@ -32,6 +32,11 @@ groups={
 'OPT_LED_EN':'U1.13 R29.2 J5.3',
 'ACQUIRE':'U1.14 SW2.2 R8.2 C11.1','STATUS':'U1.15 R10.1',
 'SUPPLY_SENSE':'U1.16 R11.2 R12.1 C12.1',
+# BAT/2 on GPIO4 (ADC1_CH3). SUPPLY_SENSE alone cannot separate USB from battery -
+# a weak USB port minus D2's drop lands within 0.1 V of a full cell - so firmware
+# compares the two: SYS_SW > BAT + ~0.3 V means USB. 1M/1M keeps the standby drain
+# on the cell to ~2 uA.
+'BAT_SENSE':'U1.8 R33.2 R34.1 C31.1',
 'USB_D-_MCU':'U1.23 R6.2','USB_D+_MCU':'U1.24 R7.2',
 'USB_D-_CONNECTOR':'R6.1 J1.A7 J1.B7 U7.1 TP12.1',
 'USB_D+_CONNECTOR':'R7.1 J1.A6 J1.B6 U7.3 TP11.1',
@@ -49,7 +54,7 @@ groups={
 'STATUS_A':'R10.2 LED1.2',
 'GPS_TX':'U1.5 J4.4','GPS_RX':'U1.6 J4.3','GPS_PPS':'U1.17 J4.5',
 }
-grounds='U1.1 U1.2 U1.42 U1.43 '+' '.join('U1.'+str(i) for i in range(46,66))+' U2.2 U2.3 U2.6 U2.7 U3.2 U3.9 U3.11 U5.2 U6.3 U6.9 U6.11 U7.2 U9.3 U10.1 U10.4 J1.A1 J1.A12 J1.B1 J1.B12 J1.SH J2.2 J3.2 J4.2 J5.2 J5.4 J5.6 TP2.1 TP6.1 Q4.1 LED1.1 D3.1 R1.1 R2.1 R3.2 R12.2 R17.2 R31.2 SW2.1 SW3.1 '+' '.join('C'+str(i)+'.2' for i in list(range(1,20))+[26,27,29,30])
+grounds='U1.1 U1.2 U1.42 U1.43 '+' '.join('U1.'+str(i) for i in range(46,66))+' U2.2 U2.3 U2.6 U2.7 U3.2 U3.9 U3.11 U5.2 U6.3 U6.9 U6.11 U7.2 U9.3 U10.1 U10.4 J1.A1 J1.A12 J1.B1 J1.B12 J1.SH J2.2 J3.2 J4.2 J5.2 J5.4 J5.6 TP2.1 TP6.1 Q4.1 LED1.1 D3.1 R1.1 R2.1 R3.2 R12.2 R17.2 R31.2 R34.2 SW2.1 SW3.1 '+' '.join('C'+str(i)+'.2' for i in list(range(1,20))+[26,27,29,30,31])
 groups['GND']=grounds
 failures=[];covered=set()
 for group,spec in groups.items():

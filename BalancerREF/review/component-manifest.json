@@ -583,5 +583,30 @@
     "lib_id": "power:GND",
     "value": "GND",
     "footprint": ""
+  },
+  "R33": {
+    "lib_id": "Device:R",
+    "value": "1M",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "R34": {
+    "lib_id": "Device:R",
+    "value": "1M",
+    "footprint": "Resistor_SMD:R_0603_1608Metric"
+  },
+  "C31": {
+    "lib_id": "Device:C",
+    "value": "100n",
+    "footprint": "Capacitor_SMD:C_0805_2012Metric"
+  },
+  "#PWR801": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
+  },
+  "#PWR802": {
+    "lib_id": "power:GND",
+    "value": "GND",
+    "footprint": ""
   }
 }
