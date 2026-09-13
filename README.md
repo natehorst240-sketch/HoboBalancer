@@ -42,6 +42,11 @@ a 10 °C rise (0.20 mm ≈ 0.74 A, 0.50 mm ≈ 1.45 A, 0.80 mm ≈ 2.03 A):
 | USB | 0.20 mm | `D+`/`D-` both sides, diff pair 0.20/0.15 |
 | Emitter | 0.80 mm | `SYS_SW` `D1-A` `D1-K` — head board only |
 
+The emitter resistor is sized at the **top** of the SYS_SW range, not at the battery.
+The BQ24075 regulates OUT to 5.5 V, so R18 is 3.9 Ω for about 0.49 A at a full cell and
+about 0.90 A worst case — under D1's 1 A absolute maximum. At the old 3.0 Ω the USB case
+reached roughly 1.1 A.
+
 Two caveats. **Switch clearance stays at 0.20 mm**, not the 0.25 the wider track might
 suggest: the TPS63031's WSON-10 places its own L1/L2 pads 0.20 mm from its thermal
 pad, so anything stricter fails inside the package and no routing choice can fix it.
@@ -75,7 +80,15 @@ DS12569's orientation figure — firmware can also identify it at runtime, since
 vertical axis reads a static 1 g when the puck is mounted upright.
 
 Three switches: SW1 power slide, SW2 acquire, SW3 boot. There is no reset button —
-SW1 feeds U6's VIN and EN, so the power slide already power-cycles the MCU.
+SW1 feeds U6's VIN and EN, so the power slide already power-cycles the MCU. SW1 is a
+Würth WS-SLTV rated 300 mA switching; steady draw through it is about 180 mA, but BLE
+TX bursts and switch-on inrush exceed that briefly. That is accepted as reduced switch
+life rather than designed out — see DATASHEET-VERIFICATION.md.
+
+**Sleep is not low power.** The LM1815 draws 3.6 mA typical (6 mA max) and sits on the
+always-on 3V3 rail, as do the head's op-amp and comparator, so a sleeping puck draws
+milliamps and a 500 mAh cell lasts days rather than months. If flight logging ever
+depends on long sleeps, the fix is a load switch on the LM1815 and the head supply.
 
 **Power path and charging.** A BQ24075 runs the input: it charges the cell and powers
 the system from the same input independently, so charge termination is correct while

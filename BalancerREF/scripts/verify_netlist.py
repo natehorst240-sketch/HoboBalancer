@@ -15,7 +15,7 @@ for n in children(one(d,'nets'),'net'):
  for p in members:actual[p]=name
 # These are circuit specifications, not generated from symbol positions or wires.
 groups={
-'3V3':'U1.3 U2.8 U2.5 U3.8 U6.1 U6.10 U9.5 U10.8 U10.3 J4.1 J5.7 TP1.1 C6.1 C7.1 C8.1 C9.1 C13.1 C14.1 C15.1 C16.1 C17.1 C27.1 C29.1 R4.1 R8.1 R9.1 R15.1 R16.1 R30.1 R37.1 R38.1',
+'3V3':'U1.3 U2.8 U2.5 U3.8 U6.1 U6.10 U9.5 U10.8 U10.3 U10.2 J4.1 J5.7 TP1.1 C6.1 C7.1 C8.1 C9.1 C13.1 C14.1 C15.1 C16.1 C17.1 C27.1 C29.1 R4.1 R8.1 R9.1 R15.1 R16.1 R30.1 R37.1 R38.1',
 'VBUS':'J1.A4 J1.A9 J1.B4 J1.B9 U5.13 U7.5 TP4.1 C1.1 C2.1 D3.2',
 'BAT':'U5.2 U5.3 Q4.2 TP3.1 C3.1',
 'BAT_CONNECTOR':'J2.1 Q4.3',
@@ -52,12 +52,12 @@ groups={
 # scripts/verify_head.py. What crosses to this board is the 7-way cable only.
 'OPT_COMP':'J5.5 U9.1',
 'SYNC_DELAY':'R29.1 C26.1 U9.2',
-'SYNC_HIT':'U9.4 U10.2',
+'SYNC_HIT':'U9.4 U10.1',
 'RCEXT':'U10.7 R30.2 C28.1','CEXT':'U10.6 C28.2',
 'STATUS_A':'R10.2 LED1.2',
 'GPS_TX':'U1.5 J4.4','GPS_RX':'U1.6 J4.3','GPS_PPS':'U1.17 J4.5',
 }
-grounds='U1.1 U1.2 U1.42 U1.43 '+' '.join('U1.'+str(i) for i in range(46,66))+' U2.2 U2.3 U2.6 U2.7 U3.2 U3.9 U3.11 U5.4 U5.8 U5.15 U5.17 U6.3 U6.9 U6.11 U7.2 U9.3 U10.1 U10.4 J1.A1 J1.A12 J1.B1 J1.B12 J1.SH J2.2 J3.2 J4.2 J5.2 J5.4 J5.6 TP2.1 TP6.1 Q4.1 LED1.1 D3.1 R1.1 R2.1 R3.2 R12.2 R17.2 R35.2 R36.2 SW2.1 SW3.1 '+' '.join('C'+str(i)+'.2' for i in list(range(1,20))+[26,27,29,30])
+grounds='U1.1 U1.2 U1.42 U1.43 '+' '.join('U1.'+str(i) for i in range(46,66))+' U2.2 U2.3 U2.6 U2.7 U3.2 U3.9 U3.11 U5.4 U5.8 U5.15 U5.17 U6.3 U6.9 U6.11 U7.2 U9.3 U10.4 J1.A1 J1.A12 J1.B1 J1.B12 J1.SH J2.2 J3.2 J4.2 J5.2 J5.4 J5.6 TP2.1 TP6.1 Q4.1 LED1.1 D3.1 R1.1 R2.1 R3.2 R12.2 R17.2 R35.2 R36.2 SW2.1 SW3.1 '+' '.join('C'+str(i)+'.2' for i in list(range(1,20))+[26,27,29,30])
 groups['GND']=grounds
 failures=[];covered=set()
 for group,spec in groups.items():
@@ -82,7 +82,7 @@ functions={
       '16':'ISET','17':'EP_VSS'},
 'U6':{'1':'VOUT','2':'L2','3':'PGND','4':'L1','5':'VIN','6':'EN','7':'PS/SYNC','8':'VINA','9':'GND','10':'FB','11':'EXPOSED_PAD/PGND'},
 'U7':{'1':'I/O','2':'VN/GND','3':'I/O','4':'I/O','5':'VP','6':'I/O'},
-# SN74LVC1G08 DBV
+# SN74LVC1G132 DBV - Schmitt-trigger NAND, same pinout as the 1G08 it replaced
 'U9':{'1':'A','2':'B','3':'GND','4':'Y','5':'VCC'},
 # SN74LVC1G123 DCT, SCES586E Table 4-1
 'U10':{'1':'A','2':'B','3':'CLR','4':'GND','5':'Q','6':'Cext','7':'Rext/Cext','8':'VCC'},

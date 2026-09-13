@@ -165,6 +165,31 @@ void setupAdc() {
     cal.atten=ADC_ATTEN_DB_12;cal.bitwidth=ADC_BITWIDTH_DEFAULT;
     adcReady=adc_cali_create_scheme_curve_fitting(&cal,&adcCalibration)==ESP_OK;
 }
+// BQ24075 input current limit and status.
+//
+// EN1/EN2 have ~285 kOhm internal pulldowns, so the charger powers up in USB100 - a
+// 100 mA input limit that covers the system load AND the charge current together. An
+// ESP32-S3 with BLE up consumes most of that on its own, so without this the cell can
+// fail to charge at all while the puck is running.
+//
+// SLUS810N Table 7-2 is indexed (EN2, EN1), the reverse of the naming order:
+//   0,0 = USB100   0,1 = USB500   1,0 = RILIM (~1.0 A)   1,1 = standby
+// USB500 is the ceiling here on purpose: 500 mA is the most a non-negotiated USB port
+// is required to supply, and this board has no USB-PD or BC1.2 negotiation. RILIM
+// would need a known wall adapter, so it stays a deliberate future opt-in.
+void setupCharger() {
+    gpio_config_t o{};o.pin_bit_mask=(1ULL<<board::chgEn1)|(1ULL<<board::chgEn2);
+    o.mode=GPIO_MODE_OUTPUT;ESP_ERROR_CHECK(gpio_config(&o));
+    gpio_set_level(gpio_num_t(board::chgEn2),0);
+    gpio_set_level(gpio_num_t(board::chgEn1),1);            // EN2=0, EN1=1 -> USB500
+    // PGOOD and CHG are open-drain with 100k pull-ups on the board, so no internal pull.
+    gpio_config_t i{};i.pin_bit_mask=(1ULL<<board::pgood)|(1ULL<<board::chgStat);
+    i.mode=GPIO_MODE_INPUT;ESP_ERROR_CHECK(gpio_config(&i));
+}
+// Both are ACTIVE LOW. chgStat is high when charging completes AND when the charger is
+// disabled, so it is not an input-present signal on its own - pgood is.
+bool inputPresent(){return gpio_get_level(gpio_num_t(board::pgood))==0;}
+bool charging(){return gpio_get_level(gpio_num_t(board::chgStat))==0;}
 double supplyVolts() {
     if(!adcReady)return NAN;
     int raw,mv;
@@ -180,6 +205,7 @@ void status() {
     num(j,"full_scale_g",2);num(j,"lpf_nominal_hz",accel::odrHz/accel::lpfDivider);num(j,"decimation",accel::decimation);
     cJSON_AddStringToObject(j,"sensor","IIS3DWB SPI");num(j,"capture_hz",captureHz);
     num(j,"supply_switched_v",supplyVolts());num(j,"output_drops",outputLost);
+    cJSON_AddBoolToObject(j,"input_present",inputPresent());cJSON_AddBoolToObject(j,"charging",charging());
     num(j,"capture_drops",captureLost);num(j,"sample_queue_drops",dataLost);
     num(j,"i2c_errors",ioErrors);num(j,"late_reads",timingErrors);
     cJSON_AddBoolToObject(j,"flight",flightMode);cJSON_AddBoolToObject(j,"usb",usb_serial_jtag_is_connected());
@@ -457,7 +483,7 @@ bool submit_command(const char *s,size_t len) {
 }
 extern "C" void app_main() {
     gpio_config_t out{};out.pin_bit_mask=(1ULL<<board::led);out.mode=GPIO_MODE_OUTPUT;
-    ESP_ERROR_CHECK(gpio_config(&out));setupEmitter();
+    ESP_ERROR_CHECK(gpio_config(&out));setupEmitter();setupCharger();
     gpio_config_t in{};in.pin_bit_mask=1ULL<<board::acquire;in.mode=GPIO_MODE_INPUT;in.pull_up_en=GPIO_PULLUP_ENABLE;
     ESP_ERROR_CHECK(gpio_config(&in));
     usb_serial_jtag_driver_config_t usb{};usb.rx_buffer_size=512;usb.tx_buffer_size=4096;

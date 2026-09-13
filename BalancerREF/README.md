@@ -50,6 +50,20 @@ All local functional circuits use real wires. Labels carry signals between compl
   The trade is that `SUPPLY_SENSE` (GPIO12, ADC2_CH1) is now the board's only supply
   measurement, and ADC2 is the unit shared with the radio - which is precisely why the
   removed divider had been put on ADC1.
+- **Repo-review fixes (pre-routing).** R18 3.0 -> 3.9 ohm on the head board: with the
+  BQ24075 regulating OUT to 5.5 V the old value gave ~1.1 A peak into D1's 1 A absolute
+  maximum, and the BOM note had only checked the 4.2 V battery case. U9 SN74LVC1G08 ->
+  SN74LVC1G132 (Schmitt NAND, same SOT-23-5 pinout) because R29/C26 fed it a 0.47 us
+  edge against a 10 ns/V input spec; U10's trigger moved from B rising to ~A falling to
+  match the inversion. Placement: L1 and C4-C7 moved to U6's own face so the 2.4 MHz
+  switching loop no longer runs through vias, C2/C3/C30 followed for the BQ24075, C8 is
+  now 0.38 mm from U1's 3V3 pad instead of ~9 mm, the head board's emitter loop shrank
+  from ~18 mm wide to 6.9 x 3.3 mm, and R21/C21 moved 16 mm away from the switch and up
+  against U8 pins 1 and 2. Firmware now drives EN1/EN2 to USB500 at boot instead of
+  leaving the charger at its 100 mA power-on default. Two items were checked and NOT
+  changed - SW1's 300 mA rating is accepted as a life trade-off, and KiCad 10 has no
+  ESP32-S3-MINI-1 footprint so the S2-MINI-1 land pattern is correct. See
+  DATASHEET-VERIFICATION.md for each one.
 - **Wire stubs swept**: the optical split, SW4, R5 and the charger swap each left the
   wires that used to reach the deleted pins, connected to a live net at one end and to
   nothing at the other - 19 of them, plus one orphaned no-connect flag. 23 wires were
