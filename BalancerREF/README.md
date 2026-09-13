@@ -2,7 +2,7 @@
 
 ESP32-S3 firmware is in [firmware/README.md](firmware/README.md), including build/flash instructions, MR-VERT/TR-VERT controls, BLE/USB protocol, and a MicroVib comparison logger. Its measurement accuracy remains subject to bench validation.
 
-Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev D (2026-09-13), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers, placed but not routed. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815 and TS3021 have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
+Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev E (2026-09-13), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers, placed but not routed. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815, TS3021 and BQ24075RGT have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
 
 This is a reference/troubleshooting instrument for approximate RPM, 1/rev vibration magnitude, phase, stability and trends. Maintenance balancing remains with calibrated MicroVib/DynaVibe equipment. Firmware and physical performance have not been validated by schematic ERC.
 
@@ -25,9 +25,50 @@ All local functional circuits use real wires. Labels carry signals between compl
 | MR-VERT | External isolated two-wire VR pickup at J3 / J_MAG | Off | Internal IIS3DWB on SPI, all axes available |
 | TR-VERT | Onboard pulsed-red synchronous-detection optical tach (retroreflective tape) | 20 kHz pulses | Same sensor |
 
+### Rev E changes (2026-09-13)
+
+- **BQ24075 replaces the MCP73831 charger**, and D2, Q3, R27 and R31 go with it. The
+  discrete Schottky-plus-PFET arrangement OR-ed USB against the battery; the BQ24075
+  has an integrated dynamic power path (DPPM) that does it properly - system and
+  charging powered independently, operation with a defective or absent cell, USB-IF
+  inrush limiting, and VIN-DPM so a weak port sags instead of collapsing. Support
+  parts: R3 3.57k sets ~249 mA fast charge (about 0.5C for a 500 mAh cell), R35 1.6k
+  sets the ~1.0 A resistor-programmed input limit, R36 10k stands in for the absent
+  pack thermistor on TS, R37/R38 100k pull up the open-drain status pins, C30 10 uF on
+  OUT. TMR is deliberately left open for the default safety timers; CE and SYSOFF are
+  tied low. All seventeen pins are checked against SLUS810N in DATASHEET-VERIFICATION.md.
+- **Charger control on four GPIOs**: EN1 = GPIO5, EN2 = GPIO18, PGOOD = GPIO21,
+  CHG = GPIO38. Note that the datasheet's current-limit table is indexed (EN2, EN1),
+  the reverse of the naming order. Both EN pins have 285k internal pulldowns, so the
+  limit sits at USB100 (100 mA) until firmware raises it - the puck will charge out of
+  the box, slowly.
+- **BAT sense divider removed**: R33, R34, C31 and the `BAT_SENSE` net are gone. They
+  existed only to infer USB presence by comparing SYS_SW against BAT. PGOOD reports a
+  valid input source directly from the device that arbitrates it, which is both simpler
+  and more trustworthy, and dropping the divider retires a 500k ADC source impedance
+  and a ~2 uA permanent drain on the cell. GPIO4 is an unused pin again.
+  The trade is that `SUPPLY_SENSE` (GPIO12, ADC2_CH1) is now the board's only supply
+  measurement, and ADC2 is the unit shared with the radio - which is precisely why the
+  removed divider had been put on ADC1.
+- **Wire stubs swept**: the optical split, SW4, R5 and the charger swap each left the
+  wires that used to reach the deleted pins, connected to a live net at one end and to
+  nothing at the other - 19 of them, plus one orphaned no-connect flag. 23 wires were
+  removed and 2 were trimmed back to the label they carry (`BAT` and `OPT_LED_EN`,
+  where deleting the wire would have taken the label with it). `scripts/fix_dangling_wires.py`
+  exports the netlist before and after and refuses to keep any edit that moves a single
+  pin to a different net. **ERC is now 0 errors and 0 warnings**, down from 20.
+- **`/SYS` added to the Power net class** (0.50 mm). It is the BQ24075's OUT rail and
+  carries the entire system load; it did not exist under the old topology and would
+  otherwise have routed at the 0.20 mm default, rated 0.74 A.
+
+**Firmware 0.4.0 does not drive the charger yet.** `board.hpp` carries the four new
+pins and `tests/check_pinmap.py` verifies them against the KiCad pad audit, but no code
+reads PGOOD or raises the input current limit.
+
 ### Rev D changes (2026-09-13)
 
-- **BAT sense divider added**: R33/R34 (1M) and C31 (100n) put `BAT/2` on GPIO4
+- **BAT sense divider added** *(removed again in Rev E - the BQ24075's PGOOD pin
+  reports input power directly)*: R33/R34 (1M) and C31 (100n) put `BAT/2` on GPIO4
   (ADC1_CH3) as `BAT_SENSE`. `SUPPLY_SENSE` alone cannot distinguish USB from battery
   because SYS is fed either from USB through D2 or from the cell through Q3, and the
   ranges overlap - a USB port at the low end of spec minus D2's drop sits near 4.30 V
@@ -47,8 +88,9 @@ All local functional circuits use real wires. Labels carry signals between compl
 - Board work: 50 x 50 mm four-layer, M2.5 corner mounting holes, fiducials on both
   faces, `UP`/`LEFT` orientation silkscreen, and net classes for track widths.
 
-**Firmware 0.4.0 predates this revision** and has no `BAT_SENSE` reader - the pin-map
-test passes only because it checks the 16 signals firmware already knows about.
+**Firmware 0.4.0 predates this revision.** It never gained a `BAT_SENSE` reader, which
+Rev E made moot. The pin-map test no longer passes vacuously: it now asserts that every
+pin in `board.hpp` is covered by the test.
 
 ### Rev C changes (2026-09-09)
 

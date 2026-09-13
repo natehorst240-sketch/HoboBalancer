@@ -9,5 +9,6 @@
   "USB4105": "https://gct.co/files/drawings/usb4105.pdf",
   "LTR-4206E": "https://optoelectronics.liteon.com/upload/download/DS-50-92-0073/LTR-4206E%20Data%20Sheet%20%20Rev.D.PDF",
   "LTE-4208": "https://optoelectronics.liteon.com/upload/download/DS-50-92-0015/LTE-4208%20Data%20Sheet%20Ver%20D.PDF",
-  "SRV05-4-onsemi": "https://www.onsemi.com/pdf/datasheet/srv05-4-d.pdf"
+  "SRV05-4-onsemi": "https://www.onsemi.com/pdf/datasheet/srv05-4-d.pdf",
+  "BQ24075": "https://www.ti.com/lit/ds/symlink/bq24075.pdf"
 }

@@ -11,8 +11,11 @@ Inner layers carry roughly half that (k = 0.024), which matters on the main boar
 In1/In2 but not for the classes below - power is routed on the outer layers.
 
 Against the actual loads:
-  * +3V3 / SYS / SYS_SW / BAT / VBUS - a few hundred mA (TPS63031 feeding an
-    ESP32-S3 on BLE, MCP73831 charging at ~249 mA). 0.5 mm gives about 3x margin.
+  * +3V3 / SYS / SYS_SW / BAT / VBUS - a few hundred mA in normal operation (TPS63031
+    feeding an ESP32-S3 on BLE, BQ24075 charging at ~250 mA). 0.5 mm gives about 3x
+    margin there. SYS is the one to watch: the BQ24075's power path can pass well over
+    an amp to OUT if firmware raises the input limit and the load ever asks for it, so
+    keep that run short as well as wide.
   * U6's L1/L2 inductor node sees the full switch current, over an amp in boost at
     low battery, and the highest di/dt on the board. 0.8 mm, kept short.
   * The head board's LED_A / LED_K carry 500 mA pulses at 10% duty. Thermally that
@@ -56,9 +59,13 @@ MAIN_CLASSES = [
     cls('Switch',  0.80, 0.20, 0.80, 0.40, 0),
     cls('USB',     0.20, 0.20, 0.60, 0.30, 2, diff_pair_width=0.20, diff_pair_gap=0.15),
 ]
+# /SYS is the BQ24075's OUT rail and carries the whole system load - charger output
+# plus battery, through SW1 into U6. It is the highest-current net on the board after
+# the switching node, so it belongs in Power; at the 0.20 mm default it would be rated
+# 0.74 A. Net-(D2-K) was the old MCP73831 OR-ing diode and no longer exists.
 MAIN_PATTERNS = [
-    ('Power', '/+3V3'), ('Power', '/SYS_SW'), ('Power', '/BAT'),
-    ('Power', '/USB_VBUS'), ('Power', 'GND'), ('Power', 'Net-(D2-K)'),
+    ('Power', '/+3V3'), ('Power', '/SYS'), ('Power', '/SYS_SW'), ('Power', '/BAT'),
+    ('Power', '/USB_VBUS'), ('Power', 'GND'),
     ('Switch', 'Net-(U6-L1)'), ('Switch', 'Net-(U6-L2)'),
     ('USB', '/USB_CONN_D+'), ('USB', '/USB_CONN_D-'),
     ('USB', 'Net-(U1-USB_D+)'), ('USB', 'Net-(U1-USB_D-)'),

@@ -6,6 +6,19 @@ Implemented: MR-VERT magnetic tach, TR-VERT optical tach/emitter, all three IIS3
 
 The code can check signal consistency but cannot certify IPS accuracy. Physical sampling latency, sensor frequency response, tach integrity, BLE operation, power behavior, and comparison with calibrated equipment remain hardware acceptance tests. Default gain is 1 and phase offset is 0. The provisional Z axis must be explicitly confirmed or changed before a run is marked stable.
 
+## Hardware support status
+
+**Firmware 0.4.0 targets the Rev C board and has not been updated for the charger
+change.** `board.hpp` now carries the BQ24075 pins (`chgEn1`, `chgEn2`, `pgood`,
+`chgStat`) and `tests/check_pinmap.py` verifies them against the KiCad pin audit,
+but no code drives or reads them yet. Two consequences until that lands:
+
+- EN1/EN2 have 285 kOhm internal pull-downs, so the input current limit sits at
+  **USB100 (100 mA)** until firmware raises it. The puck will charge, slowly.
+- `pgood` is the input-present signal now. The Rev D SYS_SW-versus-BAT comparison
+  has been removed from the hardware along with its divider, so there is no
+  fallback way to detect USB.
+
 ## Rev C hardware (firmware 0.4.0, 2026-09-09)
 
 Firmware 0.4.0 targets schematic Rev C only. Accelerometer: ST IIS3DWB on SPI2 (GPIO14 SCK, 15 MOSI, 16 MISO, 17 CS, mode 3, 10 MHz), SPI-only per DS12569, +/-2 g, LPF2 at ODR/10 (2.67 kHz). The sensor streams its fixed 26.667 kHz ODR into its FIFO with the watermark at 16 samples; INT1 (GPIO6) is the FIFO-threshold line and is timestamped by the same MCPWM capture channel that timestamped data-ready before. Each block is read in one 112-byte SPI transfer and averaged into a single 1666.7 Hz measurement sample whose timestamp is the capture tick minus 7.5 sample periods (the block mean). A block that is not exactly 16 entries, carries a non-accelerometer tag, or is read more than 500 us late is discarded and counted, so a missed interrupt shows up as a sample gap rather than a wrong number. The boxcar average adds 0.28 ms of deterministic delay (about 0.7 degrees at 390 RPM), the same class as the old LIS2DW12 filter lag and absorbed by the same calibration. Emitter GPIO9 is a 20 kHz, 10 percent LEDC PWM when the TR-VERT profile is active and 0 otherwise; the receiver's synchronous detector uses the same pulse. The IIS3DWB has no wake-on-motion, so deep sleep wakes on EXT1 when MAG_TACH (GPIO7) or the acquire button (GPIO10) pulses low; the optical profile has no wake source while its emitter is off, which is fine because flight logging uses MR-VERT. The vendored driver is `vendor/iis3dwb_reg.c` (see UPSTREAM.txt); the LIS2DW12 driver is gone.

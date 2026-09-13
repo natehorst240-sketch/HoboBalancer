@@ -48,11 +48,42 @@ SOT-23-5: 1 OUT, 2 VCC-, 3 IN+, 4 IN-, 5 VCC+. Powered from 3.3 V with local 100
 
 Phototransistor raw collector voltage feeds IN-. RV1 feeds IN+; 470 kΩ output feedback produces positive hysteresis. At mid-trim, the divider Thevenin resistance is about 4.85 kΩ; ideal hysteresis is 3.3 × 4.85/(470 + 4.85) ≈34 mV. The threshold adjusts approximately 0.8–2.5 V, with small feedback shifts. This is manually adjustable ambient thresholding, not automatic ambient subtraction.
 
-## U5 — Microchip MCP73831T-2ACI/OT
+## U5 — TI BQ24075RGT
 
-[Manufacturer datasheet DS20001984H](https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MCP73831-Family-Data-Sheet-DS20001984H.pdf), SOT-23 table/page 11 and charging/application sections. Original PDF saved.
+[Manufacturer datasheet SLUS810N, September 2008 – revised October 2021](https://www.ti.com/lit/ds/symlink/bq24075.pdf), Table 7-1 (pin functions), Table 7-2 (EN1/EN2), Section 6 (device comparison table) and Section 8.5 (electrical characteristics). Original PDF saved as `sources/BQ24075.pdf`.
 
-1 STAT, 2 VSS, 3 VBAT, 4 VDD, 5 PROG. 4.02 kΩ sets about 249 mA nominal. 10 µF input and output ceramic capacitors must retain at least the recommended 4.7 µF effective capacitance. The -2 option charges a 4.2 V cell. STAT is intentionally unused: MCP73831's tri-state output is not assumed to be a 3.3 V open-drain signal. Device thermal regulation can reduce the actual charging current.
+Package is RGT0016C, VQFN-16 3x3 mm with a thermal pad. Figure 7-3 is the BQ24075 top view; every pin below was read from it and from Table 7-1.
+
+| Pin | Name | Net | Check against SLUS810N |
+|---|---|---|---|
+| 1 | TS | `/TS`, R36 10k to GND | Table 7-1: "For applications that do not use the TS function, connect a 10-kΩ fixed resistor from TS to VSS". Exactly that — there is no thermistor in the pack. |
+| 2, 3 | BAT | `/BAT`, C3 10 µF | Spec asks 4.7–47 µF ceramic. C3 is 10 µF 10 V; derating at 4.2 V must leave at least 4.7 µF effective. |
+| 4 | CE | GND | Active low. "Connect CE to a low logic level to enable the battery charger." Tied low, so charging cannot be disabled by firmware — deliberate. Has a ~285 kΩ internal pulldown but must not be left floating. |
+| 5 | EN2 | `/CHG_EN2` → U1 pad 22 = GPIO18 | Input current limit select, Table 7-2. |
+| 6 | EN1 | `/CHG_EN1` → U1 pad 9 = GPIO5 | Both EN pins have ~285 kΩ internal pulldowns, so the limit defaults to EN2=0/EN1=0 = USB100 = 100 mA until firmware drives them. |
+| 7 | PGOOD | `/PGOOD_N` → U1 pad 25 = GPIO21, R37 100k to +3V3 | Open drain; pulls low when a valid input source is present. Spec asks a 1 kΩ–100 kΩ pull-up and 100k is the top of that range, chosen for standby current. |
+| 8 | VSS | GND | "VSS pin must be connected to ground at all times" — the thermal pad alone does not satisfy this. |
+| 9 | CHG | `/CHG_STAT` → U1 pad 34 = GPIO38, R38 100k to +3V3 | Open drain; low while charging, high impedance when charge completes **and** when the charger is disabled. Not an input-present signal on its own. |
+| 10, 11 | OUT | `/SYS`, C30 10 µF | System supply output. Spec asks 4.7–47 µF. |
+| 12 | ILIM | `/ILIM`, R35 1.6k to GND | Spec range 1100 Ω to 8 kΩ. I(IN-MAX) = KILIM/RILIM, KILIM typ 1610 AΩ (1500–1720), so 1610/1600 ≈ **1.01 A** typ and 0.94–1.08 A across the spread. Active only in the EN2=1/EN1=0 state. **Leaving ILIM open disables all charging**, so this resistor is not optional. |
+| 13 | IN | `/USB_VBUS`, C1 100 nF + C2 10 µF | Input range 4.35–6.6 V, OVP at 6.6 V; survives 26 V without damage but suspends. Spec asks 1–10 µF bypass. |
+| 14 | TMR | open | "Leave TMR unconnected to set the timers to the default values." Intentional — the default pre-charge and fast-charge safety timers are what is wanted. |
+| 15 | SYSOFF | GND | BQ24075-specific pin. "Connect SYSOFF low for normal operation." It is internally pulled **up** to VBAT through ~5 MΩ, so grounding it is required rather than conventional: floating, the battery would be disconnected from OUT. |
+| 16 | ISET | `/ISET`, R3 3.57k 1% to GND | Spec range 590 Ω to 8.9 kΩ. I(CHG) = KISET/RISET, KISET typ 890 AΩ (797–975), so 890/3570 ≈ **249 mA** typ and 223–273 mA across the spread — about 0.5C for a 500 mAh cell. **Charging is disabled if ISET is left unconnected.** |
+| 17 | EP | GND | "There is an internal electrical connection between the exposed thermal pad and the VSS pin... Do not use the thermal pad as the primary ground input." Both EP and pin 8 go to GND. |
+
+Table 7-2 is indexed **(EN2, EN1)** — the reverse of the order the pins are named in, which is an easy way to set the wrong limit:
+
+| EN2 | EN1 | Maximum input current into IN |
+|---|---|---|
+| 0 | 0 | 100 mA, USB100 — the power-on default from the internal pulldowns |
+| 0 | 1 | 500 mA, USB500 |
+| 1 | 0 | Set by RILIM: 1.6 kΩ → about 1.0 A |
+| 1 | 1 | Standby (USB suspend) |
+
+**SYS rail voltage — check this on the bench.** V(OUT-REG) is 5.5 V and V(DPPM) is 4.3 V (Section 6). SYS feeds U6, and the TPS63031's recommended supply is 1.8–5.5 V with an absolute maximum of 7 V. Removing the old Schottky D2 raised SYS by that diode's forward drop, so a 5.0 V port now puts roughly 4.9–5.0 V on SYS instead of about 4.55 V. That is still inside the TPS63031's recommended range, and the behaviour above it improved: OUT regulates at 5.5 V rather than passing the input through, and the input OVPs at 6.6 V, where the diode would have handed a 7 V supply to the regulator at about 6.55 V. Steady-state headroom went down, the failure mode got safer. Measure SYS with a high-end-of-spec 5.25 V source before trusting it.
+
+When the input is out of range, OUT is connected to VBAT (unless SYSOFF is high). That is what makes `SUPPLY_SENSE` on SYS_SW a battery reading while running unplugged — and why it is not one while charging.
 
 ## U6 — TI TPS63031DSKR
 
@@ -77,12 +108,18 @@ Input 10 µF + 100 nF are between SYS_SW and ground. Two 22 µF nominal output c
 
 ## ERC and unused-pin treatment
 
-Only three electrically justified PWR_FLAG symbols are used: external USB VBUS, external/common ground, and switched SYS supply after the passive power switch. Neither converter output nor battery/charger node is given a redundant flag. NC markers identify unused module GPIOs, USB SBU contacts, spare ESD channels, LIS2DW12 NC/INT2, charger STAT, and the documented LM1815 unused/open-mode pins. See the CSV/JSON audit for each case. ERC has no exclusions or disabled checks.
+Only three electrically justified PWR_FLAG symbols are used: external USB VBUS, external/common ground, and switched SYS supply after the passive power switch. Neither converter output nor battery/charger node is given a redundant flag. NC markers identify unused module GPIOs, USB SBU contacts, spare ESD channels, the BQ24075 TMR pin, and the documented LM1815 unused/open-mode pins. The charger status pins are no longer among them: the BQ24075 drives PGOOD and CHG into GPIOs. As of Rev E the sheet also has no dangling wire stubs, so ERC is clean at 0 errors and 0 warnings. See the CSV/JSON audit for each case. ERC has no exclusions or disabled checks.
 
 
-## Revision B � charging independent of SW1
+## Revision B — charging independent of SW1
 
-[Microchip AN1149, DS01149C, figures 5�7](https://ww1.microchip.com/downloads/en/AppNotes/01149c.pdf) supplies the directional-control topology. Charger VDD remains on USB_VBUS and VBAT remains on BAT. The USB Schottky feeds SYS; the P-channel MOSFET has drain on BAT, source on SYS and gate on USB_VBUS. SW1 connects SYS to SYS_SW. With valid USB, Q3 is OFF and USB supplies the load separately from the battery charging node. Without USB, R27 pulls Q3 gate down and the battery supplies SYS. Local application-note PDF saved.
+> **Superseded in Rev E.** D2, Q3, R27 and R31 were removed when the MCP73831 gave
+> way to the BQ24075, whose integrated DPPM power path does this internally and better:
+> no diode drop, and the system runs with a defective or absent cell. Kept as the record
+> of what the discrete topology was and why.
+
+
+[Microchip AN1149, DS01149C, figures 5–7](https://ww1.microchip.com/downloads/en/AppNotes/01149c.pdf) supplies the directional-control topology. Charger VDD remains on USB_VBUS and VBAT remains on BAT. The USB Schottky feeds SYS; the P-channel MOSFET has drain on BAT, source on SYS and gate on USB_VBUS. SW1 connects SYS to SYS_SW. With valid USB, Q3 is OFF and USB supplies the load separately from the battery charging node. Without USB, R27 pulls Q3 gate down and the battery supplies SYS. Local application-note PDF saved.
 
 - Q3 [AO3401A, manufacturer Rev 3.1 December 2023](https://www.aosmd.com/sites/default/files/res/datasheets/AO3401A.pdf): SOT-23 top view verified against standard library/footprint: 1 gate, 2 source, 3 drain. Maximum RDS(on) 85 milliohms at VGS=-2.5 V. The body diode points BAT to SYS; reversing source/drain would defeat USB isolation. Local PDF and pin drawing saved.
 - D2 [Nexperia PMEG4010CEH, 12 October 2023 v3](https://assets.nexperia.com/documents/data-sheet/PMEG4010CEH.pdf): pin 1 cathode to SYS, pin 2 anode to USB_VBUS; SOD123F, 40 V, 1 A. Manufacturer web PDF verified; direct local download returned 403. Maximum pulsed VF at 25 C is 490 mV at 500 mA, 570 mV at 1 A. Provide thermal copper and verify operating temperature/current on the PCB.
@@ -96,9 +133,41 @@ Expected states: USB absent/OFF = puck off; USB absent/ON = battery powers puck;
 
 Generic 1x05 2.54 mm header; no manufacturer pinout to verify. Assignment follows the common u-blox breakout order VCC, GND, TX, RX, PPS. GPIO1/GPIO2 are ordinary IOs on the ESP32-S3-MINI-1 (pads 5/6) routed to UART1 through the GPIO matrix; GPIO13 (pad 17) is the PPS input. GPIO3/45/46 strapping pins remain unloaded. Module must be 3.3 V logic and is supplied from the 3.3 V rail (about 30 mA active).
 
+## Rev E parts and changes (2026-09-13)
+
+- **U5 MCP73831 → BQ24075RGT, and D2 / Q3 / R27 / R31 deleted.** The discrete
+  arrangement charged the cell and OR-ed USB against the battery with a Schottky and a
+  P-channel FET. The BQ24075 does the same job with an integrated DPPM power path, and
+  brings things the discrete version could not: it powers the system and charges the
+  battery independently, runs with a defective or absent pack, limits inrush to meet
+  USB-IF, and applies VIN-DPM so a weak port sags rather than collapses. New support
+  parts R3 3.57k (ISET, ~249 mA), R35 1.6k (ILIM, ~1.0 A), R36 10k (TS), R37/R38 100k
+  (PGOOD / CHG pull-ups), C30 10 µF on OUT. Every pin is checked against SLUS810N in
+  the U5 section above.
+- **Four charger pins to GPIOs**: EN1 → GPIO5, EN2 → GPIO18, PGOOD → GPIO21,
+  CHG → GPIO38. EN1/EN2 set the input current limit; PGOOD and CHG are open-drain
+  status inputs, active low, with 100k pull-ups. Until firmware drives EN1/EN2 the
+  internal 285 kΩ pulldowns hold USB100, so the puck charges at 100 mA out of the box.
+- **R33/R34/C31 and `BAT_SENSE` removed.** They existed only so firmware could compare
+  SYS_SW against BAT and infer USB presence. PGOOD reports a valid input source
+  directly, from the device that actually arbitrates it, so the inference is
+  unnecessary. Removing it also retires the 500 kΩ ADC source impedance and the ~2 µA
+  standing drain on the cell. GPIO4 (U1 pad 8) is unused again and its no-connect is
+  back in `review/unused-pins.json`.
+- **Consequence worth recording**: `SUPPLY_SENSE` on GPIO12 is now the only supply
+  measurement on the board, and GPIO12 is ADC2_CH1. ADC2 shares with the radio, which
+  is why BAT_SENSE had been put on ADC1. Nothing is broken — SUPPLY_SENSE was always
+  on ADC2 — but the design no longer has an ADC1 path to the supply, and firmware that
+  needs a reading with the radio up has to deal with that.
+- **Net class**: `/SYS` was added to the Power class (0.50 mm). It is the BQ24075's OUT
+  rail and carries the whole system load, and it did not exist under the old topology;
+  at the 0.20 mm default it would have been rated 0.74 A. The stale `Net-(D2-K)`
+  pattern was dropped with D2.
+
 ## Rev D parts and changes (2026-09-13)
 
-- **R33/R34 1M, C31 100 nF - BAT sense divider**: `BAT/2` onto U1 pad 8 = GPIO4, which
+- **R33/R34 1M, C31 100 nF - BAT sense divider** *(removed in Rev E; the
+  BQ24075's PGOOD pin reports input power directly)*: `BAT/2` onto U1 pad 8 = GPIO4, which
   is ADC1_CH3 on the ESP32-S3. ADC1 was chosen over ADC2 because ADC2 is shared with the
   radio; GPIO3 was avoided because it is a strapping pin. U1 pad 8's no-connect was
   removed and the pin dropped from `review/unused-pins.json`.
