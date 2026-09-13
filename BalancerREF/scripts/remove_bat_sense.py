@@ -17,6 +17,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from sexp_helpers import *
+from rollback import Rollback
 
 ROOT = HERE.parent
 assert ROOT.name == 'BalancerREF', ROOT
@@ -125,15 +126,25 @@ dp = [s for s in children(d, 'symbol') if refof(s).startswith('#')
       and pinpts(s) and pinpts(s)[0] not in live and pinpts(s)[0] not in anchors]
 print('sweeping orphans: %d wires, %d labels, %d power symbols' % (len(dw), len(dl), len(dp)))
 d[:] = [a for a in d if id(a) not in {id(x) for x in dw + dl + dp}]
-SCH.write_text(dump(d) + '\n', encoding='utf8')
 
 up = ROOT / 'review' / 'unused-pins.json'
-nc = json.loads(up.read_text())
-nc['U1.8'] = 'Unused GPIO; BAT_SENSE removed once the BQ24075 PGOOD pin made it redundant'
-up.write_text(json.dumps(nc, indent=2))
-print('unused-pins.json: U1.8 restored, %d entries' % len(nc))
+# The orphan sweep is the risky step - it decides which wire islands no longer reach a
+# pin, and getting that wrong silently splits a net. So both files are snapshotted and
+# the netlist comparison below is a gate, not a report: if any surviving net moved, the
+# schematic and unused-pins.json go back exactly as they were and the run fails.
+with Rollback(SCH, up) as guard:
+    SCH.write_text(dump(d) + '\n', encoding='utf8')
 
-cur = partition(export(tmp / 'a.net'), drop={'U1'})
-bad = [k for k in base if base[k] != cur.get(k)]
-print('\nsurviving nets changed: %s' % (bad or 'NONE - every other net identical'))
-print('BAT_SENSE present: %s' % any(v == '/BAT_SENSE' for v in cur.values()))
+    nc = json.loads(up.read_text())
+    nc['U1.8'] = 'Unused GPIO; BAT_SENSE removed once the BQ24075 PGOOD pin made it redundant'
+    up.write_text(json.dumps(nc, indent=2))
+    print('unused-pins.json: U1.8 restored, %d entries' % len(nc))
+
+    cur = partition(export(tmp / 'a.net'), drop={'U1'})
+    moved = {k: (base[k], cur.get(k)) for k in base if base[k] != cur.get(k)}
+    guard.require(not moved, 'surviving nets changed: %s' % moved)
+    print('\nsurviving nets: NONE changed - every other net identical')
+
+    still = sorted(k for k, v in cur.items() if v == '/BAT_SENSE')
+    guard.require(not still, 'BAT_SENSE survived on %s' % still)
+    print('BAT_SENSE present: False')

@@ -31,6 +31,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from sexp_helpers import *
+from rollback import Rollback
 
 ROOT = HERE.parent
 assert ROOT.name == 'BalancerREF', ROOT
@@ -179,22 +180,39 @@ if not APPLY:
     print('\nDRY RUN - nothing written.')
     sys.exit(0)
 
-SCH.write_text(dump(d) + '\n', encoding='utf8')
-
-# --- drop U1.8 from the documented-unused list --------------------------------
+# Adding a divider is supposed to change exactly one existing pin - U1.8, which goes
+# from unconnected to BAT_SENSE. Anything else moving means the new wires landed on a
+# net they should not have, and printing that after the file is already on disk is no
+# use: the checks below are a gate, and a failure puts both files back untouched.
+EXPECT_MOVED = {'U1.8'}
 up = ROOT / 'review' / 'unused-pins.json'
-nc = json.loads(up.read_text())
-if 'U1.8' in nc:
-    del nc['U1.8']
-    up.write_text(json.dumps(nc, indent=2))
-    print('unused-pins.json: removed U1.8 (now BAT_SENSE), %d remain' % len(nc))
 
-after = partition(export(tmp / 'a.net'))
-changed = {k: (before.get(k), v) for k, v in after.items() if before.get(k) != v}
-gone = [k for k in before if k not in after]
-print('\nnets that changed:')
-for k, (b, a) in sorted(changed.items()):
-    print('   %-8s %s -> %s' % (k, b, a))
-print('endpoints lost:', gone or 'none')
-grp = sorted(k for k, v in after.items() if v == '/' + NET)
-print('/%s now: %s' % (NET, ' '.join(grp)))
+with Rollback(SCH, up) as guard:
+    SCH.write_text(dump(d) + '\n', encoding='utf8')
+
+    # --- drop U1.8 from the documented-unused list ----------------------------
+    nc = json.loads(up.read_text())
+    if 'U1.8' in nc:
+        del nc['U1.8']
+        up.write_text(json.dumps(nc, indent=2))
+        print('unused-pins.json: removed U1.8 (now BAT_SENSE), %d remain' % len(nc))
+
+    after = partition(export(tmp / 'a.net'))
+    changed = {k: (before.get(k), v) for k, v in after.items() if before.get(k) != v}
+    gone = [k for k in before if k not in after]
+    print('\nnets that changed:')
+    for k, (b, a) in sorted(changed.items()):
+        print('   %-8s %s -> %s' % (k, b, a))
+    print('endpoints lost:', gone or 'none')
+    grp = sorted(k for k, v in after.items() if v == '/' + NET)
+    print('/%s now: %s' % (NET, ' '.join(grp)))
+
+    guard.require(not gone, 'endpoints disappeared: %s' % gone)
+    # pins that already existed and moved net; the three new parts are not "moved"
+    moved = {k for k, (b, _) in changed.items() if b is not None}
+    guard.require(moved == EXPECT_MOVED,
+                  'expected only %s to change net, got %s' % (sorted(EXPECT_MOVED), sorted(moved)))
+    guard.require(set(grp) == {'R33.2', 'R34.1', 'C31.1', 'U1.8'},
+                  '/%s has the wrong members: %s' % (NET, grp))
+    print('\nchecked: only %s moved, nothing lost, /%s is exactly the divider plus the ADC pin'
+          % (sorted(EXPECT_MOVED), NET))

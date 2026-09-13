@@ -23,6 +23,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from sexp_helpers import *
+from rollback import Rollback
 
 ROOT = HERE.parent
 assert ROOT.name == 'BalancerREF', ROOT
@@ -220,22 +221,45 @@ for pad, (net, sgn) in GPIO.items():
     d.append(wire((px, py), (bx, py)))
     d.append(label(net, bx, py, 0 if sgn > 0 else 180))
 
-SCH.write_text(dump(d) + '\n', encoding='utf8')
+# This swap intentionally moves a great many nets, so "nothing changed" is the wrong
+# check here. What has to hold is that every net the BQ24075 needs came out populated
+# and that no BQ24075 pin was left floating: an empty ISET or ILIM net is not cosmetic,
+# it is a charger that will not charge. If either check fails the files go back
+# untouched rather than leaving a half-swapped sheet that looks like a clean run.
+REQUIRED = ('/SYS', '/BAT', '/USB_VBUS', '/CHG_EN1', '/CHG_EN2', '/PGOOD_N',
+            '/CHG_STAT', '/ISET', '/ILIM', '/TS')
 
 up = ROOT / 'review' / 'unused-pins.json'
-nc = json.loads(up.read_text())
-for pad in GPIO:
-    nc.pop('U1.' + pad, None)
-nc['U5.14'] = 'TMR left open: sets the default pre-charge and fast-charge safety timers (SLUS810N Table 7-1)'
-up.write_text(json.dumps(nc, indent=2))
-print('unused-pins.json: dropped 4 U1 GPIOs, added U5.14 (TMR); %d entries' % len(nc))
+with Rollback(SCH, up) as guard:
+    SCH.write_text(dump(d) + '\n', encoding='utf8')
 
-after = partition(export(tmp / 'a.net'))
-print('\nchanged endpoints:')
-for k in sorted(set(after) | set(before)):
-    b, a = before.get(k), after.get(k)
-    if b != a: print('   %-9s %-26s -> %s' % (k, b, a))
-for n in ('/SYS', '/BAT', '/USB_VBUS', '/CHG_EN1', '/CHG_EN2', '/PGOOD_N', '/CHG_STAT',
-          '/ISET', '/ILIM', '/TS'):
-    g = sorted(k for k, v in after.items() if v == n)
-    print('%-11s %s' % (n, ' '.join(g) if g else '(absent)'))
+    nc = json.loads(up.read_text())
+    for pad in GPIO:
+        nc.pop('U1.' + pad, None)
+    nc['U5.14'] = 'TMR left open: sets the default pre-charge and fast-charge safety timers (SLUS810N Table 7-1)'
+    up.write_text(json.dumps(nc, indent=2))
+    print('unused-pins.json: dropped 4 U1 GPIOs, added U5.14 (TMR); %d entries' % len(nc))
+
+    after = partition(export(tmp / 'a.net'))
+    print('\nchanged endpoints:')
+    for k in sorted(set(after) | set(before)):
+        b, a = before.get(k), after.get(k)
+        if b != a: print('   %-9s %-26s -> %s' % (k, b, a))
+
+    groups = {n: sorted(k for k, v in after.items() if v == n) for n in REQUIRED}
+    for n in REQUIRED:
+        print('%-11s %s' % (n, ' '.join(groups[n]) if groups[n] else '(absent)'))
+
+    empty = [n for n in REQUIRED if not groups[n]]
+    guard.require(not empty, 'required net(s) came out empty: %s' % empty)
+
+    # A BQ24075 pin may be unconnected only if it is documented as such - which right
+    # now means TMR and nothing else. Checking against unused-pins.json rather than a
+    # hardcoded list keeps the two from drifting apart.
+    documented = {k for k in nc if k.startswith('U5.')}
+    floating = sorted(k for k, v in after.items()
+                      if k.startswith('U5.') and v.startswith('unconnected-')
+                      and k not in documented)
+    guard.require(not floating, 'undocumented floating BQ24075 pin(s): %s' % floating)
+    print('\nall %d required nets populated; floating U5 pins limited to %s'
+          % (len(REQUIRED), sorted(documented) or 'none'))
