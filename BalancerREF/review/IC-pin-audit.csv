@@ -6,8 +6,8 @@ U1,4,GPIO0,/BOOT,
 U1,5,GPIO1,/GPS_UART_TX,
 U1,6,GPIO2,/GPS_UART_RX,
 U1,7,GPIO3,unconnected-(U1-IO3-Pad7),Unused GPIO; retain default strap states on GPIO3/45/46
-U1,8,GPIO4,/BAT_SENSE,
-U1,9,GPIO5,unconnected-(U1-IO5-Pad9),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,8,GPIO4,unconnected-(U1-IO4-Pad8),Unused GPIO; BAT_SENSE removed once the BQ24075 PGOOD pin made it redundant
+U1,9,GPIO5,/CHG_EN1,
 U1,10,GPIO6,/ACCEL_DRDY,
 U1,11,GPIO7,/MAG_TACH,
 U1,12,GPIO8,/OPT_TACH,
@@ -20,10 +20,10 @@ U1,18,GPIO14,/ACCEL_SCK,
 U1,19,GPIO15,/ACCEL_MOSI,
 U1,20,GPIO16,/ACCEL_MISO,
 U1,21,GPIO17,/ACCEL_CS,
-U1,22,GPIO18,unconnected-(U1-IO18-Pad22),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,22,GPIO18,/CHG_EN2,
 U1,23,GPIO19/USB_D-,Net-(U1-USB_D-),
 U1,24,GPIO20/USB_D+,Net-(U1-USB_D+),
-U1,25,GPIO21,unconnected-(U1-IO21-Pad25),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,25,GPIO21,/PGOOD_N,
 U1,26,GPIO26,unconnected-(U1-IO26-Pad26),Unused GPIO; retain default strap states on GPIO3/45/46
 U1,27,GPIO47,unconnected-(U1-IO47-Pad27),Unused GPIO; retain default strap states on GPIO3/45/46
 U1,28,GPIO33,unconnected-(U1-IO33-Pad28),Unused GPIO; retain default strap states on GPIO3/45/46
@@ -32,7 +32,7 @@ U1,30,GPIO48,unconnected-(U1-IO48-Pad30),Unused GPIO; retain default strap state
 U1,31,GPIO35,unconnected-(U1-IO35-Pad31),Unused GPIO; retain default strap states on GPIO3/45/46
 U1,32,GPIO36,unconnected-(U1-IO36-Pad32),Unused GPIO; retain default strap states on GPIO3/45/46
 U1,33,GPIO37,unconnected-(U1-IO37-Pad33),Unused GPIO; retain default strap states on GPIO3/45/46
-U1,34,GPIO38,unconnected-(U1-IO38-Pad34),Unused GPIO; retain default strap states on GPIO3/45/46
+U1,34,GPIO38,/CHG_STAT,
 U1,35,GPIO39,unconnected-(U1-IO39-Pad35),Unused GPIO; retain default strap states on GPIO3/45/46
 U1,36,GPIO40,unconnected-(U1-IO40-Pad36),Unused GPIO; retain default strap states on GPIO3/45/46
 U1,37,GPIO41,unconnected-(U1-IO41-Pad37),Unused GPIO; retain default strap states on GPIO3/45/46
@@ -92,11 +92,23 @@ U3,11,INPUT_SELECT,GND,
 U3,12,REFERENCE_PULSE_OC,/MAG_TACH,
 U3,13,NC,unconnected-(U3-NC-Pad13),No internal connection per TI
 U3,14,RC_TIMING,Net-(U3-RC_TIMING),
-U5,1,STAT,unconnected-(U5-STAT-Pad1),Optional STAT omitted; MCP73831 tri-state output can rise to VDD
-U5,2,VSS,GND,
-U5,3,VBAT,/BAT,
-U5,4,VDD,/USB_VBUS,
-U5,5,PROG,Net-(U5-PROG),
+U5,1,TS,/TS,
+U5,2,BAT,/BAT,
+U5,3,BAT,/BAT,
+U5,4,CE,GND,
+U5,5,EN2,/CHG_EN2,
+U5,6,EN1,/CHG_EN1,
+U5,7,PGOOD,/PGOOD_N,
+U5,8,VSS,GND,
+U5,9,CHG,/CHG_STAT,
+U5,10,OUT,/SYS,
+U5,11,OUT,/SYS,
+U5,12,ILIM,/ILIM,
+U5,13,IN,/USB_VBUS,
+U5,14,TMR,unconnected-(U5-TMR-Pad14),TMR left open: sets the default pre-charge and fast-charge safety timers (SLUS810N Table 7-1)
+U5,15,SYSOFF,GND,
+U5,16,ISET,/ISET,
+U5,17,EP_VSS,GND,
 U6,1,VOUT,/+3V3,
 U6,2,L2,Net-(U6-L2),
 U6,3,PGND,GND,

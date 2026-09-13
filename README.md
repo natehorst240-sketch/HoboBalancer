@@ -17,7 +17,7 @@ KiCad 9 will not open them.
 | Directory | Board | Revision | State |
 |---|---|---|---|
 | `.` (root) | `Balancer` — STM32 balancer | Rev A | Schematic only; `Balancer.kicad_pcb` is an empty stub |
-| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev D** | 50 × 50 mm, 4 layer, placed, unrouted |
+| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev E** | 50 × 50 mm, 4 layer, placed, unrouted |
 | `BalancerREF_OptHead/` | Optical tach head | Rev A | 25 × 50 mm, 2 layer, placed, unrouted |
 
 Both boards are **placed but not routed**. Placement is machine-generated and then
@@ -37,7 +37,7 @@ a 10 °C rise (0.20 mm ≈ 0.74 A, 0.50 mm ≈ 1.45 A, 0.80 mm ≈ 2.03 A):
 | Class | Track | Nets |
 |---|---|---|
 | Default | 0.20 mm | everything else |
-| Power | 0.50 mm | `+3V3` `SYS_SW` `BAT` `USB_VBUS` `GND` `D2-K` |
+| Power | 0.50 mm | `+3V3` `SYS` `SYS_SW` `BAT` `USB_VBUS` `GND` |
 | Switch | 0.80 mm | `U6-L1` `U6-L2` — main board only |
 | USB | 0.20 mm | `D+`/`D-` both sides, diff pair 0.20/0.15 |
 | Emitter | 0.80 mm | `SYS_SW` `D1-A` `D1-K` — head board only |
@@ -52,7 +52,7 @@ that matters far less than it would at High Speed.
 ### BalancerREF (HOBOVibe)
 
 The main puck. ESP32-S3-MINI-1, IIS3DWB vibration sensor on SPI, LM1815 magnetic tach
-front end, MCP73831 charger with USB/battery power sharing, TPS63031 buck-boost, and a
+front end, BQ24075 charger with an integrated dynamic power path, TPS63031 buck-boost, and a
 1x05 header for an optional u-blox-class GPS used by the in-flight logging mode.
 
 Two measurement profiles: **MR-VERT** uses an external isolated two-wire VR pickup;
@@ -60,9 +60,12 @@ Two measurement profiles: **MR-VERT** uses an external isolated two-wire VR pick
 
 50 × 50 mm, four layers, components on both faces: ICs, connectors, switches and test
 points on the front, passives on the back so each decoupling cap sits under its IC's
-power pins. M2.5 mounting holes at the four corners. U1's antenna deliberately
-overhangs the top edge, which moves its keepout off the board entirely — and is
-required anyway, because the aluminium bracket must not sit behind a PCB antenna.
+power pins. M2.5 mounting holes at the four corners, on a 43.40 × 42.90 mm rectangle
+centred on the board. U1's antenna deliberately overhangs the top edge, which puts
+almost all of its keepout off the board — the wide band still reaches 0.44 mm inside
+the top edge, which is why the mounting-hole rectangle is 0.5 mm shorter than it is
+wide. The overhang is required anyway, because the aluminium bracket must not sit
+behind a PCB antenna.
 
 The puck mounts **vertically, ESP32 to the left and USB-C to the right**. `UP` and
 `LEFT` markers on the front silkscreen record that; with the board vertical the
@@ -74,24 +77,33 @@ vertical axis reads a static 1 g when the puck is mounted upright.
 Three switches: SW1 power slide, SW2 acquire, SW3 boot. There is no reset button —
 SW1 feeds U6's VIN and EN, so the power slide already power-cycles the MCU.
 
-**Two supply sense dividers, and they only mean something together.** `SUPPLY_SENSE`
-reads `SYS_SW/2` on GPIO12; `BAT_SENSE` reads `BAT/2` on GPIO4 (ADC1_CH3). Neither
-alone can answer "am I on USB?" — SYS is fed either from USB through D2 or from the
-cell through Q3, and those ranges overlap: a USB port at the low end of spec minus
-D2's drop lands near 4.30 V against a full cell at 4.20 V, which divider tolerance and
-the ESP32-S3's ADC error swallow completely. Compared against each other they
-separate cleanly:
+**Power path and charging.** A BQ24075 runs the input: it charges the cell and powers
+the system from the same input independently, so charge termination is correct while
+the puck is running, and it will run with a defective or absent pack. R3 (3.57 k)
+sets fast charge to about 249 mA — 0.5C for a 500 mAh cell — and R35 (1.6 k) sets the
+resistor-programmed input limit to about 1.0 A.
 
-```
-SYS_SW ≈ BAT           -> running on battery
-SYS_SW > BAT + ~0.3 V  -> USB present
-```
+Four pins go to the MCU. `CHG_EN1` (GPIO5) and `CHG_EN2` (GPIO18) select the input
+current limit; `PGOOD_N` (GPIO21) and `CHG_STAT` (GPIO38) are open-drain status inputs
+with 100 k pull-ups, both **active low**. Two things are easy to get wrong here:
 
-That is a differential test, so it does not depend on absolute ADC accuracy. BAT_SENSE
-uses 1 M/1 M rather than SUPPLY_SENSE's 100 k/100 k because it hangs directly on the
-cell and drains it even when the puck is off — ~2 µA instead of ~21 µA. The price is a
-500 kΩ source impedance, so **firmware must use a long sample time and multisample**;
-C31 supplies the sampling charge but a fast single conversion will still read low.
+- The datasheet's current-limit table is indexed **(EN2, EN1)**, the reverse of the
+  order the pins are named in.
+- Both EN pins have 285 k internal pulldowns, so the limit is USB100 — **100 mA** —
+  until firmware deliberately raises it.
+
+`PGOOD_N` is the USB-present signal. Earlier revisions tried to infer that by comparing
+two ADC dividers, because a single reading of `SYS_SW` cannot answer it: SYS was fed
+either from USB through a Schottky or from the cell through a PFET, and the ranges
+overlap. The BQ24075 arbitrates the input itself and simply reports the answer, so
+Rev E deleted the second divider (`BAT_SENSE`, R33/R34/C31) along with its 500 k ADC
+source impedance and its ~2 µA standing drain on the cell.
+
+`SUPPLY_SENSE` (`SYS_SW/2` on GPIO12) survives as the supply-voltage reading. While the
+puck runs unplugged the BQ24075 connects OUT to the battery, so it reads the cell; while
+charging it reads the input-derived rail instead, not the cell. It is on ADC2_CH1, the
+converter shared with the radio — worth knowing, because it is now the only supply
+measurement on the board.
 
 See [`BalancerREF/README.md`](BalancerREF/README.md) for the circuit description and
 [`BalancerREF/DATASHEET-VERIFICATION.md`](BalancerREF/DATASHEET-VERIFICATION.md) for
@@ -140,7 +152,7 @@ bypassed series part or a reversed two-terminal part fails rather than passing q
 # main board
 cd BalancerREF
 kicad-cli sch export netlist --format kicadsexpr -o review/BalancerREF.net BalancerREF.kicad_sch
-python scripts/verify_netlist.py     # PASS: 44 exact circuit nets, 286 pin endpoints
+python scripts/verify_netlist.py     # PASS: 49 exact circuit nets, 293 pin endpoints
 
 # optical head
 cd ../BalancerREF_OptHead
@@ -153,6 +165,14 @@ chain and asserts that *every* pin in the netlist belongs to some named net, so 
 wrong connector pinout or a missed part fails rather than passing quietly. Run these
 against a freshly exported netlist — a stale `.net` will report a green that means
 nothing.
+
+Both sheets pass ERC at **0 errors and 0 warnings**. Removing a part leaves the wires
+that used to reach its pins, so `BalancerREF/scripts/fix_dangling_wires.py` sweeps those:
+it removes a wire only when one end touches nothing at all, never removes a wire carrying
+a label (labels attach to wire bodies, so that would silently split a net - trimming the
+dead tail back to the label is the fix there), and exports the netlist before and after
+to prove no pin changed net. It checks its own geometry against KiCad's ERC first and
+aborts if the two disagree.
 
 Generator scripts under `scripts/` are guarded and refuse to run without
 `--overwrite-hand-layout`: both sheets were laid out by hand after generation, and the
@@ -168,10 +188,15 @@ gets that snapshot.
 |---|---|
 | `revC` | single board, optical front end on the main PCB, no layout |
 | `revD` | optical head split out; SW4 and R5 dropped; BAT sense divider added; both boards placed |
+| `revE` | MCP73831 + D2 + Q3 + R27 + R31 replaced by a BQ24075; BAT sense divider removed |
 
-Rev D is defined by the **battery/supply sensing change** — `BAT_SENSE` on GPIO4
-alongside `SUPPLY_SENSE`, which is what finally lets firmware tell USB from battery.
-The board split and the two part deletions rode along in the same revision.
+Rev D was defined by the **battery/supply sensing change** — `BAT_SENSE` on GPIO4
+alongside `SUPPLY_SENSE`, to let firmware tell USB from battery. The board split and the
+two part deletions rode along in the same revision.
+
+Rev E is the **charge-management change**, and it removed Rev D's divider again: with a
+BQ24075 arbitrating the input, `PGOOD` answers "am I on USB?" directly and the
+two-divider comparison had nothing left to do. Five discrete parts went with it.
 
 ## Not in this repo
 

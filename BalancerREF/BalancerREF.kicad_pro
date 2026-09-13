@@ -582,6 +582,10 @@
       },
       {
         "netclass": "Power",
+        "pattern": "/SYS"
+      },
+      {
+        "netclass": "Power",
         "pattern": "/SYS_SW"
       },
       {
@@ -595,10 +599,6 @@
       {
         "netclass": "Power",
         "pattern": "GND"
-      },
-      {
-        "netclass": "Power",
-        "pattern": "Net-(D2-K)"
       },
       {
         "netclass": "Switch",
