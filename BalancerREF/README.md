@@ -2,7 +2,7 @@
 
 ESP32-S3 firmware is in [firmware/README.md](firmware/README.md), including build/flash instructions, MR-VERT/TR-VERT controls, BLE/USB protocol, and a MicroVib comparison logger. Its measurement accuracy remains subject to bench validation.
 
-Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev E (2026-09-13), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers, placed but not routed. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815, TS3021 and BQ24075RGT have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
+Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev F (2026-09-13), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers, placed but not routed. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815, TS3021 and BQ24075RGT have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
 
 This is a reference/troubleshooting instrument for approximate RPM, 1/rev vibration magnitude, phase, stability and trends. Maintenance balancing remains with calibrated MicroVib/DynaVibe equipment. Firmware and physical performance have not been validated by schematic ERC.
 
@@ -24,6 +24,44 @@ All local functional circuits use real wires. Labels carry signals between compl
 |---|---|---|---|
 | MR-VERT | External isolated two-wire VR pickup at J3 / J_MAG | Off | Internal IIS3DWB on SPI, all axes available |
 | TR-VERT | Onboard pulsed-red synchronous-detection optical tach (retroreflective tape) | 20 kHz pulses | Same sensor |
+
+### Rev F changes (2026-09-13)
+
+Rev F is the **repo-review revision**: no new function, but several things that had to
+be right before any copper is routed. Every claim was checked against the manufacturer
+source, and two of them did not survive that check (see DATASHEET-VERIFICATION.md for
+the full record, including what was deliberately NOT changed).
+
+- **R18 3.0 -> 3.9 ohm on the head board.** The emitter runs from SYS_SW, and the
+  BQ24075 regulates OUT to 5.5 V, so the old value gave about 1.1 A peak into D1's 1 A
+  absolute maximum. The BOM note had only checked the 4.2 V battery case. This is a
+  regression introduced by Rev E: the Schottky it removed had been holding SYS near
+  4.55 V. 3.9 ohm keeps the 500 mA design point at a full cell and lands at about
+  0.90 A worst case.
+- **U9 SN74LVC1G08 -> SN74LVC1G132.** R29/C26 fed the AND gate a 0.47 us edge against a
+  10 ns/V input transition spec. The 1G132 is a Schmitt NAND on the identical SOT-23-5
+  pinout, so the footprint is untouched, and it conditions both inputs rather than only
+  the RC branch. It inverts, so U10's trigger moved from B rising to ~A falling - the
+  SN74LVC1G123 supports both edges.
+- **Switching loop off the vias.** L1 and C4-C7 were on the back with U6 on the front,
+  so a 2.4 MHz switching node and both its input and output caps reached the IC through
+  vias. They moved to U6's face, and C2/C3/C30 followed for the BQ24075. The
+  "ICs front, passives back" rule does not survive contact with a switching converter.
+- **U1 decoupling at the pad.** C8 is now 0.38 mm from the 3V3 pad rather than about
+  9 mm. Both caps stay on the back, since U1's body owns that part of the front.
+- **Head board loop and TIA.** C20/R18/Q1 now cluster in 6.9 x 3.3 mm instead of
+  spanning the board width, and R21/C21 moved from 4 mm off Q1 to 16 mm, sitting
+  3.6/3.9 mm from U8 pins 1 and 2. The remaining ~8 mm up to D1 is set by its
+  provisional lens keepout, which is why those parts sat at the board edges to begin
+  with.
+- **Firmware drives the charger.** EN1/EN2 were left to their internal pulldowns, so the
+  input limit sat at USB100 - 100 mA covering system load and charge current together.
+  `setupCharger()` selects USB500 at boot and status reports `input_present`/`charging`.
+- Accepted rather than fixed, both recorded with numbers: SW1's 300 mA switching rating
+  against a ~180 mA steady draw with larger transients, and the LM1815's 3.6 mA on the
+  always-on rail making deep sleep a milliamp affair.
+
+The head board is **Rev B** as of this revision - its first change since creation.
 
 ### Rev E changes (2026-09-13)
 
@@ -50,20 +88,6 @@ All local functional circuits use real wires. Labels carry signals between compl
   The trade is that `SUPPLY_SENSE` (GPIO12, ADC2_CH1) is now the board's only supply
   measurement, and ADC2 is the unit shared with the radio - which is precisely why the
   removed divider had been put on ADC1.
-- **Repo-review fixes (pre-routing).** R18 3.0 -> 3.9 ohm on the head board: with the
-  BQ24075 regulating OUT to 5.5 V the old value gave ~1.1 A peak into D1's 1 A absolute
-  maximum, and the BOM note had only checked the 4.2 V battery case. U9 SN74LVC1G08 ->
-  SN74LVC1G132 (Schmitt NAND, same SOT-23-5 pinout) because R29/C26 fed it a 0.47 us
-  edge against a 10 ns/V input spec; U10's trigger moved from B rising to ~A falling to
-  match the inversion. Placement: L1 and C4-C7 moved to U6's own face so the 2.4 MHz
-  switching loop no longer runs through vias, C2/C3/C30 followed for the BQ24075, C8 is
-  now 0.38 mm from U1's 3V3 pad instead of ~9 mm, the head board's emitter loop shrank
-  from ~18 mm wide to 6.9 x 3.3 mm, and R21/C21 moved 16 mm away from the switch and up
-  against U8 pins 1 and 2. Firmware now drives EN1/EN2 to USB500 at boot instead of
-  leaving the charger at its 100 mA power-on default. Two items were checked and NOT
-  changed - SW1's 300 mA rating is accepted as a life trade-off, and KiCad 10 has no
-  ESP32-S3-MINI-1 footprint so the S2-MINI-1 land pattern is correct. See
-  DATASHEET-VERIFICATION.md for each one.
 - **Wire stubs swept**: the optical split, SW4, R5 and the charger swap each left the
   wires that used to reach the deleted pins, connected to a live net at one end and to
   nothing at the other - 19 of them, plus one orphaned no-connect flag. 23 wires were

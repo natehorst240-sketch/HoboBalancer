@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "C:\\Users\\nateh\\hgs-linux\\Balancer\\BalancerREF\\BalancerREF.kicad_sch")
-		(date "2026-09-13T10:11:33")
+		(date "2026-09-13T10:13:01")
 		(tool "Eeschema 10.0.3")
 		(sheet
 			(number "1")
@@ -11,7 +11,7 @@
 			(title_block
 				(title "HoboVibe Hobby Helicopter Dynamic Balancer")
 				(company)
-				(rev "E")
+				(rev "F")
 				(date "2026-09-13")
 				(source "BalancerREF.kicad_sch")
 				(comment

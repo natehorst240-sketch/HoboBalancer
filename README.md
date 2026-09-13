@@ -17,8 +17,8 @@ KiCad 9 will not open them.
 | Directory | Board | Revision | State |
 |---|---|---|---|
 | `.` (root) | `Balancer` — STM32 balancer | Rev A | Schematic only; `Balancer.kicad_pcb` is an empty stub |
-| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev E** | 50 × 50 mm, 4 layer, placed, unrouted |
-| `BalancerREF_OptHead/` | Optical tach head | Rev A | 25 × 50 mm, 2 layer, placed, unrouted |
+| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev F** | 50 × 50 mm, 4 layer, placed, unrouted |
+| `BalancerREF_OptHead/` | Optical tach head | **Rev B** | 25 × 50 mm, 2 layer, placed, unrouted |
 
 Both boards are **placed but not routed**. Placement is machine-generated and then
 meant to be refined by hand — decoupling is paired to its IC and connectors are
@@ -202,6 +202,7 @@ gets that snapshot.
 | `revC` | single board, optical front end on the main PCB, no layout |
 | `revD` | optical head split out; SW4 and R5 dropped; BAT sense divider added; both boards placed |
 | `revE` | MCP73831 + D2 + Q3 + R27 + R31 replaced by a BQ24075; BAT sense divider removed |
+| `revF` | repo-review fixes: R18 3.9 ohm, U9 Schmitt NAND, switcher and TIA placement |
 
 Rev D was defined by the **battery/supply sensing change** — `BAT_SENSE` on GPIO4
 alongside `SUPPLY_SENSE`, to let firmware tell USB from battery. The board split and the
@@ -210,6 +211,18 @@ two part deletions rode along in the same revision.
 Rev E is the **charge-management change**, and it removed Rev D's divider again: with a
 BQ24075 arbitrating the input, `PGOOD` answers "am I on USB?" directly and the
 two-divider comparison had nothing left to do. Five discrete parts went with it.
+
+Rev F is the **repo-review revision** — no new function, but a set of corrections that
+had to land before any copper is routed. One of them cleans up after Rev E: removing the
+USB Schottky raised `SYS_SW`, which pushed the head's emitter resistor past D1's absolute
+maximum current. The others are a logic part run outside its input-transition spec and
+three placement problems, the worst being a 2.4 MHz switching loop routed through vias.
+Rev F is also the first revision of the optical head since it was created, so that board
+moves from Rev A to **Rev B**.
+
+Two review items were checked and deliberately **not** changed — SW1's current rating
+and U1's footprint. `BalancerREF/DATASHEET-VERIFICATION.md` records why, so they are not
+re-raised at the next review.
 
 ## Not in this repo
 

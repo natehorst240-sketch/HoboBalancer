@@ -151,7 +151,7 @@ Expected states: USB absent/OFF = puck off; USB absent/ON = battery powers puck;
 
 Generic 1x05 2.54 mm header; no manufacturer pinout to verify. Assignment follows the common u-blox breakout order VCC, GND, TX, RX, PPS. GPIO1/GPIO2 are ordinary IOs on the ESP32-S3-MINI-1 (pads 5/6) routed to UART1 through the GPIO matrix; GPIO13 (pad 17) is the PPS input. GPIO3/45/46 strapping pins remain unloaded. Module must be 3.3 V logic and is supplied from the 3.3 V rail (about 30 mA active).
 
-## Repo review responses (2026-09-13)
+## Rev F — repo review responses (2026-09-13)
 
 An external review of the repo raised the items below. Each was checked against the
 manufacturer source rather than accepted or dismissed on its face.
