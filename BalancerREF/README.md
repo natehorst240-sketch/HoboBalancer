@@ -45,8 +45,18 @@ the full record, including what was deliberately NOT changed).
   SN74LVC1G123 supports both edges.
 - **Switching loop off the vias.** L1 and C4-C7 were on the back with U6 on the front,
   so a 2.4 MHz switching node and both its input and output caps reached the IC through
-  vias. They moved to U6's face, and C2/C3/C30 followed for the BQ24075. The
+  vias. They moved to U6's face, and C1/C2/C3/C30 followed for the BQ24075. The
   "ICs front, passives back" rule does not survive contact with a switching converter.
+  Two follow-on corrections came out of review: aim at the **pin**, not the net, and
+  place the fastest part first. U6 pins 5-8 are all on SYS_SW, so targeting "the input
+  net" had put the caps next to EN and PS/SYNC - logic inputs that happen to be strapped
+  high - rather than VIN and VINA; and the 10u bulk had taken the close spot while the
+  100n sat 4.4 mm out. C5 now sits 2.07 mm from VINA and C4 2.68 mm from VIN. C1, the
+  100n bypass on the BQ24075's IN pin, turned out to be **24 mm away on the back of the
+  board**, which is the same as not fitting it; it is now 5.3 mm out on the front.
+  TP6 and TP10 were squatting immediately left of U6 - the side VIN and PGND are on -
+  and were the reason the bulk input cap could not get near its pins. They moved beside
+  the circuits they actually probe.
 - **U1 decoupling at the pad.** C8 is now 0.38 mm from the 3V3 pad rather than about
   9 mm. Both caps stay on the back, since U1's body owns that part of the front.
 - **Head board loop and TIA.** C20/R18/Q1 now cluster in 6.9 x 3.3 mm instead of
@@ -78,8 +88,9 @@ The head board is **Rev B** as of this revision - its first change since creatio
 - **Charger control on four GPIOs**: EN1 = GPIO5, EN2 = GPIO18, PGOOD = GPIO21,
   CHG = GPIO38. Note that the datasheet's current-limit table is indexed (EN2, EN1),
   the reverse of the naming order. Both EN pins have 285k internal pulldowns, so the
-  limit sits at USB100 (100 mA) until firmware raises it - the puck will charge out of
-  the box, slowly.
+  part powers up in USB100 (100 mA). *Rev F added `setupCharger()`, which selects
+  USB500 at boot; before that, firmware never drove these and the puck charged at
+  100 mA - a limit that covers system load and charge current together.*
 - **BAT sense divider removed**: R33, R34, C31 and the `BAT_SENSE` net are gone. They
   existed only to infer USB presence by comparing SYS_SW against BAT. PGOOD reports a
   valid input source directly from the device that arbitrates it, which is both simpler
@@ -99,9 +110,10 @@ The head board is **Rev B** as of this revision - its first change since creatio
   carries the entire system load; it did not exist under the old topology and would
   otherwise have routed at the 0.20 mm default, rated 0.74 A.
 
-**Firmware 0.4.0 does not drive the charger yet.** `board.hpp` carries the four new
-pins and `tests/check_pinmap.py` verifies them against the KiCad pad audit, but no code
-reads PGOOD or raises the input current limit.
+**At Rev E firmware did not drive the charger.** `board.hpp` carried the four pins and
+`tests/check_pinmap.py` verified them against the KiCad pad audit, but nothing read
+PGOOD or raised the input current limit. Rev F fixed that - see the Rev F section
+above.
 
 ### Rev D changes (2026-09-13)
 

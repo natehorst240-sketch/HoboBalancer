@@ -12,7 +12,7 @@ Stock figures are from LCSC/JLCPCB listings on the day; re-check before ordering
 | U6 | TPS63031DSKR | C15516, ~6k in stock, ~$0.62 | order as is |
 | U7 | SRV05-4MR6T1G | C604719, only 20 in stock, ~$1.94 | order early or consign; any SRV05-4 equivalent in TSOP-6 with the same pinout is acceptable |
 | U8 | TLV9062IDR | not checked; common TI part, expected extended | verify at order time |
-| U9 | SN74LVC1G08DBVR | common; expected basic or extended | verify at order time |
+| U9 | SN74LVC1G132DBVR | common; expected basic or extended | verify at order time. NOT the 1G08 - the circuit depends on Schmitt inputs and NAND polarity |
 | U10 | SN74LVC1G123DCTR | C123302, in stock, ~$0.14 | order as is |
 | Q1 / Q3, Q4 | AO3400A / AO3401A | JLCPCB basic parts | order as is |
 | D1 | XPEBRD-L1 (Cree XP-E2 red) | not carried by LCSC | consign from Digi-Key, or hand-place after assembly (one 3535 part) |

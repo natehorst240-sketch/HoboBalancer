@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "C:\\Users\\nateh\\hgs-linux\\Balancer\\BalancerREF\\BalancerREF.kicad_sch")
-		(date "2026-09-13T10:13:01")
+		(date "2026-09-13T14:34:53")
 		(tool "Eeschema 10.0.3")
 		(sheet
 			(number "1")

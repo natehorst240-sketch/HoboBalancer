@@ -34,18 +34,37 @@ PCB = os.path.join(ROOT, 'BalancerREF.kicad_pcb')
 X0, Y0, X1, Y1 = 100.0, 100.0, 150.0, 150.0
 EDGE, GAP = 0.85, 0.30
 
+# TPS63031 WSON-10 pin functions, from verify_netlist.py. Worth spelling out: pins
+# 5, 6, 7 and 8 are ALL on SYS_SW, so aiming a bypass capacitor "at the net" silently
+# lands it on EN or PS/SYNC - logic inputs that happen to be strapped high - instead of
+# on VIN or VINA. Same net, wrong loop.
+U6_PINS = {'1': 'VOUT', '2': 'L2', '3': 'PGND', '4': 'L1', '5': 'VIN',
+           '6': 'EN', '7': 'PS/SYNC', '8': 'VINA', '9': 'GND', '10': 'FB'}
+
 # ref -> (target IC, target pad, destination layer, why)
+# Order is priority: earlier entries get first pick of the space, so the
+# highest-frequency part in each group is listed before the bulk part it sits beside.
 JOBS = [
     ('L1',  'U6', '4',  'F', 'switching node - shortest possible loop to L1/L2'),
-    ('C4',  'U6', '7',  'F', 'SYS_SW input cap'),
-    ('C5',  'U6', '6',  'F', 'SYS_SW input cap'),
-    ('C6',  'U6', '10', 'F', '+3V3 output cap'),
-    ('C7',  'U6', '1',  'F', '+3V3 output cap'),
+    ('C5',  'U6', '8',  'F', '100n at VINA - the fastest input current, so first pick'),
+    ('C4',  'U6', '5',  'F', '10u bulk at VIN'),
+    ('C6',  'U6', '1',  'F', '22u bulk at VOUT'),
+    ('C7',  'U6', '1',  'F', '22u bulk at VOUT'),
+    # C1 is the 100n bypass on the BQ24075's IN pin and was sitting 24 mm away on the
+    # BACK of the board, which is the same as not fitting it. It goes first in the
+    # charger group, ahead of the 10u bulk it shares the net with.
+    ('C1',  'U5', '13', 'F', '100n at IN - was 24 mm away on the back'),
+    ('C2',  'U5', '13', 'F', '10u bulk at IN'),
     ('C3',  'U5', '2',  'F', 'BAT cap, 4.7-47uF per SLUS810N'),
-    ('C2',  'U5', '13', 'F', 'IN cap'),
     ('C30', 'U5', '11', 'F', 'OUT cap'),
     ('C8',  'U1', '3',  'B', 'U1 3V3 decoupling - stays on the back, under pad 3'),
     ('C9',  'U1', '3',  'B', 'U1 3V3 decoupling - stays on the back, under pad 3'),
+    # These two test points were squatting immediately left of U6, which is the side
+    # VIN and PGND are on - they were the reason the input bulk cap could not get near
+    # its pins. A probe pad has no business crowding a 2.4 MHz input loop, and both end
+    # up nearer the signal they actually probe. Listed last so they take what is left.
+    ('TP6',  'U3', '1', 'F', 'yields the switcher left side; moves beside the LM1815'),
+    ('TP10', 'U2', '4', 'F', 'yields; moves beside the accelerometer INT1 pin it probes'),
 ]
 
 board = pcbnew.LoadBoard(PCB)
@@ -147,8 +166,10 @@ for ref, ic, pad, want_layer, why in JOBS:
     cx, cy = spot[0] + m['w'] / 2, spot[1] + m['h'] / 2
     d = math.hypot(cx - target[0], cy - target[1])
     results.append((ref, d, ic, pad, why))
-    print('%-5s %-6s (%.1f,%.1f) (%.1f,%.1f)  %.2f mm to %s.%s   %s'
-          % (ref, was + '->' + fp.GetLayerName(), ox, oy, cx, cy, d, ic, pad, why))
+    fn = U6_PINS.get(pad, '') if ic == 'U6' else ''
+    print('%-5s %-6s (%.1f,%.1f) (%.1f,%.1f)  %.2f mm to %s.%s%s   %s'
+          % (ref, was + '->' + fp.GetLayerName(), ox, oy, cx, cy, d, ic, pad,
+             '/' + fn if fn else '', why))
 
 print()
 worst = max(results, key=lambda r: r[1]) if results else None

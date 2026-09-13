@@ -298,7 +298,7 @@ manufacturer source rather than accepted or dismissed on its face.
 
 - **U2 ST IIS3DWBTR**, DS12569 Rev 4 Table 1 (page 3): 1 SDO/SA0, 2 RES, 3 RES (connect to VDD_IO or GND; wired to GND), 4 INT1, 5 VDD_IO, 6 GND, 7 GND, 8 VDD, 9 INT2, 10 RES, 11 RES (connect to VDD_IO or leave unconnected; left open and soldered), 12 CS, 13 SPC/SCL, 14 SDI/SDO/SDA. Only SPI supports full-rate operation; I2C is single-axis only and not used. 100 nF on VDD and VDD_IO. KiCad footprint Package_LGA:LGA-14_3x2.5mm_P0.5mm_LayoutBorder3x4y (14 pads).
 - **U10 TI SN74LVC1G123DCTR**, SCES586E Table 4-1: 1 A (falling-edge trigger, held low), 2 B (rising-edge trigger, from U9), 3 CLR (active low, tied to VCC), 4 GND, 5 Q, 6 Cext, 7 Rext/Cext, 8 VCC. Rext 100k from Rext/Cext to VCC, Cext 1 nF between Cext and Rext/Cext; nominal output about 100 us, retriggerable.
-- **U9 TI SN74LVC1G08DBVR** SOT-23-5: 1 A, 2 B, 3 GND, 4 Y, 5 VCC (standard KiCad symbol).
+- **U9 TI SN74LVC1G08DBVR** SOT-23-5: 1 A, 2 B, 3 GND, 4 Y, 5 VCC (standard KiCad symbol). *Superseded in Rev F by the SN74LVC1G132 - same pinout, Schmitt inputs, NAND instead of AND. Do not order from this line.*
 - **U8 TI TLV9062IDR** SOIC-8 standard dual op amp pinout (1 OUT1, 2 IN1-, 3 IN1+, 4 V-, 5 IN2+, 6 IN2-, 7 OUT2, 8 V+); KiCad Amplifier_Operational:TLV9062xD units A/B/C.
 - **PD1 Vishay BPW34S**: KiCad Sensor_Optical:BPW34, pin 1 cathode (to +3V3), pin 2 anode (to the transimpedance input); footprint OptoDevice:Osram_BPW34S-SMD.
 - **D1 Cree XPEBRD-L1** red XP-E2: KiCad Device:LED numbering 1 K / 2 A on LED_SMD:LED_Cree-XP; Vf about 2.2 V, 1 A absolute maximum; driven at about 500 mA peak, 10 percent duty.

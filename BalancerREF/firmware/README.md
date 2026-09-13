@@ -8,16 +8,28 @@ The code can check signal consistency but cannot certify IPS accuracy. Physical 
 
 ## Hardware support status
 
-**Firmware 0.4.0 targets the Rev C board and has not been updated for the charger
-change.** `board.hpp` now carries the BQ24075 pins (`chgEn1`, `chgEn2`, `pgood`,
-`chgStat`) and `tests/check_pinmap.py` verifies them against the KiCad pin audit,
-but no code drives or reads them yet. Two consequences until that lands:
+The BQ24075 charger **is** driven, as of schematic Rev F. `board.hpp` carries the
+four pins (`chgEn1`, `chgEn2`, `pgood`, `chgStat`), `tests/check_pinmap.py` verifies
+them against the KiCad pin audit, and `setupCharger()` runs at boot:
 
-- EN1/EN2 have 285 kOhm internal pull-downs, so the input current limit sits at
-  **USB100 (100 mA)** until firmware raises it. The puck will charge, slowly.
-- `pgood` is the input-present signal now. The Rev D SYS_SW-versus-BAT comparison
-  has been removed from the hardware along with its divider, so there is no
-  fallback way to detect USB.
+- **Input current limit is set to USB500 at boot.** EN1/EN2 have 285 kOhm internal
+  pull-downs, so the part powers up in USB100 - a 100 mA limit that has to cover
+  system load *and* charge current, which an ESP32-S3 with BLE up largely consumes
+  on its own. USB500 is the ceiling on purpose: 500 mA is the most a non-negotiated
+  port must supply, and this board has no USB-PD or BC1.2. The resistor-programmed
+  ~1.0 A setting stays a deliberate opt-in for a known wall adapter.
+  SLUS810N Table 7-2 is indexed **(EN2, EN1)**, the reverse of the naming order.
+- **`pgood` is the input-present signal**, and `chgStat` reports charging. Both are
+  open-drain and **active low**, with 100k pull-ups on the board. `status` reports
+  them as `input_present` and `charging`. `chgStat` goes high both when charging
+  completes and when the charger is disabled, so it is not an input-present signal
+  on its own.
+- The Rev D SYS_SW-versus-BAT comparison and its divider are gone from the hardware,
+  so `pgood` is the only way to detect an input. `supplyVolts()` reads the cell only
+  while running on battery - while charging, OUT is driven from IN.
+
+The rest of the firmware still targets Rev C behaviour; the sections below are
+unchanged.
 
 ## Rev C hardware (firmware 0.4.0, 2026-09-09)
 
