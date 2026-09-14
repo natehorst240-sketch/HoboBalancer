@@ -4301,7 +4301,7 @@
 			(size 1.4 2)
 			(layers "F.Cu" "F.Mask")
 			(roundrect_rratio 0.125)
-			(net "/+3V3")
+			(net "/PD_TIA_IN")
 			(uuid "dacdde42-b20c-4d44-9c4d-23102ab65cd5")
 		)
 		(pad "2" smd roundrect
@@ -4309,7 +4309,7 @@
 			(size 1.4 1.2)
 			(layers "F.Cu" "F.Mask")
 			(roundrect_rratio 0.125)
-			(net "/PD_TIA_IN")
+			(net "GND")
 			(uuid "a86780a4-421d-4b70-bbb0-7e8470874da6")
 		)
 		(embedded_fonts no)

@@ -25,10 +25,17 @@ import sys, os, subprocess, tempfile
 import pcbnew
 
 APPLY = '--apply' in sys.argv
-ROOT = r'C:\Users\nateh\hgs-linux\Balancer\BalancerREF'
-PCB = os.path.join(ROOT, 'BalancerREF.kicad_pcb')
-SCH = os.path.join(ROOT, 'BalancerREF.kicad_sch')
+# Both boards need this, not just the main one: the optical head's pads had never been
+# checked against its schematic at all, and flipping PD1 moved two of them.
+BASE = r'C:\Users\nateh\hgs-linux\Balancer'
+PROJECTS = {'main': 'BalancerREF', 'head': 'BalancerREF_OptHead'}
+which = 'head' if '--head' in sys.argv else 'main'
+name = PROJECTS[which]
+ROOT = os.path.join(BASE, name)
+PCB = os.path.join(ROOT, name + '.kicad_pcb')
+SCH = os.path.join(ROOT, name + '.kicad_sch')
 KC = r'C:\Program Files\KiCad\10.0\bin\kicad-cli.exe'
+print('project: %s (%s board)' % (name, which))
 
 
 def sexp(text):

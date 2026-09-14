@@ -32,6 +32,20 @@ be right before any copper is routed. Every claim was checked against the manufa
 source, and two of them did not survive that check (see DATASHEET-VERIFICATION.md for
 the full record, including what was deliberately NOT changed).
 
+- **PD1 polarity corrected - the optical tach could never have worked.** The detector
+  was wired cathode to +3V3 and anode to the transimpedance summing node. Reverse bias
+  is correct that way, which is why it survived this long, but photocurrent leaves the
+  ANODE, so it was injected into the summing node instead of pulled out of it. The
+  inverting TIA then drove TIA_OUT down, the inverting second stage drove OPT_AMP UP
+  from its 1.65 V idle, and U4 has OPT_AMP on IN- against a 1.016 V threshold on IN+.
+  The comparator input sat 634 mV above the threshold and light pushed it further away,
+  so the output never left its low state and TR-VERT had no tach at all. Cathode now
+  goes to PD_TIA_IN and the anode to GND: same 1.65 V reverse bias, but TIA_OUT rises,
+  OPT_AMP falls through the threshold, and the 470k hysteresis works as drawn. About
+  5.3 uA of photocurrent trips it. Bonus: the emitter turn-off edge, which lands inside
+  the gate window and cannot be rejected, now couples into the summing node in the
+  non-detection direction - which matters because this revision also moved Q1 nearer
+  PD1.
 - **R18 3.0 -> 3.9 ohm on the head board.** The emitter runs from SYS_SW, and the
   BQ24075 regulates OUT to 5.5 V, so the old value gave about 1.1 A peak into D1's 1 A
   absolute maximum. The BOM note had only checked the 4.2 V battery case. This is a
