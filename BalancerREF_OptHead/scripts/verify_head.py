@@ -1,4 +1,11 @@
-"""Independent check that the head board reproduces BalancerREF Rev C's optical chain.
+"""Independent check of the head board's optical chain.
+
+It was transcribed from BalancerREF Rev C and NO LONGER simply reproduces it: Rev B
+flips PD1, because Rev C had the detector's anode on the transimpedance summing node
+and that orientation drives OPT_AMP the wrong way for the comparator - it could never
+trip. Note what that means for this file: a spec like this proves the netlist matches
+the intent, and it passed for months while the intent itself was wrong. It cannot
+check signal direction through a gain chain.
 
 These are circuit specifications transcribed from the Rev C spec groups in
 BalancerREF/scripts/verify_netlist.py, not generated from the head schematic. Exact
@@ -31,15 +38,19 @@ spec = {
     'SYS_SW':        'J5.1 R18.1 C20.1',
     'OPT_LED_EN':    'J5.3 R19.2',
     'OPT_COMP':      'J5.5 R32.2',
-    '+3V3':          'J5.7 PD1.1 R24.1 R26.1 U4.5 U8.8 C24.1 C25.1',
-    'GND':           'J5.2 J5.4 J5.6 Q1.2 R20.2 R25.2 R27.2 U4.2 U8.4 '
+    '+3V3':          'J5.7 R24.1 R26.1 U4.5 U8.8 C24.1 C25.1',
+    'GND':           'J5.2 J5.4 J5.6 PD1.2 Q1.2 R20.2 R25.2 R27.2 U4.2 U8.4 '
                      'C20.2 C23.2 C24.2 C25.2',
     # Emitter: C20 local so the 500 mA edges never reach the cable.
     'LED_A':         'R18.2 D1.2',
     'LED_K':         'D1.1 Q1.3',
     'MOS_GATE':      'R19.1 R20.1 Q1.1',
     # Detector front end.
-    'PD_TIA_IN':     'PD1.2 U8.2 R21.2 C21.1',
+    # PD1 CATHODE on the summing node, anode to GND. Reverse bias is the same
+    # either way, but only this orientation pulls photocurrent OUT of the node,
+    # so TIA_OUT rises, OPT_AMP falls, and the comparator can cross its 1.016 V
+    # threshold. Wired the other way round the comparator never trips at all.
+    'PD_TIA_IN':     'PD1.1 U8.2 R21.2 C21.1',
     'TIA_OUT':       'U8.1 R21.1 C21.2 C22.1',
     'AC_COUPLED':    'C22.2 R22.2',
     'AMP_INV':       'U8.6 R22.1 R23.2',
@@ -84,5 +95,5 @@ if fails:
     for f in fails:
         print('  ' + f)
     sys.exit(1)
-print('PASS: %d exact circuit nets; %d pin endpoints; head board reproduces '
-      'BalancerREF Rev C optical chain.' % (len(spec), pins))
+print('PASS: %d exact circuit nets; %d pin endpoints; head board matches the Rev B '
+      'optical chain.' % (len(spec), pins))

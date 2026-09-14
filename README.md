@@ -202,7 +202,7 @@ gets that snapshot.
 | `revC` | single board, optical front end on the main PCB, no layout |
 | `revD` | optical head split out; SW4 and R5 dropped; BAT sense divider added; both boards placed |
 | `revE` | MCP73831 + D2 + Q3 + R27 + R31 replaced by a BQ24075; BAT sense divider removed |
-| `revF` | repo-review fixes: R18 3.9 ohm, U9 Schmitt NAND, switcher and TIA placement |
+| `revF` | PD1 polarity fix; R18 3.9 ohm; U9 Schmitt NAND; switcher and TIA placement |
 
 Rev D was defined by the **battery/supply sensing change** — `BAT_SENSE` on GPIO4
 alongside `SUPPLY_SENSE`, to let firmware tell USB from battery. The board split and the
@@ -219,6 +219,14 @@ maximum current. The others are a logic part run outside its input-transition sp
 three placement problems, the worst being a 2.4 MHz switching loop routed through vias.
 Rev F is also the first revision of the optical head since it was created, so that board
 moves from Rev A to **Rev B**.
+
+Rev F also carries the one outright **functional** defect found so far: PD1 was wired
+with its anode on the transimpedance summing node, which sends the signal the wrong way
+through two inverting stages and leaves the comparator unable to trip at any light level.
+The optical tach could never have worked. Flipping the detector fixes it without changing
+anything else; `BalancerREF/DATASHEET-VERIFICATION.md` traces the chain stage by stage,
+including why the connectivity checkers passed the whole time — they prove the netlist
+matches the intent, not that the intent works.
 
 Two review items were checked and deliberately **not** changed — SW1's current rating
 and U1's footprint. `BalancerREF/DATASHEET-VERIFICATION.md` records why, so they are not

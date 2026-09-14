@@ -151,6 +151,57 @@ Expected states: USB absent/OFF = puck off; USB absent/ON = battery powers puck;
 
 Generic 1x05 2.54 mm header; no manufacturer pinout to verify. Assignment follows the common u-blox breakout order VCC, GND, TX, RX, PPS. GPIO1/GPIO2 are ordinary IOs on the ESP32-S3-MINI-1 (pads 5/6) routed to UART1 through the GPIO matrix; GPIO13 (pad 17) is the PPS input. GPIO3/45/46 strapping pins remain unloaded. Module must be 3.3 V logic and is supplied from the 3.3 V rail (about 30 mA active).
 
+## Rev F — PD1 polarity, and why nothing caught it
+
+**The optical comparator could never trip.** From the original design through Rev E, PD1
+was wired cathode to +3V3 and anode to the transimpedance summing node. The reverse bias
+is correct that way — 1.65 V, cathode positive — which is presumably why it survived
+review. The signal direction is not.
+
+Photocurrent in a reverse-biased photodiode leaves the **anode** terminal. With the anode
+on the summing node it is injected *into* the node, and the chain runs backwards from
+there:
+
+| stage | wiring | response to light |
+|---|---|---|
+| PD1 | anode on the node | current **into** the summing node |
+| U8A TIA | `U8.2` is IN-, `U8.3` is the 1.65 V reference — inverting | `TIA_OUT` **falls** |
+| U8B | inverting, gain -R23/R22 = -120k/10k = -12 | `OPT_AMP` **rises** from 1.65 V |
+| U4 TS3021 | `U4.4` is IN- (`OPT_AMP`), `U4.3` is IN+ (`CMP_THRESHOLD`) | IN- moves further above IN+ |
+
+`CMP_THRESHOLD` is R26/R27 = 3.3 × 10k/(22k+10k) = **1.016 V** with the output low
+(1.064 V with it high; R28's 470k gives 48 mV of hysteresis, in the correct direction).
+`OPT_AMP` idles at 1.65 V because the stage is AC-coupled to the 1.65 V reference —
+already 634 mV above the threshold — and light pushes it further away. IN- stays above
+IN+ regardless of illumination, so the output never leaves its low state.
+
+With the Rev F NAND gating that is total: `U9`'s output never falls, `U10` never
+triggers, and TR-VERT produces no tach pulses at all.
+
+**The fix is to flip the diode** — cathode to `PD_TIA_IN`, anode to GND:
+
+- reverse bias is unchanged at 1.65 V (cathode at the virtual reference, anode at 0 V)
+- photocurrent is pulled **out** of the summing node, so `TIA_OUT` rises
+- `OPT_AMP` falls from 1.65 V and crosses 1.016 V
+- the comparator trips high and the 470k hysteresis works in the direction drawn
+
+Trip sensitivity: 634 mV needed at `OPT_AMP`, ÷ 12 of second-stage gain = 52.8 mV at
+`TIA_OUT`, ÷ the 10k feedback resistor = **about 5.3 µA of photocurrent**.
+
+There is a useful side effect, and it matters because Rev F moved Q1 closer to PD1 while
+tightening the emitter loop. The emitter turn-off edge falls inside the synchronous gate
+window, so the detector cannot reject it. After the flip, its capacitive coupling into
+the summing node pushes `TIA_OUT` the same way darkness does — away from the trip point
+— so it cannot manufacture a false detection.
+
+**Why the verification did not catch this.** `verify_head.py` compares the exported
+netlist against exact net membership, and it passed throughout: the netlist matched the
+spec, the board matched the netlist, and ERC was clean. But the spec was transcribed from
+the same schematic it was meant to check, so it encoded the wrong intent faithfully.
+Connectivity checking answers "is it wired the way I said?", never "does what I said
+work?". Tracing signal direction through a gain chain is a different kind of review, and
+this design had not had one.
+
 ## Rev F — repo review responses (2026-09-13)
 
 An external review of the repo raised the items below. Each was checked against the

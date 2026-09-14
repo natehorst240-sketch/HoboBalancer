@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "C:\\Users\\nateh\\hgs-linux\\Balancer\\BalancerREF_OptHead\\BalancerREF_OptHead.kicad_sch")
-		(date "2026-09-13T10:13:05")
+		(date "2026-09-13T20:18:25")
 		(tool "Eeschema 10.0.3")
 		(sheet
 			(number "1")
@@ -1951,12 +1951,6 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "PD1")
-				(pin "1")
-				(pinfunction "K_1")
-				(pintype "passive")
-			)
-			(node
 				(ref "R24")
 				(pin "1")
 				(pintype "passive")
@@ -2178,8 +2172,8 @@
 			)
 			(node
 				(ref "PD1")
-				(pin "2")
-				(pinfunction "A_2")
+				(pin "1")
+				(pinfunction "K_1")
 				(pintype "passive")
 			)
 			(node
@@ -2280,6 +2274,12 @@
 				(ref "J5")
 				(pin "6")
 				(pinfunction "Pin_6_6")
+				(pintype "passive")
+			)
+			(node
+				(ref "PD1")
+				(pin "2")
+				(pinfunction "A_2")
 				(pintype "passive")
 			)
 			(node
