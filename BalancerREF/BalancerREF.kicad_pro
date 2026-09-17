@@ -270,6 +270,11 @@
         "bottomLayer": 4,
         "enabled": false,
         "topLayer": 0
+      },
+      {
+        "bottomLayer": 2,
+        "enabled": false,
+        "topLayer": 0
       }
     ],
     "layer_presets": [],
