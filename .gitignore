@@ -27,3 +27,7 @@ archives/
 *.kicad_prl
 ~*.lck
 fp-info-cache
+
+# --- KiCad autorouter scratch ------------------------------------------------
+temp-freerouting.dsn
+freerouting.ses
