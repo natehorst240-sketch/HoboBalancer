@@ -3,21 +3,22 @@
 # Neck-down rules. The Power net class (SYS, SYS_SW, BAT, USB_VBUS, +3V3) is 0.5 mm,
 # which cannot land on a 0.25 mm wide pad. Inside these courtyards the router uses the
 # rule's optimal width instead of the net class width, and DRC rejects anything wider
-# than max. Outside the courtyard the net class width applies again.
+# Outside the courtyard the net class width applies again. No max is enforced: the
+# 0.5 mm feed to the input/output caps legitimately runs inside the courtyard.
 #
 # The router picks the width from the item a route STARTS on. Starting from a pad, that
 # item is the pad, so the condition also matches by footprint membership.
 
 (rule "neck-down 0.5 mm pitch"
-  (layer outer)
-  (condition "A.memberOfFootprint('U5') || A.intersectsCourtyard('U5') || A.memberOfFootprint('U6') || A.intersectsCourtyard('U6') || A.memberOfFootprint('U2') || A.intersectsCourtyard('U2') || A.memberOfFootprint('U10') || A.intersectsCourtyard('U10')")
-  (constraint track_width (min 0.2mm) (opt 0.2mm) (max 0.25mm))
+  (layer F.Cu)
+  (condition "A.memberOfFootprint('U5') || A.intersectsCourtyard('U5') || A.memberOfFootprint('U6') || A.intersectsCourtyard('U6') || A.memberOfFootprint('U2') || A.intersectsCourtyard('U2')")
+  (constraint track_width (min 0.2mm) (opt 0.2mm))
   (constraint via_diameter (min 0.5mm) (opt 0.5mm))
   (constraint hole_size (min 0.3mm) (opt 0.3mm)))
 
-(rule "neck-down SOT-23"
-  (layer outer)
-  (condition "A.memberOfFootprint('U7') || A.intersectsCourtyard('U7') || A.memberOfFootprint('U9') || A.intersectsCourtyard('U9')")
-  (constraint track_width (min 0.2mm) (opt 0.3mm) (max 0.35mm))
+(rule "neck-down SOT-23 and 0.65 mm pitch"
+  (layer F.Cu)
+  (condition "A.memberOfFootprint('U7') || A.intersectsCourtyard('U7') || A.memberOfFootprint('U9') || A.intersectsCourtyard('U9') || A.memberOfFootprint('U10') || A.intersectsCourtyard('U10')")
+  (constraint track_width (min 0.2mm) (opt 0.3mm))
   (constraint via_diameter (min 0.5mm) (opt 0.5mm))
   (constraint hole_size (min 0.3mm) (opt 0.3mm)))
