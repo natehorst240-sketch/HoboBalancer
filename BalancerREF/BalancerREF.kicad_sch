@@ -5,7 +5,7 @@
 	(uuid "817ec478-f84e-4d27-b6f3-c983c8ad991a")
 	(paper "A2")
 	(title_block
-		(title "HoboVibe Hobby Helicopter Dynamic Balancer")
+		(title "HOBOVibe Hobby Helicopter Dynamic Balancer")
 		(date "2026-09-13")
 		(rev "F")
 		(comment 1 "Approximate trends only; maintenance balancing uses calibrated equipment")
@@ -11991,7 +11991,7 @@
 				)
 			)
 		)
-		(property "MPN" "100k"
+		(property "MPN" "10k"
 			(at 254 140.97 0)
 			(hide yes)
 			(show_name no)
@@ -12347,7 +12347,7 @@
 				)
 			)
 		)
-		(property "MPN" "100k"
+		(property "MPN" "1.6k"
 			(at 234.95 140.97 0)
 			(hide yes)
 			(show_name no)
@@ -14356,7 +14356,7 @@
 				)
 			)
 		)
-		(property "MPN" "SN74LVC1G08DBVR"
+		(property "MPN" "SN74LVC1G132DBVR"
 			(at 149.86 285.75 0)
 			(hide yes)
 			(show_name no)
@@ -21139,7 +21139,7 @@
 				)
 			)
 		)
-		(property "MPN" "100k"
+		(property "MPN" "3.57k 1%"
 			(at 214.63 140.97 0)
 			(hide yes)
 			(show_name no)

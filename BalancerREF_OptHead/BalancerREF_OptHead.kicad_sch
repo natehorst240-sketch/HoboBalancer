@@ -8,7 +8,7 @@
 		(title "BalancerREF_OptHead - pivoting optical tach head")
 		(date "2026-09-11")
 		(rev "B")
-		(company "Split from BalancerREF Rev C - human review required")
+		(company "Split from BalancerREF Rev C")
 		(comment 1 "Cable carries DC rails and digital edges only")
 	)
 	(lib_symbols
@@ -4125,7 +4125,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100u / 6.3V"
+		(property "Value" "100u / 10V"
 			(at 58.42 74.93 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4168,7 +4168,7 @@
 				)
 			)
 		)
-		(property "MPN" "100u / 6.3V"
+		(property "MPN" "100u / 10V"
 			(at 58.42 72.39 0)
 			(hide yes)
 			(show_name no)
@@ -5389,7 +5389,7 @@
 				)
 			)
 		)
-		(property "MPN" "3R0 1206 0.5W"
+		(property "MPN" "3R9 1206 0.5W"
 			(at 78.74 77.47 0)
 			(hide yes)
 			(show_name no)

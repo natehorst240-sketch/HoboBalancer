@@ -8,9 +8,11 @@ Reviewed 2026-09-07 against the manufacturer documents below. `review/IC-pin-aud
 
 Verified pad 3 = 3V3, 4 = GPIO0, 23 = GPIO19/USB D-, 24 = GPIO20/USB D+, 45 = EN. Ground pads are 1, 2, 42, 43 and 46–65; the normal KiCad symbol stacks these ground pins, and all are present in the exported netlist. The CSV verifies the remaining GPIO/pad mapping individually. N8 is the 8 MB flash / no PSRAM version. GPIO3/45/46 remain unloaded, preserving strap defaults.
 
-Local 10 µF and 100 nF bypass; EN has 10 kΩ / 1 µF and reset button. GPIO0 has pull-ups and a service BOOT button. Native USB uses 22 Ω series resistors close to the MCU. VBUS detection is a 100 kΩ/100 kΩ divider to GPIO12. Normal operation uses BLE; firmware routes tach edges to capture hardware through the GPIO matrix.
+Local 10 µF and 100 nF bypass; EN has 10 kΩ / 1 µF (the reset button was removed in Rev D; SW1 power-cycles the regulator). GPIO0 has a 10 kΩ pull-up and a service BOOT button. Native USB uses 22 Ω series resistors close to the MCU. `SUPPLY_SENSE` is a 100 kΩ/100 kΩ divider from SYS_SW to GPIO12; it is not a VBUS detect (PGOOD is). Normal operation uses BLE; firmware routes tach edges to capture hardware through the GPIO matrix.
 
-## U2 — ST LIS2DW12TR
+## U2 — ST LIS2DW12TR (superseded)
+
+> **Replaced in Rev C by the IIS3DWBTR on SPI.** The current pin table is under "Rev C parts" below. Kept for history.
 
 [Manufacturer datasheet DS11811 Rev 9, September 2024](https://www.st.com.cn/resource/en/datasheet/lis2dw12.pdf), pin table page 4, application figure 6/page 19. Verified through the manufacturer's current web PDF; direct local download timed out.
 
@@ -41,6 +43,8 @@ Pins: 1/4/6/13 NC; 2 ground; 3 signal input; 5 mode; 7 peak storage; 8 VCC; 9 ti
 Two 10 kΩ pulse-rated series resistors give 20 kΩ; ±60 V peak produces at most approximately 3 mA into the internal clamp. This is a design envelope, not a qualified surge rating. 150 kΩ and 1 nF give 0.673RC ≈101 µs pulse width; 1.6 MΩ / 330 nF follow TI's peak-storage network. Timestamp the falling leading edge of the output pulse.
 
 ## U4 — ST TS3021IYLT
+
+> The paragraph below describes the Rev B phototransistor front end with a trimpot. Since Rev C the comparator sees `OPT_AMP` on IN- against a fixed R26/R27 threshold (1.016 V) on IN+, with R28 470 kΩ hysteresis; see "Rev F — PD1 polarity" below for the current chain.
 
 [Manufacturer datasheet DS4807 Rev 11, August 2025](https://www.st.com.cn/resource/en/datasheet/ts3021.pdf), page 2 pin table. Verified through the manufacturer's current web PDF; direct local download timed out.
 
@@ -121,8 +125,8 @@ Input 10 µF + 100 nF are between SYS_SW and ground. Two 22 µF nominal output c
 
 - [AO3400A manufacturer datasheet, Rev 3.1](https://www.aosmd.com/sites/default/files/res/datasheets/AO3400A.pdf): SOT-23 top-view gate 1, source 2, drain 3. Its 2.5 V gate-drive specification supports 3.3 V drive. Local PDF saved.
 - [GCT USB4105 drawing](https://gct.co/files/drawings/usb4105.pdf): USB 2.0 16-contact version, joined A6/B6 D+, joined A7/B7 D-, separate CC1/CC2 5.1 kΩ resistors, all VBUS/ground contacts and shield included. Local drawing saved.
-- [LTR-4206E manufacturer lead drawing, distributor mirror](https://media.digikey.com/pdf/Data%20Sheets/Lite-On%20PDFs/LTR-4206E.pdf): lead 1 emitter, lead 2 collector; flat indicates collector. The matching normal `Q_Photo_NPN_EC` symbol is used. Current [Lite-On Rev D link](https://optoelectronics.liteon.com/upload/download/DS-50-92-0073/LTR-4206E%20Data%20Sheet%20%20Rev.D.PDF) was identified but direct retrieval was blocked; the available manufacturer-authored lead drawing is archived. Final formed-lead footprint remains a PCB-stage task.
-- [LTE-4208 manufacturer lead drawing, distributor mirror](https://media.digikey.com/pdf/Data%20Sheets/Lite-On%20PDFs/LTE-4208.pdf): long lead anode, short/flat-side lead cathode. The schematic uses KiCad LED numbering 1 cathode / 2 anode; preserve this convention when creating the later footprint. Current [Lite-On Ver D link](https://optoelectronics.liteon.com/upload/download/DS-50-92-0015/LTE-4208%20Data%20Sheet%20Ver%20D.PDF) was identified but retrieval was blocked. Archived manufacturer drawing verifies lead polarity.
+- *(Rev B part, removed in Rev C)* [LTR-4206E manufacturer lead drawing, distributor mirror](https://media.digikey.com/pdf/Data%20Sheets/Lite-On%20PDFs/LTR-4206E.pdf): lead 1 emitter, lead 2 collector; flat indicates collector. The matching normal `Q_Photo_NPN_EC` symbol is used. Current [Lite-On Rev D link](https://optoelectronics.liteon.com/upload/download/DS-50-92-0073/LTR-4206E%20Data%20Sheet%20%20Rev.D.PDF) was identified but direct retrieval was blocked; the available manufacturer-authored lead drawing is archived. Final formed-lead footprint remains a PCB-stage task.
+- *(Rev B part, removed in Rev C)* [LTE-4208 manufacturer lead drawing, distributor mirror](https://media.digikey.com/pdf/Data%20Sheets/Lite-On%20PDFs/LTE-4208.pdf): long lead anode, short/flat-side lead cathode. The schematic uses KiCad LED numbering 1 cathode / 2 anode; preserve this convention when creating the later footprint. Current [Lite-On Ver D link](https://optoelectronics.liteon.com/upload/download/DS-50-92-0015/LTE-4208%20Data%20Sheet%20Ver%20D.PDF) was identified but retrieval was blocked. Archived manufacturer drawing verifies lead polarity.
 
 ## ERC and unused-pin treatment
 
