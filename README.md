@@ -17,12 +17,15 @@ KiCad 9 will not open them.
 | Directory | Board | Revision | State |
 |---|---|---|---|
 | `.` (root) | `Balancer` — STM32 balancer | Rev A | Schematic only; `Balancer.kicad_pcb` is an empty stub |
-| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev F** | 50 × 50 mm, 4 layer, placed, unrouted |
-| `BalancerREF_OptHead/` | Optical tach head | **Rev B** | 25 × 50 mm, 2 layer, placed, unrouted |
+| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev F** | 50 × 50 mm, 4 layer, routed except four power nets (see below) |
+| `BalancerREF_OptHead/` | Optical tach head | **Rev B** | 25 × 50 mm, 2 layer, routed; no mounting holes yet |
 
-Both boards are **placed but not routed**. Placement is machine-generated and then
-meant to be refined by hand — decoupling is paired to its IC and connectors are
-edge-anchored and rotated outward, but nothing is a substitute for a look in pcbnew.
+Both boards are routed. On the main board `SYS`, `SYS_SW`, `BAT` and `USB_VBUS` had been
+routed across In2.Cu, which is the +3V3 plane; those tracks were removed on 2026-09-18 so
+the plane is whole again, and the four nets need re-routing on the outer layers. The last
+DRC report in the repo (`BalancerREF/review/drc-review.rpt`) predates that change.
+Placement was machine-generated and then adjusted by hand; look at it in pcbnew before
+trusting it.
 
 Both carry pick-and-place **fiducials** (1 mm dot, 2 mm mask opening): three per
 populated face, at three of the four corners. Never four — a symmetric set gives the
@@ -140,8 +143,11 @@ between the two digital lines: emitter-pulse crosstalk onto `OPT_COMP` arrives i
 the synchronous gating window by definition, so the detection logic cannot reject it and
 it has to be stopped at the connector.
 
-25 × 50 mm, two layers, **every part on the front** so B.Cu is an uninterrupted ground
-pour. That is worth more than a clean optical face: the transimpedance summing node is
+25 × 50 mm, two layers, **every part on the front** so B.Cu can be a ground pour. Five
+short signal crossings (`AMP_INV`, `OPT_AMP`, `CMP_OUT`, `OPT_COMP`, `OPT_LED_EN`) still
+run on B.Cu, two of them directly under U8, and should move to the front before fab. The
+board also has **no mounting or pivot hole yet**; the position depends on the bracket. A
+solid back-side ground is worth more than a clean optical face: the transimpedance summing node is
 the highest-impedance point in the design and sits beside a wire switching 500 mA at
 20 kHz. The cost is that the baffle and the red acrylic window have to clear the
 electronics.
@@ -152,8 +158,8 @@ and the lens keepout radius are estimates** — both are constants at the top of
 commits to them. The spacing is the one that affects performance: it sets baffle depth
 and the parallax back to the tape at the 18–24 in working range.
 
-The B.Cu pour is written **unfilled** (KiCad's zone filler cannot be driven from
-standalone pcbnew Python). KiCad fills it on open, or `Edit → Fill All Zones`.
+Refill zones (`Edit → Fill All Zones`) after any edit made outside pcbnew; the scripts
+here cannot drive KiCad's zone filler.
 
 ## Verification
 

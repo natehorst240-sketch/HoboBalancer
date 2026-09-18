@@ -2,7 +2,7 @@
 
 ESP32-S3 firmware is in [firmware/README.md](firmware/README.md), including build/flash instructions, MR-VERT/TR-VERT controls, BLE/USB protocol, and a MicroVib comparison logger. Its measurement accuracy remains subject to bench validation.
 
-Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev F (2026-09-13), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers, placed but not routed. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815, TS3021 and BQ24075RGT have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
+Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev F (2026-09-13), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers (In1 GND plane, In2 +3V3 plane), routed except `SYS`, `SYS_SW`, `BAT` and `USB_VBUS`, which were pulled off the +3V3 plane layer on 2026-09-18 and need re-routing on the outer layers. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815, TS3021 and BQ24075RGT have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
 
 This is a reference/troubleshooting instrument for approximate RPM, 1/rev vibration magnitude, phase, stability and trends. Maintenance balancing remains with calibrated MicroVib/DynaVibe equipment. Firmware and physical performance have not been validated by schematic ERC.
 
@@ -203,7 +203,7 @@ The optical tach is modelled on an industrial retroreflective photoelectric sens
 
 Use GPIO-matrix routing to MCPWM capture or RMT for tach timing. Keep Wi-Fi disabled during normal BLE acquisition. Sample the IIS3DWB at its fixed 26.7 kHz ODR (or decimate in firmware) and timestamp INT1 data-ready; its response is flat to 6.3 kHz so filter phase at rotor frequencies is negligible. Account for sensor/filter and optical delays when estimating phase. There is no hardware absolute-phase calibration.
 
-## Scope before PCB
+## Scope before PCB (historical, written before Rev D; the PCB now exists)
 
 Future target is approximately 50 × 40 mm. Place MEMS near the rigid mounting point, reserve the Espressif antenna keepout, and point the formed-lead optical parts through the LEFT edge. No board outline, copper, routing or PCB file is included. Inductor, formed-lead optics, switches and wire-hole footprints are intentionally left for mechanical selection in the PCB phase; IC footprints and the USB/JST connectors use library assignments.
 
