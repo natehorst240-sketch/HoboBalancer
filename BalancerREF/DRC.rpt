@@ -1,0 +1,291 @@
+** Drc report for BalancerREF.kicad_pcb **
+** Created on 2026-09-17T05:24:23 **
+** Report includes: Errors, Exclusions **
+
+** Found 83 DRC violations **
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(120.2160 mm, 104.4000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(143.5320 mm, 123.8930 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(112.7460 mm, 125.0500 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(112.7500 mm, 127.7000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(117.9240 mm, 137.6470 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(142.8090 mm, 115.8520 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(132.0000 mm, 104.8500 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(141.0000 mm, 123.0000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(126.1000 mm, 126.6500 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(117.5004 mm, 135.6749 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(132.0000 mm, 104.0000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(117.2000 mm, 129.1810 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(120.2000 mm, 120.0000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(122.1500 mm, 133.2500 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(130.4000 mm, 104.5000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(112.3000 mm, 123.5750 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(119.2000 mm, 121.4000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(123.5750 mm, 140.8000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(111.7500 mm, 120.7000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(115.7503 mm, 135.9499 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(119.8000 mm, 118.0500 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(120.2000 mm, 107.9000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(130.1500 mm, 109.2000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(127.8250 mm, 144.9000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(134.4440 mm, 121.1000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(123.7000 mm, 126.6500 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(120.9670 mm, 127.2590 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(143.2250 mm, 120.4000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(137.5000 mm, 122.5000 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(138.5997 mm, 118.3003 mm): Via [GND] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(120.2160 mm, 102.5000 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(110.8500 mm, 127.7000 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(126.1000 mm, 124.7500 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(117.1020 mm, 127.2970 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(120.2000 mm, 106.0000 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(138.2890 mm, 126.6040 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(123.7000 mm, 124.7500 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(122.0650 mm, 129.1520 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(128.8000 mm, 107.4000 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(115.7000 mm, 121.6250 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(122.1430 mm, 131.1560 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(128.6000 mm, 104.1750 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(119.8240 mm, 137.6470 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(138.4000 mm, 130.4000 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(140.6600 mm, 126.5580 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(105.6500 mm, 124.9500 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0000 mm)
+    Rule: board setup constraints; error
+    @(112.3000 mm, 122.9250 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(128.6780 mm, 102.5840 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(118.9220 mm, 120.4760 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(140.6000 mm, 130.4000 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(113.0500 mm, 114.0620 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(122.1500 mm, 135.1500 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(120.9670 mm, 125.3590 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(110.8460 mm, 125.0500 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(118.0000 mm, 104.0000 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(119.2750 mm, 135.4100 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(119.3750 mm, 122.3620 mm): Via [/+3V3] on F.Cu - B.Cu
+[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0500 mm)
+    Rule: board setup constraints; error
+    @(112.3000 mm, 122.2750 mm): Via [/+3V3] on F.Cu - B.Cu
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.2000 mm)
+    Rule: board setup constraints hole; error
+    @(112.3000 mm, 123.5750 mm): Via [GND] on F.Cu - B.Cu
+    @(112.3000 mm, 122.9250 mm): Via [/+3V3] on F.Cu - B.Cu
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.2000 mm)
+    Rule: board setup constraints hole; error
+    @(112.3000 mm, 123.5750 mm): Via [GND] on F.Cu - B.Cu
+    @(112.3000 mm, 122.9250 mm): Via [/+3V3] on F.Cu - B.Cu
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.2000 mm)
+    Rule: board setup constraints hole; error
+    @(112.3000 mm, 123.5750 mm): Via [GND] on F.Cu - B.Cu
+    @(112.3000 mm, 122.9250 mm): Via [/+3V3] on F.Cu - B.Cu
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.2000 mm)
+    Rule: board setup constraints hole; error
+    @(112.3000 mm, 123.5750 mm): Via [GND] on F.Cu - B.Cu
+    @(112.3000 mm, 122.9250 mm): Via [/+3V3] on F.Cu - B.Cu
+[clearance]: Clearance violation (netclass 'Power' clearance 0.2000 mm; actual 0.1500 mm)
+    Rule: netclass 'Power'; error
+    @(120.2000 mm, 106.0500 mm): Pad 1 [/+3V3] of C9 on B.Cu
+    @(119.0500 mm, 106.8000 mm): Track [/ACQUIRE_BUTTON] on B.Cu, length 2.0500 mm
+[clearance]: Clearance violation (netclass 'Default' clearance 0.2000 mm; actual 0.1500 mm)
+    Rule: netclass 'Default'; error
+    @(119.9000 mm, 114.0000 mm): Via [/GPS_PPS] on F.Cu - B.Cu
+    @(118.9500 mm, 114.0000 mm): Pad 1 [/SUPPLY_SENSE] of C12 on B.Cu
+[clearance]: Clearance violation (netclass 'Power' clearance 0.2000 mm; actual 0.1503 mm)
+    Rule: netclass 'Power'; error
+    @(140.5000 mm, 118.3000 mm): Pad 1 [/USB_VBUS] of C1 on F.Cu
+    @(141.2503 mm, 118.3955 mm): Track [/CHG_STAT] on F.Cu, length 2.0020 mm
+[clearance]: Clearance violation (netclass 'Power' clearance 0.2000 mm; actual 0.1503 mm)
+    Rule: netclass 'Power'; error
+    @(141.2503 mm, 117.1261 mm): Track [/CHG_STAT] on F.Cu, length 1.2695 mm
+    @(140.5000 mm, 118.3000 mm): Pad 1 [/USB_VBUS] of C1 on F.Cu
+[hole_clearance]: Hole clearance violation (board minimum hole clearance 0.2500 mm; actual 0.2000 mm)
+    Local override; error
+    @(119.9500 mm, 122.3625 mm): Pad 9 [unconnected-(U2-INT2-Pad9)] of U2 on F.Cu
+    @(119.3750 mm, 122.3620 mm): Via [/+3V3] on F.Cu - B.Cu
+[hole_clearance]: Hole clearance violation (board minimum hole clearance 0.2500 mm; actual 0.2020 mm)
+    Local override; error
+    @(119.4500 mm, 120.0375 mm): Pad 4 [/ACCEL_DRDY] of U2 on F.Cu
+    @(118.9220 mm, 120.4760 mm): Via [/+3V3] on F.Cu - B.Cu
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1944 mm)
+    Rule: board setup constraints hole; error
+    @(123.5100 mm, 142.5250 mm): Pad A1 [GND] of J1 on F.Cu
+    @(123.8200 mm, 143.6000 mm): NPTH pad of J1
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1944 mm)
+    Rule: board setup constraints hole; error
+    @(123.5100 mm, 142.5250 mm): Pad B12 [GND] of J1 on F.Cu
+    @(123.8200 mm, 143.6000 mm): NPTH pad of J1
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1944 mm)
+    Rule: board setup constraints hole; error
+    @(129.9100 mm, 142.5250 mm): Pad A12 [GND] of J1 on F.Cu
+    @(129.6000 mm, 143.6000 mm): NPTH pad of J1
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1944 mm)
+    Rule: board setup constraints hole; error
+    @(129.9100 mm, 142.5250 mm): Pad B1 [GND] of J1 on F.Cu
+    @(129.6000 mm, 143.6000 mm): NPTH pad of J1
+[hole_clearance]: Hole clearance violation (board minimum hole clearance 0.2500 mm; actual 0.2020 mm)
+    Local override; error
+    @(119.4500 mm, 120.0375 mm): Pad 4 [/ACCEL_DRDY] of U2 on F.Cu
+    @(118.9220 mm, 120.4760 mm): Via [/+3V3] on F.Cu - B.Cu
+[hole_clearance]: Hole clearance violation (board minimum hole clearance 0.2500 mm; actual 0.2000 mm)
+    Local override; error
+    @(119.9500 mm, 122.3625 mm): Pad 9 [unconnected-(U2-INT2-Pad9)] of U2 on F.Cu
+    @(119.3750 mm, 122.3620 mm): Via [/+3V3] on F.Cu - B.Cu
+[track_width]: Track width (rule 'neck-down 0.5 mm pitch' max width 0.2500 mm; actual 0.3000 mm)
+    Rule: neck-down 0.5 mm pitch; error
+    @(114.3000 mm, 120.9692 mm): Track [Net-(U10-~{A})] on F.Cu, length 0.8875 mm
+[track_width]: Track width (rule 'neck-down 0.5 mm pitch' max width 0.2500 mm; actual 0.3000 mm)
+    Rule: neck-down 0.5 mm pitch; error
+    @(113.6725 mm, 121.5968 mm): Track [Net-(U10-~{A})] on F.Cu, length 1.0523 mm
+[track_width]: Track width (rule 'neck-down 0.5 mm pitch' max width 0.2500 mm; actual 0.3000 mm)
+    Rule: neck-down 0.5 mm pitch; error
+    @(114.3000 mm, 120.4308 mm): Track [Net-(U10-~{A})] on F.Cu, length 0.5385 mm
+[track_width]: Track width (rule 'neck-down SOT-23' max width 0.3500 mm; actual 0.5000 mm)
+    Rule: neck-down SOT-23; error
+    @(129.1100 mm, 134.3900 mm): Track [/USB_VBUS] on In2.Cu, length 2.1779 mm
+[track_width]: Track width (rule 'neck-down 0.5 mm pitch' max width 0.2500 mm; actual 0.3000 mm)
+    Rule: neck-down 0.5 mm pitch; error
+    @(138.8000 mm, 123.0500 mm): Track [/USB_VBUS] on In2.Cu, length 0.8308 mm
+[track_width]: Track width (rule 'neck-down 0.5 mm pitch' max width 0.2500 mm; actual 0.3000 mm)
+    Rule: neck-down 0.5 mm pitch; error
+    @(138.8000 mm, 122.2192 mm): Track [/USB_VBUS] on In2.Cu, length 0.7071 mm
+[track_width]: Track width (rule 'neck-down 0.5 mm pitch' max width 0.2500 mm; actual 0.3000 mm)
+    Rule: neck-down 0.5 mm pitch; error
+    @(139.3000 mm, 121.7192 mm): Track [/USB_VBUS] on In2.Cu, length 3.0081 mm
+[track_width]: Track width (rule 'neck-down 0.5 mm pitch' max width 0.2500 mm; actual 0.3000 mm)
+    Rule: neck-down 0.5 mm pitch; error
+    @(137.8500 mm, 124.0000 mm): Track [/USB_VBUS] on In2.Cu, length 1.3435 mm
+[via_diameter]: Via diameter (rule 'neck-down 0.5 mm pitch' min diameter 0.5000 mm; actual 0.4000 mm)
+    Rule: neck-down 0.5 mm pitch; error
+    @(112.3000 mm, 122.9250 mm): Via [/+3V3] on F.Cu - B.Cu
+
+** Found 2 unconnected pads **
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(138.8250 mm, 119.4500 mm): Pad 1 [/ISET] of R3 on B.Cu
+    @(139.2500 mm, 120.0438 mm): Pad 16 [/ISET] of U5 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(131.7500 mm, 130.5500 mm): Pad 1 [/USB_CONN_D-] of R6 on B.Cu
+    @(131.6000 mm, 130.5750 mm): Track [/USB_CONN_D-] on F.Cu, length 0.9192 mm
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **
