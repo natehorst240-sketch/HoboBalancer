@@ -1,0 +1,45 @@
+** Drc report for BalancerREF.kicad_pcb **
+** Created on 2026-09-17T06:12:06 **
+** Report includes: Errors, Warnings, Exclusions **
+
+** Found 7 DRC violations **
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1944 mm)
+    Rule: board setup constraints hole; error
+    @(123.5100 mm, 142.5250 mm): Pad B12 [GND] of J1 on F.Cu
+    @(123.8200 mm, 143.6000 mm): NPTH pad of J1
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1944 mm)
+    Rule: board setup constraints hole; error
+    @(129.9100 mm, 142.5250 mm): Pad A12 [GND] of J1 on F.Cu
+    @(129.6000 mm, 143.6000 mm): NPTH pad of J1
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1944 mm)
+    Rule: board setup constraints hole; error
+    @(129.9100 mm, 142.5250 mm): Pad B1 [GND] of J1 on F.Cu
+    @(129.6000 mm, 143.6000 mm): NPTH pad of J1
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1944 mm)
+    Rule: board setup constraints hole; error
+    @(123.5100 mm, 142.5250 mm): Pad A1 [GND] of J1 on F.Cu
+    @(123.8200 mm, 143.6000 mm): NPTH pad of J1
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(100.0000 mm, 100.0000 mm): Rectangle on Edge.Cuts
+    @(117.2000 mm, 116.0500 mm): Segment of U1 on F.Silkscreen
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(100.0000 mm, 100.0000 mm): Rectangle on Edge.Cuts
+    @(132.8000 mm, 95.3500 mm): Segment of U1 on F.Silkscreen
+[lib_footprint_mismatch]: Footprint 'ESP32-S2-MINI-1' does not match copy in library 'RF_Module'
+    Local override; warning
+    @(125.0000 mm, 105.7000 mm): Footprint U1
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

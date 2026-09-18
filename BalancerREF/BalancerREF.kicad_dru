@@ -9,12 +9,14 @@
 # item is the pad, so the condition also matches by footprint membership.
 
 (rule "neck-down 0.5 mm pitch"
+  (layer outer)
   (condition "A.memberOfFootprint('U5') || A.intersectsCourtyard('U5') || A.memberOfFootprint('U6') || A.intersectsCourtyard('U6') || A.memberOfFootprint('U2') || A.intersectsCourtyard('U2') || A.memberOfFootprint('U10') || A.intersectsCourtyard('U10')")
   (constraint track_width (min 0.2mm) (opt 0.2mm) (max 0.25mm))
   (constraint via_diameter (min 0.5mm) (opt 0.5mm))
   (constraint hole_size (min 0.3mm) (opt 0.3mm)))
 
 (rule "neck-down SOT-23"
+  (layer outer)
   (condition "A.memberOfFootprint('U7') || A.intersectsCourtyard('U7') || A.memberOfFootprint('U9') || A.intersectsCourtyard('U9')")
   (constraint track_width (min 0.2mm) (opt 0.3mm) (max 0.35mm))
   (constraint via_diameter (min 0.5mm) (opt 0.5mm))

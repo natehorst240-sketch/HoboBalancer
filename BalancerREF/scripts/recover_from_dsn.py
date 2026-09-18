@@ -15,13 +15,15 @@ board file.
 
 DSN units are micrometres with Y pointing up, so kicad_y = -dsn_y / 1000.
 
-Run with KiCad's python:  python.exe -u scripts/recover_from_dsn.py [--apply]
+Run with KiCad's python:  python.exe -u scripts/recover_from_dsn.py [--apply] [--keep-tracks] [--out=PATH]
 """
 import sys, os, re, shutil
 import pcbnew
 
 APPLY = '--apply' in sys.argv
-REPLACE = '--replace-tracks' in sys.argv          # drop the saved file's tracks/vias first
+# The DSN is a complete snapshot, so existing copper is replaced by default.
+# --keep-tracks adds the DSN wiring on top instead (only useful on a bare board).
+REPLACE = '--keep-tracks' not in sys.argv
 OUT = next((a.split('=', 1)[1] for a in sys.argv if a.startswith('--out=')), None)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PCB = os.path.join(ROOT, 'BalancerREF.kicad_pcb')
@@ -46,6 +48,9 @@ vias = [(a, b, c, d, e, f or g) for a, b, c, d, e, f, g in
         re.findall(r'\(via\s+"?(Via\[[^\]]*\]_(\d+):(\d+)_um)"?\s+([-\d.]+)\s+([-\d.]+)\s*' + NET, wiring)]
 print('DSN: %d placements, %d wires, %d vias' % (len(place), len(wires), len(vias)))
 
+BACKUPS = os.path.join(ROOT, 'BalancerREF-backups')
+os.makedirs(BACKUPS, exist_ok=True)      # gitignored, so absent on a clean checkout
+
 SRC = PCB
 if REPLACE:
     # strip every (segment ...) / (via ...) block from the saved text and load that,
@@ -53,7 +58,7 @@ if REPLACE:
     txt = open(PCB, encoding='utf8').read()
     block = r'\n\t\((?:segment|via)\b(?:(?!\n\t\().)*?\n\t\)'
     txt = re.sub(block, '', txt, flags=re.S)
-    SRC = os.path.join(ROOT, 'BalancerREF-backups', '_stripped.kicad_pcb')
+    SRC = os.path.join(BACKUPS, '_stripped.kicad_pcb')
     open(SRC, 'w', encoding='utf8').write(txt)
 board = pcbnew.LoadBoard(SRC)
 fps = {f.GetReference(): f for f in board.GetFootprints()}
@@ -129,7 +134,7 @@ if not APPLY:
 
 DEST = OUT or PCB
 if DEST == PCB:
-    shutil.copy2(PCB, os.path.join(ROOT, 'BalancerREF-backups', 'BalancerREF-pre-recover.kicad_pcb'))
+    shutil.copy2(PCB, os.path.join(BACKUPS, 'BalancerREF-pre-recover.kicad_pcb'))
 board.Save(DEST)
 txt = open(DEST, encoding='utf8').read()
 for r in gone:
