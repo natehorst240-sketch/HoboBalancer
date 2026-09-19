@@ -9,6 +9,10 @@ Reddit set in review/reddit/ at print resolution. The first Reddit post used a
 that it was unreadable; the set here is rendered at the DPI values below.
 
 Block rectangles are in sheet millimetres and match the hand layout's five blocks.
+
+Also renders both boards with `kicad-cli pcb render` (top and bottom of the main
+board, top of the single-sided head) into review/reddit/, since the first post's
+board pictures drew the same low-resolution complaint.
 """
 import os
 import shutil
@@ -76,3 +80,13 @@ for _, fname, rect in BLOCKS:
     pix = page.get_pixmap(matrix=pymupdf.Matrix(z, z), clip=mm_rect(rect))
     pix.save(out)
     print(f'{out.name}: {pix.width} x {pix.height} @ {BLOCK_DPI} DPI')
+
+# board renders
+PCB = ROOT / 'BalancerREF.kicad_pcb'
+HEAD = ROOT.parent / 'BalancerREF_OptHead' / 'BalancerREF_OptHead.kicad_pcb'
+for pcb, side, fname in [(PCB, 'top', 'board-main-top.png'), (PCB, 'bottom', 'board-main-bottom.png'),
+                         (HEAD, 'top', 'board-head-top.png')]:
+    out = REDDIT / fname
+    subprocess.run([KC, 'pcb', 'render', '--side', side, '-w', '2400', '-h', '2400', '--quality', 'basic',
+                    '-o', str(out), str(pcb)], check=True, capture_output=True)
+    print(f'{out.name}: {side} of {pcb.name}')
