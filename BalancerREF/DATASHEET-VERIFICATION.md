@@ -119,7 +119,9 @@ Input 10 µF + 100 nF are between SYS_SW and ground. Two 22 µF nominal output c
 
 [Manufacturer datasheet SRV05-4/D Rev 4, October 2024](https://www.onsemi.com/pdf/datasheet/srv05-4-d.pdf), page 1 pin diagram and USB application. Verified from manufacturer web PDF. This is the selected equivalent to the requested SRV05-4A.
 
-1/3/4/6 are independent protected I/O channels; 2 is VN/ground; 5 is VP. Pins 1 and 3 protect D- and D+ respectively; unused channels 4 and 6 are NC. VP connects to USB VBUS with 100 nF bypass. The ordinary KiCad SRV05-4 symbol has the matching electrical pinout.
+1/3/4/6 are independent protected I/O channels; 2 is VN/ground; 5 is VP. VP connects to USB VBUS with 100 nF bypass. The ordinary KiCad SRV05-4 symbol has the matching electrical pinout.
+
+*Rev G (2026-09-19, from Reddit review):* pins 4 and 6 are no longer NC. In the TSOP-6/SOT-23-6 package pin 6 sits directly across from pin 1 and pin 4 across from pin 3, which is the flow-through layout the datasheet's USB application uses: the data trace enters one pad and leaves the opposite one, so the protected line has no stub. D- goes in at pin 1 and out at pin 6, D+ in at pin 3 and out at pin 4. The SRV05-4 has no internal I/O-to-I/O connection (Figure 8 equivalent circuit: steering diodes to VP/VN only), so both pads of each pair carry the SAME net and the PCB trace itself must join them. Giving the two sides different net names would pass DRC with an open circuit. Routing that pass-through is still to do on the board.
 
 ## Other pin and lead checks
 
@@ -357,5 +359,5 @@ manufacturer source rather than accepted or dismissed on its face.
 - **U8 TI TLV9062IDR** SOIC-8 standard dual op amp pinout (1 OUT1, 2 IN1-, 3 IN1+, 4 V-, 5 IN2+, 6 IN2-, 7 OUT2, 8 V+); KiCad Amplifier_Operational:TLV9062xD units A/B/C.
 - **PD1 Vishay BPW34S**: KiCad Sensor_Optical:BPW34, pin 1 cathode (to +3V3), pin 2 anode (to the transimpedance input); footprint OptoDevice:Osram_BPW34S-SMD.
 - **D1 Cree XPEBRD-L1** red XP-E2: KiCad Device:LED numbering 1 K / 2 A on LED_SMD:LED_Cree-XP; Vf about 2.2 V, 1 A absolute maximum; driven at about 500 mA peak, 10 percent duty.
-- **D3 SMF5.0A**: bidirectional-symbol Diode:SMF5V0A, either orientation valid; footprint Diode_SMD:D_SMF.
+- **D3 SMF5.0A**: this line used to say the symbol was bidirectional and either orientation valid. It is not: the SMF5.0A is a **unidirectional** 5 V TVS (the KiCad Diode:SMF5V0A description reads "200W unidirectional Transil"), and the symbol has the cathode bar on pin 1. Through Rev F D3 sat with pin 1 on GND and pin 2 on USB_VBUS, i.e. forward biased across VBUS, which would have clamped the port at a diode drop. Rev G puts pin 1 (cathode) on USB_VBUS and pin 2 (anode) on GND; the D_SMF footprint's pad 1 is the cathode (marked end), and the board footprint was rotated 180 to match. Caught in the Reddit review of the Rev C sheet.
 - **Q4 AO3401A**: same pinout as Q3 (1 G, 2 S, 3 D); drain to J2 pin 1, source to BAT, gate to GND.
