@@ -1,8 +1,8 @@
 ** Drc report for BalancerREF.kicad_pcb **
-** Created on 2026-09-19T02:22:02 **
+** Created on 2026-09-19T21:50:19 **
 ** Report includes: Errors, Warnings, Exclusions **
 
-** Found 22 DRC violations **
+** Found 7 DRC violations **
 [hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1944 mm)
     Rule: board setup constraints hole; error
     @(123.5100 mm, 142.5250 mm): Pad A1 [GND] of J1 on F.Cu
@@ -19,32 +19,6 @@
     Rule: board setup constraints hole; error
     @(129.9100 mm, 142.5250 mm): Pad B1 [GND] of J1 on F.Cu
     @(129.6000 mm, 143.6000 mm): NPTH pad of J1
-[silk_overlap]: Silkscreen clearance
-    Rule: board setup constraints silk; warning
-    @(148.9000 mm, 116.0000 mm): PCB text '-' on F.Silkscreen
-    @(144.3900 mm, 120.0600 mm): Rectangle of J2 on F.Silkscreen
-[silk_overlap]: Silkscreen clearance
-    Rule: board setup constraints silk; warning
-    @(148.9000 mm, 118.0000 mm): PCB text '+' on F.Silkscreen
-    @(144.3900 mm, 120.0600 mm): Rectangle of J2 on F.Silkscreen
-[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.7000 mm)
-    Rule: board setup constraints silk text height; warning
-    @(101.0000 mm, 136.4500 mm): PCB text '-' on F.Silkscreen
-[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.7000 mm)
-    Rule: board setup constraints silk text height; warning
-    @(101.0000 mm, 140.0500 mm): PCB text '+' on F.Silkscreen
-[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.7000 mm)
-    Rule: board setup constraints silk text height; warning
-    @(107.4000 mm, 117.4500 mm): PCB text '1' on F.Silkscreen
-[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.7000 mm)
-    Rule: board setup constraints silk text height; warning
-    @(116.7000 mm, 110.7000 mm): PCB text '1' on F.Silkscreen
-[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.7000 mm)
-    Rule: board setup constraints silk text height; warning
-    @(148.9000 mm, 116.0000 mm): PCB text '-' on F.Silkscreen
-[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.7000 mm)
-    Rule: board setup constraints silk text height; warning
-    @(148.9000 mm, 118.0000 mm): PCB text '+' on F.Silkscreen
 [lib_footprint_mismatch]: Footprint 'ESP32-S2-MINI-1' does not match copy in library 'RF_Module'
     Local override; warning
     @(125.0000 mm, 105.7000 mm): Footprint U1
@@ -56,77 +30,8 @@
     Rule: board setup constraints silk; warning
     @(100.0000 mm, 100.0000 mm): Rectangle on Edge.Cuts
     @(132.8000 mm, 95.3500 mm): Segment of U1 on F.Silkscreen
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; warning
-    @(143.5323 mm, 121.9934 mm): Via [/SYS] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; warning
-    @(108.0000 mm, 117.4500 mm): Via [/SYS_SW] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; warning
-    @(142.3500 mm, 131.5000 mm): Via [/SYS_SW] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; warning
-    @(132.7750 mm, 127.1750 mm): Via [/SYS_SW] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; warning
-    @(129.1100 mm, 142.5250 mm): Via [/USB_VBUS] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; warning
-    @(136.3718 mm, 121.1282 mm): Via [/BAT] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; warning
-    @(140.0125 mm, 113.1000 mm): Via [/BAT] on F.Cu - B.Cu
 
-** Found 12 unconnected pads **
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(114.9500 mm, 116.3375 mm): Pad 3 [GND] of U9 on F.Cu
-    @(112.9250 mm, 115.2000 mm): Pad 1 [GND] of R39 on B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(113.0500 mm, 116.3375 mm): Pad 1 [/OPT_COMP] of U9 on F.Cu
-    @(114.5750 mm, 115.2000 mm): Pad 2 [/OPT_COMP] of R39 on B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(147.6000 mm, 127.5000 mm): PTH pad 1 [/SYS] of SW1
-    @(143.2889 mm, 121.7500 mm): Track [/SYS] on F.Cu, length 0.3442 mm
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(122.2000 mm, 118.8000 mm): Pad 1 [/SYS_SW] of R11 on B.Cu
-    @(133.9000 mm, 128.3000 mm): Track [/SYS_SW] on F.Cu, length 1.5910 mm
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(122.2000 mm, 118.8000 mm): Pad 1 [/SYS_SW] of R11 on B.Cu
-    @(105.6500 mm, 117.4500 mm): Track [/SYS_SW] on F.Cu, length 2.3500 mm
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(140.7125 mm, 131.5000 mm): Track [/SYS_SW] on F.Cu, length 1.6375 mm
-    @(147.6000 mm, 130.0400 mm): PTH pad 2 [/SYS_SW] of SW1
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(124.3100 mm, 142.5250 mm): Pad A4 [/USB_VBUS] of J1 on F.Cu
-    @(129.1100 mm, 142.5250 mm): Via [/USB_VBUS] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(130.6500 mm, 132.8500 mm): Pad 5 [/USB_VBUS] of U7 on F.Cu
-    @(130.5000 mm, 140.1000 mm): Track [/USB_VBUS] on F.Cu, length 1.9658 mm
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(140.7500 mm, 120.0438 mm): Track [/USB_VBUS] on F.Cu, length 0.6438 mm
-    @(130.6500 mm, 132.8500 mm): Pad 5 [/USB_VBUS] of U7 on F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(143.8125 mm, 109.3000 mm): Track [/BAT] on B.Cu, length 5.3740 mm
-    @(138.5437 mm, 121.2500 mm): Track [/BAT] on F.Cu, length 0.5000 mm
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(132.5000 mm, 132.5250 mm): Track [/USB_CONN_D-] on F.Cu, length 2.6750 mm
-    @(131.6000 mm, 132.8500 mm): Pad 6 [/USB_CONN_D-] of U7 on F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; error
-    @(129.7000 mm, 132.8500 mm): Pad 4 [/USB_CONN_D+] of U7 on F.Cu
-    @(129.6500 mm, 130.6500 mm): Track [/USB_CONN_D+] on B.Cu, length 8.5000 mm
+** Found 0 unconnected pads **
 
 ** Found 20 Footprint errors **
 [footprint_symbol_field_mismatch]: Missing symbol field 'MPN' in footprint
@@ -152,16 +57,16 @@
     @(139.6500 mm, 124.6000 mm): Footprint R37
 [footprint_symbol_mismatch]: R_0603_1608Metric doesn't match footprint given by symbol (Resistor_SMD:R_0603_1608Metric)
     Local override; warning
-    @(113.7500 mm, 115.2000 mm): Footprint R39
+    @(106.6000 mm, 116.3375 mm): Footprint R39
 [footprint_symbol_field_mismatch]: Missing symbol field 'MPN' in footprint
     Local override; warning
-    @(113.7500 mm, 115.2000 mm): Footprint R39
+    @(106.6000 mm, 116.3375 mm): Footprint R39
 [footprint_symbol_mismatch]: R_0603_1608Metric doesn't match footprint given by symbol (Resistor_SMD:R_0603_1608Metric)
     Local override; warning
-    @(113.7500 mm, 115.2000 mm): Footprint R39
+    @(106.6000 mm, 116.3375 mm): Footprint R39
 [footprint_symbol_field_mismatch]: Missing symbol field 'MPN' in footprint
     Local override; warning
-    @(113.7500 mm, 115.2000 mm): Footprint R39
+    @(106.6000 mm, 116.3375 mm): Footprint R39
 [footprint_symbol_mismatch]: QFN-16-1EP_3x3mm_P0.5mm_EP1.675x1.675mm doesn't match footprint given by symbol (Package_DFN_QFN:QFN-16-1EP_3x3mm_P0.5mm_EP1.675x1.675mm)
     Local override; warning
     @(140.0000 mm, 121.5000 mm): Footprint U5

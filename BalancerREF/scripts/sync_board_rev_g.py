@@ -5,14 +5,13 @@ Runs under KiCad's own Python (needs the pcbnew module; on Linux that is
 
 - D3 is rotated 180 degrees so pad 1 (the cathode, marked end of the D_SMF footprint)
   lands where the VBUS copper already is; the pads are symmetric so nothing else moves.
-- R39 (100k, OPT_COMP pull-down) is added on the back under U9, cloned from R38.
+- R39 (100k, OPT_COMP pull-down) is added on the back beside U9, cloned from R38.
 - Every pad's net is then set from a fresh kicad-cli netlist export of the schematic
   and asserted to match, the same idea as scripts/sync_pad_nets.py. That covers D3's
   two pads, U7 pads 4 and 6 (now on the USB data nets) and the new R39.
 
-Routing is NOT touched: U7 pads 4/6 and R39 come up as ratsnest lines. The USB data
-traces still have to be re-routed so each one enters U7 on pins 1/3 and leaves on
-pins 6/4 on its way to R6/R7.
+Routing is not touched here; scripts/route_rev_g.py adds the four new connections
+(U7 pass-through tracks and R39's two vias) afterwards.
 
 Dry run by default. Pass --apply to write.
 """
@@ -30,8 +29,16 @@ SCH = os.path.join(ROOT, 'BalancerREF.kicad_sch')
 KC = os.environ.get('KICAD_CLI', 'kicad-cli')
 
 R39_SCH_UUID = None   # filled from the schematic below
-R39_AT = (113.75, 115.2)   # back side under U9, the nearest spot clear of existing copper
+# Back side, lying directly under the front-side OPT_COMP trace to the left of U9 and
+# clear of the SYS_SW track and J5 pin 1 on the routed board; scripts/route_rev_g.py
+# then needs only a via at each pad. Override with --at=X,Y,ROT (mm, degrees) if the
+# copper changes; DRC afterwards is what proves it.
+R39_AT = (106.6, 116.3375)
 R39_ROT = 0
+for a in sys.argv:
+    if a.startswith('--at'):
+        x, y, r = a.split('=')[1].split(',')
+        R39_AT, R39_ROT = (float(x), float(y)), float(r)
 
 
 def sexp(text):
