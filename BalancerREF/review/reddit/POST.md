@@ -108,9 +108,10 @@ native USB is Full Speed.
 
 ## Known open items (so nobody has to find them)
 
-- Routing is not finished: SYS, SYS_SW, BAT and USB_VBUS were pulled off the 3V3
-  plane layer and need re-routing on the outer layers, and the Rev G changes (U7
-  pass-through, R39) are unrouted.
+- Routing is complete and DRC is clean except for three understood warnings (the
+  USB-C footprint's own peg-to-pad spacing, the antenna overhang, a locally edited
+  module footprint). Placement was machine-generated and then hand-adjusted, so a
+  layout eye on it is welcome.
 - Sleep is not low power: the LM1815 and the head's op-amp/comparator sit on the
   always-on 3V3 rail, so a sleeping puck draws milliamps.
 - SW1 is rated 300 mA switching against about 180 mA steady draw with BLE bursts

@@ -2,7 +2,7 @@
 
 ESP32-S3 firmware is in [firmware/README.md](firmware/README.md), including build/flash instructions, MR-VERT/TR-VERT controls, BLE/USB protocol, and a MicroVib comparison logger. Its measurement accuracy remains subject to bench validation.
 
-Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev G (2026-09-19), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers (In1 GND plane, In2 +3V3 plane), routed except `SYS`, `SYS_SW`, `BAT` and `USB_VBUS`, which were pulled off the +3V3 plane layer on 2026-09-18 and need re-routing on the outer layers. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815, TS3021 and BQ24075RGT have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
+Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev G (2026-09-19), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers (In1 GND plane, In2 +3V3 plane), fully routed with both inner planes uncut (the power nets that had crossed the +3V3 plane were moved to the outer layers on 2026-09-18). The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815, TS3021 and BQ24075RGT have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
 
 This is a reference/troubleshooting instrument for approximate RPM, 1/rev vibration magnitude, phase, stability and trends. Maintenance balancing remains with calibrated MicroVib/DynaVibe equipment. Firmware and physical performance have not been validated by schematic ERC.
 
@@ -41,12 +41,13 @@ to Rev F. `scripts/rev_g_usb_esd_tvs_u9.py` edits the schematic and
   from pin 3, so the drawing now takes D- in at pin 1 and out at pin 6, D+ in at pin 3
   and out at pin 4, and the pads on the board carry those nets. The SRV05-4 has no
   internal path between its I/O pins, so both ends of each pair keep the same net name
-  and the trace itself has to make the through-connection: **the USB data routing is
-  still to be redone** so it enters on 1/3 and leaves on 6/4 on the way to R6/R7.
+  and the trace itself makes the through-connection: `scripts/route_rev_g.py` runs a
+  0.2 mm track straight across the package from pin 3 to pin 4 and from pin 1 to pin 6.
 - **U9 pin 1 no longer floats when the head is unplugged.** OPT_COMP arrives from the
   optical head through J5 pin 5 (driven via R32 on the head). In MR-VERT the head is
   normally not connected, leaving a CMOS input open. R39 100k to GND holds it low; it is
-  placed on the back under U9 and is unrouted. U9 pin 2 (via R29 from OPT_LED_EN) floats
+  placed on the back directly under the OPT_COMP trace just left of U9, so one via at each
+  pad connects it. U9 pin 2 (via R29 from OPT_LED_EN) floats
   only during ESP32 reset, when the GPIO is still an input, and was left alone.
 - `review/reddit/` re-rendered from the Rev G sheet at higher resolution (the old set
   was Rev C at roughly 200 DPI; see `scripts/render_review_images.py`).
