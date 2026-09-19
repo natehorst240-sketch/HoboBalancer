@@ -6,8 +6,8 @@
 	(paper "A2")
 	(title_block
 		(title "HOBOVibe Hobby Helicopter Dynamic Balancer")
-		(date "2026-09-13")
-		(rev "F")
+		(date "2026-09-19")
+		(rev "G")
 		(comment 1 "Approximate trends only; maintenance balancing uses calibrated equipment")
 	)
 	(lib_symbols
@@ -7185,6 +7185,12 @@
 		(uuid "3825732a-5ac5-46b9-a0b7-7fd1aca826a4")
 	)
 	(junction
+		(at 121.92 303.53)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3f966b7f-2df5-4d4c-9e62-a5546d656ca4")
+	)
+	(junction
 		(at 121.92 135.255)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7297,6 +7303,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "74daf540-e4ea-418b-b3c3-a4d58910f689")
+	)
+	(junction
+		(at 134.62 312.42)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "7a158c83-597a-4ccf-91f0-62eaf03733d9")
 	)
 	(junction
 		(at 426.72 71.755)
@@ -7545,10 +7557,6 @@
 		(uuid "41a28c7b-6a84-4f85-9d34-44112911dc04")
 	)
 	(no_connect
-		(at 189.23 123.825)
-		(uuid "42a6839e-2bda-4ca2-b24d-f9ba0bf8d1bf")
-	)
-	(no_connect
 		(at 452.12 304.8)
 		(uuid "47acc055-6ab8-49cb-a9e1-b0d06a54b507")
 	)
@@ -7583,10 +7591,6 @@
 	(no_connect
 		(at 180.34 199.39)
 		(uuid "9275802c-bf9f-4c39-ad78-53bde2f4725c")
-	)
-	(no_connect
-		(at 189.23 118.745)
-		(uuid "92fd2ad7-ea59-4ebd-b55b-4aa1bffbb323")
 	)
 	(no_connect
 		(at 452.12 312.42)
@@ -8008,6 +8012,16 @@
 	)
 	(wire
 		(pts
+			(xy 121.92 303.53) (xy 121.92 295.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "24600eee-dfe7-41a6-b6f1-5c833f2e0676")
+	)
+	(wire
+		(pts
 			(xy 121.92 128.905) (xy 121.92 135.255)
 		)
 		(stroke
@@ -8035,6 +8049,16 @@
 			(type default)
 		)
 		(uuid "2802590f-eb66-4cc1-a519-5e31ad2eddd5")
+	)
+	(wire
+		(pts
+			(xy 127 320.04) (xy 127 322.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2932bbbe-386b-475c-a974-94197586395c")
 	)
 	(wire
 		(pts
@@ -8478,6 +8502,16 @@
 	)
 	(wire
 		(pts
+			(xy 121.92 288.29) (xy 121.92 285.75)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4bfca498-926f-4ee9-bd0b-7e0cbdc6cb12")
+	)
+	(wire
+		(pts
 			(xy 439.42 165.1) (xy 439.42 180.34)
 		)
 		(stroke
@@ -8738,6 +8772,16 @@
 	)
 	(wire
 		(pts
+			(xy 189.23 118.745) (xy 194.31 118.745)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5fc91eff-3783-4d59-9f99-2028a0df07b4")
+	)
+	(wire
+		(pts
 			(xy 194.31 283.21) (xy 194.31 287.02)
 		)
 		(stroke
@@ -8955,6 +8999,16 @@
 			(type default)
 		)
 		(uuid "76f26991-0e93-44c9-9d6a-90a95a04cebf")
+	)
+	(wire
+		(pts
+			(xy 189.23 123.825) (xy 198.12 123.825)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "77254d19-7727-4405-abc2-9905628ae1bd")
 	)
 	(wire
 		(pts
@@ -9938,6 +9992,16 @@
 	)
 	(wire
 		(pts
+			(xy 134.62 312.42) (xy 127 312.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c0cc55db-fa9c-41e6-b5da-70823760e9e0")
+	)
+	(wire
+		(pts
 			(xy 402.59 292.1) (xy 421.64 292.1)
 		)
 		(stroke
@@ -9985,6 +10049,16 @@
 			(type default)
 		)
 		(uuid "c411caf7-8ba5-4054-a957-76105317653b")
+	)
+	(wire
+		(pts
+			(xy 194.31 118.745) (xy 194.31 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c58776a3-f00f-42a7-b4cb-702413c99c81")
 	)
 	(wire
 		(pts
@@ -10478,6 +10552,16 @@
 	)
 	(wire
 		(pts
+			(xy 198.12 123.825) (xy 198.12 133.35)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ec8b841d-c8c0-432b-a281-bf8d2f6cdc97")
+	)
+	(wire
+		(pts
 			(xy 386.08 179.07) (xy 386.08 182.88)
 		)
 		(stroke
@@ -10645,6 +10729,16 @@
 			(justify right bottom)
 		)
 		(uuid "0b32f556-47cc-4b98-abb5-8a810f31aae8")
+	)
+	(label "USB_CONN_D-"
+		(at 198.12 133.35 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "0d5a1db7-d34d-4e14-9317-c8af106a2e87")
 	)
 	(label "+3V3"
 		(at 104.14 298.45 0)
@@ -11145,6 +11239,16 @@
 			(justify left bottom)
 		)
 		(uuid "b2ef8fde-7224-47e9-a02f-2bbfbd2c23a6")
+	)
+	(label "USB_CONN_D+"
+		(at 194.31 130.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b7fb9b95-7fa4-4c77-a792-d96ca2bbbf10")
 	)
 	(label "SYS_SW"
 		(at 110.49 313.69 0)
@@ -11650,6 +11754,94 @@
 	)
 	(symbol
 		(lib_id "power:GND")
+		(at 121.92 285.75 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "09290152-e1ec-449c-9a58-d0aeee388856")
+		(property "Reference" "#PWR803"
+			(at 125.73 284.48 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 125.73 287.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 121.92 285.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 121.92 285.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 121.92 285.75 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "GND"
+			(at 121.92 285.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "fc18c8bd-21f5-46db-93c5-198ee8e4b2bd")
+		)
+		(instances
+			(project "BalancerREF"
+				(path "/817ec478-f84e-4d27-b6f3-c983c8ad991a"
+					(reference "#PWR803")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
 		(at 480.06 209.55 0)
 		(unit 1)
 		(body_style 1)
@@ -12018,6 +12210,94 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 127 322.58 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "12fdec7d-f581-4c29-ae3a-55f93cd2e588")
+		(property "Reference" "#PWR804"
+			(at 130.81 321.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 130.81 323.85 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 127 322.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 127 322.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 127 322.58 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "GND"
+			(at 127 322.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c500f43e-f750-4c14-83e7-18e0111981bc")
+		)
+		(instances
+			(project "BalancerREF"
+				(path "/817ec478-f84e-4d27-b6f3-c983c8ad991a"
+					(reference "#PWR804")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:PWR_FLAG")
 		(at 198.12 69.215 0)
 		(unit 1)
@@ -12100,6 +12380,95 @@
 			(project "BalancerREF"
 				(path "/817ec478-f84e-4d27-b6f3-c983c8ad991a"
 					(reference "#FLG01")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 121.92 292.1 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "162097be-a289-4608-8439-7bbb23eb080d")
+		(property "Reference" "R39"
+			(at 126.5 290.83 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 126.5 293.37 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 121.92 292.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 121.92 292.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 121.92 292.1 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "100k"
+			(at 121.92 292.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "e701c165-40e5-4f4f-9aa6-70d288782119")
+		)
+		(pin "2"
+			(uuid "c4b715aa-1e05-45e0-87ce-e9cfc4d712d0")
+		)
+		(instances
+			(project "BalancerREF"
+				(path "/817ec478-f84e-4d27-b6f3-c983c8ad991a"
+					(reference "R39")
 					(unit 1)
 				)
 			)
@@ -12729,6 +13098,95 @@
 			(project "BalancerREF"
 				(path "/817ec478-f84e-4d27-b6f3-c983c8ad991a"
 					(reference "C19")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 127 316.23 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "29962a76-770c-4a6a-affc-0ed923646e0c")
+		(property "Reference" "R40"
+			(at 122.5 314.96 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 122.5 317.5 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 127 316.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 127 316.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 127 316.23 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "100k"
+			(at 127 316.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "26e893f1-a83b-496c-b2b5-550244e94efa")
+		)
+		(pin "2"
+			(uuid "d8f6e119-1f34-4e5b-a561-e95503e705c4")
+		)
+		(instances
+			(project "BalancerREF"
+				(path "/817ec478-f84e-4d27-b6f3-c983c8ad991a"
+					(reference "R40")
 					(unit 1)
 				)
 			)
@@ -15008,7 +15466,7 @@
 	)
 	(symbol
 		(lib_id "Diode:SMF5V0A")
-		(at 206.375 79.375 90)
+		(at 206.375 79.375 270)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
