@@ -2,7 +2,7 @@
 
 ESP32-S3 firmware is in [firmware/README.md](firmware/README.md), including build/flash instructions, MR-VERT/TR-VERT controls, BLE/USB protocol, and a MicroVib comparison logger. Its measurement accuracy remains subject to bench validation.
 
-Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev F (2026-09-13), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers (In1 GND plane, In2 +3V3 plane), routed except `SYS`, `SYS_SW`, `BAT` and `USB_VBUS`, which were pulled off the +3V3 plane layer on 2026-09-18 and need re-routing on the outer layers. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815, TS3021 and BQ24075RGT have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
+Open **BalancerREF.kicad_pro**, then **BalancerREF.kicad_sch**, in KiCad 10.0.3 or later (KiCad 10 format; KiCad 9 will not open it). One A2 schematic sheet, Rev G (2026-09-19), hand-laid-out in KiCad (title "HOBOVibe Hobby Helicopter Dynamic Balancer"). The PCB is 50 x 50 mm, four layers (In1 GND plane, In2 +3V3 plane), routed except `SYS`, `SYS_SW`, `BAT` and `USB_VBUS`, which were pulled off the +3V3 plane layer on 2026-09-18 and need re-routing on the outer layers. The custom library and project library table travel with the schematic. Most symbols are standard KiCad 10 symbols; IIS3DWB, SN74LVC1G123, LM1815, TS3021 and BQ24075RGT have local definitions with pin mappings verified against the manufacturer tables (see DATASHEET-VERIFICATION.md). The embedded USB-C receptacle and potentiometer symbols were re-synced from the KiCad 10 library (`scripts/sync_kicad10_symbols.py`) because KiCad 10 renamed the USB-C shield pin and footprint pad from S1 to SH; the pre-sync project is archived in `archives/RevB-before-kicad10-symbol-sync-20260907-214948.zip`.
 
 This is a reference/troubleshooting instrument for approximate RPM, 1/rev vibration magnitude, phase, stability and trends. Maintenance balancing remains with calibrated MicroVib/DynaVibe equipment. Firmware and physical performance have not been validated by schematic ERC.
 
@@ -24,6 +24,32 @@ All local functional circuits use real wires. Labels carry signals between compl
 |---|---|---|---|
 | MR-VERT | External isolated two-wire VR pickup at J3 / J_MAG | Off | Internal IIS3DWB on SPI, all axes available |
 | TR-VERT | Onboard pulsed-red synchronous-detection optical tach (retroreflective tape) | 20 kHz pulses | Same sensor |
+
+### Rev G changes (2026-09-19)
+
+Three corrections from a Reddit review of the Rev C sheet, all of which still applied
+to Rev F. `scripts/rev_g_usb_esd_tvs_u9.py` edits the schematic and
+`scripts/sync_board_rev_g.py` carries the result into the board.
+
+- **D3 was backwards.** The SMF5.0A is a unidirectional TVS, and DATASHEET-VERIFICATION.md
+  had recorded it as bidirectional with "either orientation valid". It was drawn cathode
+  to GND, anode to VBUS: forward biased, so it would have clamped USB VBUS at a diode
+  drop as soon as a cable went in. Cathode (pin 1) is now on USB_VBUS and the board
+  footprint is rotated 180 to match.
+- **USB data lines now go through U7.** The SRV05-4's pins 4 and 6 were marked NC, so
+  D+/D- reached the array as stubs. Pin 6 is directly across from pin 1 and pin 4 across
+  from pin 3, so the drawing now takes D- in at pin 1 and out at pin 6, D+ in at pin 3
+  and out at pin 4, and the pads on the board carry those nets. The SRV05-4 has no
+  internal path between its I/O pins, so both ends of each pair keep the same net name
+  and the trace itself has to make the through-connection: **the USB data routing is
+  still to be redone** so it enters on 1/3 and leaves on 6/4 on the way to R6/R7.
+- **U9 pin 1 no longer floats when the head is unplugged.** OPT_COMP arrives from the
+  optical head through J5 pin 5 (driven via R32 on the head). In MR-VERT the head is
+  normally not connected, leaving a CMOS input open. R39 100k to GND holds it low; it is
+  placed on the back under U9 and is unrouted. U9 pin 2 (via R29 from OPT_LED_EN) floats
+  only during ESP32 reset, when the GPIO is still an input, and was left alone.
+- `review/reddit/` re-rendered from the Rev G sheet at higher resolution (the old set
+  was Rev C at roughly 200 DPI; see `scripts/render_review_images.py`).
 
 ### Rev F changes (2026-09-13)
 
@@ -161,7 +187,7 @@ pin in `board.hpp` is covered by the test.
 - **Accelerometer**: LIS2DW12 (I2C) replaced by the ST IIS3DWB vibration sensor on 4-wire SPI: GPIO14 SCK, GPIO15 MOSI, GPIO16 MISO, GPIO17 CS, INT1 data-ready still on GPIO6. RES pads 2/3 to GND, 10/11 open, per DS12569. The IIS3DWB has no wake-on-motion, so deep-sleep wake moves to EXT1 on MAG_TACH (GPIO7) or the acquire button (GPIO10). Firmware 0.3.0 still targets the LIS2DW12 and needs the driver port before this revision is flashed.
 - **Optical tach**: the DC infrared pair and trimpot are gone. D1 is a Cree XP-E2 red LED pulsed at 20 kHz / 5 us / about 500 mA from SYS_SW through Q1 (3 ohm 1206 series, 100 uF local reservoir). PD1 BPW34S is reverse-biased into a 10k transimpedance stage referenced to 1.65 V (U8A), then a x12 inverting AC stage (U8B, TLV9062). In the detection row, U4 TS3021 compares against a fixed 1.03 V threshold with 470k hysteresis, U9 (74LVC1G08) accepts a hit only while the RC-delayed emitter pulse is high (synchronous detection), and U10 (74LVC1G123, 100k / 1 nF, about 100 us retriggerable) stretches consecutive hits into one OPT_TACH edge per tape pass. Working range 18-24 in with retroreflective tape and the Ledil TINA lens; see PhotoTach-BOM.csv for the Digi-Key sourced parts. Threshold and delay values are bench-set.
 - **Battery**: Q4 AO3401A between J2 and the BAT node blocks a reversed pack (gate to GND; body diode conducts at first contact, then the channel).
-- **USB**: D3 SMF5.0A TVS on VBUS at the connector.
+- **USB**: D3 SMF5.0A TVS on VBUS at the connector *(drawn reversed until Rev G)*.
 - **ADC**: 100 nF on SUPPLY_SENSE at GPIO12.
 - **GPS header J4** (added 2026-09-07) unchanged.
 - The Rev C circuits were first produced by `scripts/build_schematic.py` (Rev B generator retained as `build_schematic_revb.py`, transformation in `patch_rev_c.py`) followed by `scripts/add_gps.py`, then the sheet was re-laid-out by hand in KiCad on 2026-09-09 into five blocks on A2 with the same connectivity (verified identical net membership). The generators are now guarded and refuse to run without `--overwrite-hand-layout`; the schematic file is the source of truth. Rev B final state archived in `archives/RevB-final-before-revc-20260909-030859.zip`.

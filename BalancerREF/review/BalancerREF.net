@@ -1,18 +1,18 @@
 (export
 	(version "E")
 	(design
-		(source "C:\\Users\\nateh\\hgs-linux\\Balancer\\BalancerREF\\BalancerREF.kicad_sch")
-		(date "2026-09-13T14:34:53")
-		(tool "Eeschema 10.0.3")
+		(source "/home/user/HoboBalancer/BalancerREF/BalancerREF.kicad_sch")
+		(date "2026-09-19T02:22:33")
+		(tool "Eeschema 10.0.6-10.0.6~ubuntu24.04.1")
 		(sheet
 			(number "1")
 			(name "/")
 			(tstamps "/")
 			(title_block
-				(title "HoboVibe Hobby Helicopter Dynamic Balancer")
+				(title "HOBOVibe Hobby Helicopter Dynamic Balancer")
 				(company)
-				(rev "F")
-				(date "2026-09-13")
+				(rev "G")
+				(date "2026-09-19")
 				(source "BalancerREF.kicad_sch")
 				(comment
 					(number "1")
@@ -81,7 +81,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -141,7 +141,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -201,7 +201,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -261,7 +261,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -321,7 +321,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -381,7 +381,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -441,7 +441,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -501,7 +501,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -561,7 +561,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -621,7 +621,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -681,7 +681,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -741,7 +741,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -801,7 +801,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -861,7 +861,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -921,7 +921,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -981,7 +981,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1041,7 +1041,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1101,7 +1101,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1161,7 +1161,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1221,7 +1221,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1281,7 +1281,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1341,7 +1341,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1401,7 +1401,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1461,7 +1461,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1521,7 +1521,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1581,7 +1581,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1608,19 +1608,16 @@
 							(num "SH")
 						)
 						(pin
-							(num "A1")
-						)
-						(pin
-							(num "A12")
-						)
-						(pin
 							(num "B1")
 						)
 						(pin
 							(num "B12")
 						)
 						(pin
-							(num "A4")
+							(num "A1")
+						)
+						(pin
+							(num "A12")
 						)
 						(pin
 							(num "A9")
@@ -1630,6 +1627,9 @@
 						)
 						(pin
 							(num "B9")
+						)
+						(pin
+							(num "A4")
 						)
 						(pin
 							(num "A5")
@@ -1686,7 +1686,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1746,7 +1746,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1806,7 +1806,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1875,7 +1875,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -1950,7 +1950,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2010,7 +2010,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2070,7 +2070,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2133,7 +2133,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2193,7 +2193,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2232,7 +2232,7 @@
 			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
-					(name "MPN") "100k")
+					(name "MPN") "3.57k 1%")
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
@@ -2249,11 +2249,11 @@
 			)
 			(property
 				(name "MPN")
-				(value "100k")
+				(value "3.57k 1%")
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2313,7 +2313,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2373,7 +2373,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2433,7 +2433,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2493,7 +2493,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2553,7 +2553,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2613,7 +2613,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2673,7 +2673,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2733,7 +2733,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2793,7 +2793,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2853,7 +2853,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2913,7 +2913,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -2973,7 +2973,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3033,7 +3033,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3093,7 +3093,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3153,7 +3153,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3192,7 +3192,7 @@
 			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
-					(name "MPN") "100k")
+					(name "MPN") "1.6k")
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
@@ -3209,11 +3209,11 @@
 			)
 			(property
 				(name "MPN")
-				(value "100k")
+				(value "1.6k")
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3252,7 +3252,7 @@
 			(footprint "Resistor_SMD:R_0603_1608Metric")
 			(fields
 				(field
-					(name "MPN") "100k")
+					(name "MPN") "10k")
 				(field
 					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
 				(field
@@ -3269,11 +3269,11 @@
 			)
 			(property
 				(name "MPN")
-				(value "100k")
+				(value "10k")
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3333,7 +3333,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3393,7 +3393,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3412,6 +3412,66 @@
 				(tstamps "/")
 			)
 			(tstamps "eed15052-ae5f-47b0-8cb2-cda745fd4789")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R39")
+			(value "100k")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+			(fields
+				(field
+					(name "MPN") "100k")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0603_1608Metric")
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description")
+				)
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "MPN")
+				(value "100k")
+			)
+			(property
+				(name "Sheetname")
+				(value "Root")
+			)
+			(property
+				(name "Sheetfile")
+				(value "BalancerREF.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "fceb4aa2-355b-4a22-88e7-c31ee8afe665")
 			(units
 				(unit
 					(name "A")
@@ -3453,7 +3513,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3509,7 +3569,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3565,7 +3625,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3621,7 +3681,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3678,7 +3738,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3735,7 +3795,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -3754,177 +3814,6 @@
 				(tstamps "/")
 			)
 			(tstamps "4b513e3a-f968-47ae-9686-fbc0d0136075")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "TP4")
-			(value "TP_USB_VBUS")
-			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
-			(fields
-				(field
-					(name "MPN") "TP_USB_VBUS")
-				(field
-					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Connector")
-				(part "TestPoint")
-				(description "test point")
-			)
-			(property
-				(name "MPN")
-				(value "TP_USB_VBUS")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "test point tp")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "Pin* Test*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "22581d97-69fe-4cc2-8eb5-410aa8f0a7fc")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "TP5")
-			(value "TP_MAG+")
-			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
-			(fields
-				(field
-					(name "MPN") "TP_MAG+")
-				(field
-					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Connector")
-				(part "TestPoint")
-				(description "test point")
-			)
-			(property
-				(name "MPN")
-				(value "TP_MAG+")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "test point tp")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "Pin* Test*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "189eb9cf-6a24-489e-a12e-be3139946790")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "TP6")
-			(value "TP_MAG-")
-			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
-			(fields
-				(field
-					(name "MPN") "TP_MAG-")
-				(field
-					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Connector")
-				(part "TestPoint")
-				(description "test point")
-			)
-			(property
-				(name "MPN")
-				(value "TP_MAG-")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "test point tp")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "Pin* Test*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "d44cf293-4cc2-4bfb-ac76-38b4be15a991")
 			(units
 				(unit
 					(name "A")
@@ -3963,7 +3852,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -4020,7 +3909,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -4077,7 +3966,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -4096,234 +3985,6 @@
 				(tstamps "/")
 			)
 			(tstamps "05daf3f2-a2fb-4cdd-b03c-b929a3915c5f")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "TP11")
-			(value "TP_USB_D+")
-			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
-			(fields
-				(field
-					(name "MPN") "TP_USB_D+")
-				(field
-					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Connector")
-				(part "TestPoint")
-				(description "test point")
-			)
-			(property
-				(name "MPN")
-				(value "TP_USB_D+")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "test point tp")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "Pin* Test*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "b5b87aa4-f5cb-4df2-9df8-6f92544fd154")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "TP12")
-			(value "TP_USB_D-")
-			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
-			(fields
-				(field
-					(name "MPN") "TP_USB_D-")
-				(field
-					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Connector")
-				(part "TestPoint")
-				(description "test point")
-			)
-			(property
-				(name "MPN")
-				(value "TP_USB_D-")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "test point tp")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "Pin* Test*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "86c01897-9348-4287-83bd-f29d01a03565")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "TP13")
-			(value "TP_EN")
-			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
-			(fields
-				(field
-					(name "MPN") "TP_EN")
-				(field
-					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Connector")
-				(part "TestPoint")
-				(description "test point")
-			)
-			(property
-				(name "MPN")
-				(value "TP_EN")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "test point tp")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "Pin* Test*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "bb3e4b28-7330-439b-801b-2605847f5d43")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "TP14")
-			(value "TP_BOOT")
-			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
-			(fields
-				(field
-					(name "MPN") "TP_BOOT")
-				(field
-					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description")
-				)
-			)
-			(libsource
-				(lib "Connector")
-				(part "TestPoint")
-				(description "test point")
-			)
-			(property
-				(name "MPN")
-				(value "TP_BOOT")
-			)
-			(property
-				(name "Sheetname")
-				(value "")
-			)
-			(property
-				(name "Sheetfile")
-				(value "BalancerREF.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "test point tp")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "Pin* Test*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "f30cc619-eefb-4250-8c75-d91510c34200")
 			(units
 				(unit
 					(name "A")
@@ -4362,7 +4023,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -4449,46 +4110,10 @@
 							(num "3")
 						)
 						(pin
-							(num "2")
-						)
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "56")
-						)
-						(pin
-							(num "58")
-						)
-						(pin
-							(num "59")
-						)
-						(pin
-							(num "60")
-						)
-						(pin
-							(num "61")
-						)
-						(pin
-							(num "62")
-						)
-						(pin
-							(num "63")
-						)
-						(pin
-							(num "64")
+							(num "55")
 						)
 						(pin
 							(num "65")
-						)
-						(pin
-							(num "57")
-						)
-						(pin
-							(num "42")
-						)
-						(pin
-							(num "43")
 						)
 						(pin
 							(num "46")
@@ -4518,7 +4143,43 @@
 							(num "54")
 						)
 						(pin
-							(num "55")
+							(num "56")
+						)
+						(pin
+							(num "57")
+						)
+						(pin
+							(num "58")
+						)
+						(pin
+							(num "59")
+						)
+						(pin
+							(num "60")
+						)
+						(pin
+							(num "61")
+						)
+						(pin
+							(num "62")
+						)
+						(pin
+							(num "63")
+						)
+						(pin
+							(num "64")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "42")
+						)
+						(pin
+							(num "43")
 						)
 						(pin
 							(num "39")
@@ -4611,7 +4272,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -4699,7 +4360,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -4787,7 +4448,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -4884,7 +4545,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -4971,7 +4632,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -5023,7 +4684,7 @@
 			(datasheet "https://www.ti.com/lit/ds/symlink/sn74lvc1g132.pdf")
 			(fields
 				(field
-					(name "MPN") "SN74LVC1G08DBVR")
+					(name "MPN") "SN74LVC1G132DBVR")
 				(field
 					(name "Footprint") "Package_TO_SOT_SMD:SOT-23-5")
 				(field
@@ -5039,11 +4700,11 @@
 			)
 			(property
 				(name "MPN")
-				(value "SN74LVC1G08DBVR")
+				(value "SN74LVC1G132DBVR")
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -5112,7 +4773,7 @@
 			)
 			(property
 				(name "Sheetname")
-				(value "")
+				(value "Root")
 			)
 			(property
 				(name "Sheetfile")
@@ -6982,12 +6643,6 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "TP14")
-				(pin "1")
-				(pinfunction "1_1")
-				(pintype "passive")
-			)
-			(node
 				(ref "U1")
 				(pin "4")
 				(pinfunction "IO0_4")
@@ -7169,6 +6824,11 @@
 				(ref "J5")
 				(pin "5")
 				(pinfunction "Pin_5_5")
+				(pintype "passive")
+			)
+			(node
+				(ref "R39")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -7408,15 +7068,15 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "TP11")
-				(pin "1")
-				(pinfunction "1_1")
+				(ref "U7")
+				(pin "3")
+				(pinfunction "IO2_3")
 				(pintype "passive")
 			)
 			(node
 				(ref "U7")
-				(pin "3")
-				(pinfunction "IO2_3")
+				(pin "4")
+				(pinfunction "IO3_4")
 				(pintype "passive")
 			)
 		)
@@ -7442,15 +7102,15 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "TP12")
+				(ref "U7")
 				(pin "1")
-				(pinfunction "1_1")
+				(pinfunction "IO1_1")
 				(pintype "passive")
 			)
 			(node
 				(ref "U7")
-				(pin "1")
-				(pinfunction "IO1_1")
+				(pin "6")
+				(pinfunction "IO4_6")
 				(pintype "passive")
 			)
 		)
@@ -7470,8 +7130,8 @@
 			)
 			(node
 				(ref "D3")
-				(pin "2")
-				(pinfunction "A2_2")
+				(pin "1")
+				(pinfunction "A1_1")
 				(pintype "passive")
 			)
 			(node
@@ -7496,12 +7156,6 @@
 				(ref "J1")
 				(pin "B9")
 				(pinfunction "VBUS_B9")
-				(pintype "passive")
-			)
-			(node
-				(ref "TP4")
-				(pin "1")
-				(pinfunction "1_1")
 				(pintype "passive")
 			)
 			(node
@@ -7638,8 +7292,8 @@
 			)
 			(node
 				(ref "D3")
-				(pin "1")
-				(pinfunction "A1_1")
+				(pin "2")
+				(pinfunction "A2_2")
 				(pintype "passive")
 			)
 			(node
@@ -7756,6 +7410,11 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "R39")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
 				(ref "SW2")
 				(pin "1")
 				(pinfunction "1_1")
@@ -7769,12 +7428,6 @@
 			)
 			(node
 				(ref "TP2")
-				(pin "1")
-				(pinfunction "1_1")
-				(pintype "passive")
-			)
-			(node
-				(ref "TP6")
 				(pin "1")
 				(pinfunction "1_1")
 				(pintype "passive")
@@ -8110,12 +7763,6 @@
 				(pin "2")
 				(pintype "passive")
 			)
-			(node
-				(ref "TP5")
-				(pin "1")
-				(pinfunction "1_1")
-				(pintype "passive")
-			)
 		)
 		(net
 			(code "37")
@@ -8160,12 +7807,6 @@
 			(node
 				(ref "R4")
 				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "TP13")
-				(pin "1")
-				(pinfunction "1_1")
 				(pintype "passive")
 			)
 			(node
@@ -8679,28 +8320,6 @@
 				(ref "U5")
 				(pin "14")
 				(pinfunction "TMR_14")
-				(pintype "passive+no_connect")
-			)
-		)
-		(net
-			(code "80")
-			(name "unconnected-(U7-IO3-Pad4)")
-			(class "Default")
-			(node
-				(ref "U7")
-				(pin "4")
-				(pinfunction "IO3_4")
-				(pintype "passive+no_connect")
-			)
-		)
-		(net
-			(code "81")
-			(name "unconnected-(U7-IO4-Pad6)")
-			(class "Default")
-			(node
-				(ref "U7")
-				(pin "6")
-				(pinfunction "IO4_6")
 				(pintype "passive+no_connect")
 			)
 		)

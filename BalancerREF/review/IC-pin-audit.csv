@@ -123,9 +123,9 @@ U6,11,EXPOSED_PAD/PGND,GND,
 U7,1,I/O,/USB_CONN_D-,
 U7,2,VN/GND,GND,
 U7,3,I/O,/USB_CONN_D+,
-U7,4,I/O,unconnected-(U7-IO3-Pad4),Unused ESD channel
+U7,4,I/O,/USB_CONN_D+,
 U7,5,VP,/USB_VBUS,
-U7,6,I/O,unconnected-(U7-IO4-Pad6),Unused ESD channel
+U7,6,I/O,/USB_CONN_D-,
 U9,1,A,/OPT_COMP,
 U9,2,B,Net-(C26-Pad1),
 U9,3,GND,GND,
