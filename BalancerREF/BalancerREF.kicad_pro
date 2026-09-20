@@ -253,12 +253,12 @@
       "internal_id": "",
       "mfg": "",
       "mpn": "",
-      "sch_revision": "F"
+      "sch_revision": "G"
     },
     "layer_pairs": [
       {
         "bottomLayer": 4,
-        "enabled": false,
+        "enabled": true,
         "topLayer": 2
       },
       {
