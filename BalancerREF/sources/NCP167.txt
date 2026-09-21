@@ -1,0 +1,1235 @@
+DATA SHEET
+www.onsemi.com
+? Semiconductor Components Industries, LLC, 2016
+May, 2023 ? Rev. 5
+1
+Publication Order Number:
+NCP167/D
+LDO Regulator - Ultra-Low
+Noise, High PSRR, RF and
+Analog Circuits
+NCP167
+700 mA
+The NCP167 is a linear regulator capable of supplying 700 mA
+output current. Designed to meet the requirements of RF and analog
+circuits, the NCP167 device provides low noise, high PSRR, low
+quiescent current, and very good load/line transients. The device is
+designed to work with a 1 F input and a 1 F output ceramic capacitor.
+It is available in two thickness ultra?small 0.35P, 0.65 mm x 0.65 mm
+Chip Scale Package (CSP) and XDFN4 0.65P, 1 mm x 1 mm.
+Features
+? Operating Input Voltage Range: 1.9 V to 5.5 V
+? Available in Fixed Voltage Option: 1.8 V to 5.2 V
+? ?2% Accuracy Over Load/Temperature
+? Ultra Low Quiescent Current Typ. 12 A
+? Standby Current: Typ. 0.1 A
+? Very Low Dropout: 210 mV at 700 mA
+? Ultra High PSRR: Typ. 85 dB at 20 mA, f = 1 kHz
+? Ultra Low Noise: 8.5 VRMS
+? Stable with a 1 F Small Case Size Ceramic Capacitors
+? Available in ?WLCSP4 0.65 mm x 0.65 mm x 0.33 mm
+?XDFN4 1 mm x 1 mm x 0.4 mm
+? These Devices are Pb?Free, Halogen Free/BFR Free and are RoHS
+Compliant
+Typical Applications
+? Battery?powered Equipment
+? Wireless LAN Devices
+? Smartphones, Tablets
+? Cameras, DVRs, STB and Camcorders
+IN
+EN
+GND
+OUT
+OFF
+ON
+Figure 1. Typical Application Schematics
+VOUT
+COUT
+1 F
+Ceramic
+VIN
+NCP167
+CIN
+1 F
+Ceramic
+See detailed ordering and shipping information on page 10 of
+this data sheet.
+ORDERING INFORMATION
+PIN CONNECTIONS
+A1
+A2
+B1
+B2
+IN
+OUT
+EN
+GND
+(Top View)
+(Top View)
+MARKING DIAGRAMS
+X or XX = Specific Device Code
+M
+= Date Code
+XDFN4
+CASE 711AJ
+WLCSP4
+CASE 567JZ
+A1
+1
+XX M
+1
+X M
+
+NCP167
+www.onsemi.com
+2
+Figure 2. Simplified Schematic Block Diagram
+IN
+THERMAL
+SHUTDOWN
+MOSFET
+DRIVER WITH
+CURRENT LIMIT
+INTEGRATED
+SOFT?START
+BANDGAP
+REFERENCE
+ENABLE
+LOGIC
+EN
+OUT
+GND
+EN
+* ACTIVE DISCHARGE
+Version A only
+PIN FUNCTION DESCRIPTION
+Pin No.
+CSP4
+Pin No.
+XDFN4
+Pin
+Name
+Description
+A1
+4
+IN
+Input voltage supply pin
+A2
+1
+OUT
+Regulated output voltage. The output should be bypassed with small 1 F ceramic capacitor.
+B1
+3
+EN
+Chip enable: Applying VEN < 0.4 V disables the regulator, Pulling VEN > 1.2 V enables the LDO.
+B2
+2
+GND
+Common ground connection
+?
+EPAD
+EPAD
+Expose pad should be tied to ground plane for better power dissipation
+ABSOLUTE MAXIMUM RATINGS
+Rating
+Symbol
+Value
+Unit
+Input Voltage (Note 1)
+VIN
+?0.3 V to 6
+V
+Output Voltage
+VOUT
+?0.3 to VIN + 0.3, max. 6 V
+V
+Chip Enable Input
+VCE
+?0.3 to VIN + 0.3, max. 6 V
+V
+Output Short Circuit Duration
+tSC
+unlimited
+s
+Maximum Junction Temperature
+TJ
+150
+?C
+Storage Temperature
+TSTG
+?55 to 150
+?C
+ESD Capability, Human Body Model (Note 2)
+ESDHBM
+2000
+V
+ESD Capability, Machine Model (Note 2)
+ESDMM
+200
+V
+Stresses exceeding those listed in the Maximum Ratings table may damage the device. If any of these limits are exceeded, device functionality
+should not be assumed, damage may occur and reliability may be affected.
+1. Refer to ELECTRICAL CHARACTERISTICS and APPLICATION INFORMATION for Safe Operating Area.
+2. This device series incorporates ESD protection and is tested by the following methods:
+ESD Human Body Model tested per EIA/JESD22?A114
+ESD Machine Model tested per EIA/JESD22?A115
+Latchup Current Maximum Rating tested per JEDEC standard: JESD78.
+THERMAL CHARACTERISTICS
+Rating
+Symbol
+Value
+Unit
+Thermal Characteristics, WLCSP4 (Note 3)
+Thermal Resistance, Junction?to?Air
+RJA
+108
+?C/W
+Thermal Characteristics, XDFN4 (Note 3)
+Thermal Resistance, Junction?to?Air
+198
+3. Measured according to JEDEC board specification. Detailed description of the board can be found in JESD51?7
+
+NCP167
+www.onsemi.com
+3
+ELECTRICAL CHARACTERISTICS ?40?C ? TJ ? 125?C; VIN = VOUT(NOM) + 1 V; IOUT = 1 mA, CIN = COUT = 1 F, unless otherwise
+noted. VEN = 1.2 V. Typical values are at TJ = +25?C (Note 4).
+Parameter
+Test Conditions
+Symbol
+Min
+Typ
+Max
+Unit
+Operating Input Voltage
+VIN
+1.9
+5.5
+V
+Output Voltage Accuracy (Note 5)
+VIN = VOUT(NOM) + 1 V to 5.5 V
+0 mA ? IOUT ? 700 mA
+VOUT
+?2
++2
+%
+Line Regulation
+VOUT(NOM) + 1 V ? VIN ? 5.5 V
+LineReg
+0.02
+%/V
+Load Regulation
+IOUT = 1 mA to
+700 mA
+WLCSP4
+LoadReg
+0.001
+%/mA
+XDFN4
+0.002
+Dropout Voltage (Note 6)
+IOUT = 700 mA
+VOUT(NOM) = 1.8 V
+VDO
+315
+450
+mV
+VOUT(NOM) = 3.3 V
+190
+290
+Output Current Limit
+VOUT = 90% VOUT(NOM)
+ICL
+800
+1000
+mA
+Short Circuit Current
+VOUT = 0 V
+ISC
+1050
+Quiescent Current
+IOUT = 0 mA
+IQ
+9.7
+18
+A
+Shutdown Current
+VEN ? 0.4 V, VIN = 4.8 V
+IDIS
+0.01
+1
+A
+EN Pin Threshold Voltage
+EN Input Voltage ?H?
+VENH
+1.2
+V
+EN Input Voltage ?L?
+VENL
+0.4
+EN Pull Down Current
+VEN = 4.8 V
+IEN
+0.2
+0.5
+A
+Turn?On Time
+COUT = 1 F, From assertion of VEN to 
+VOUT = 95% VOUT(NOM)
+120
+s
+Power Supply Rejection Ratio
+VOUT(NOM) = 3.3 V,
+IOUT = 20 mA
+f = 100 Hz
+f = 1 kHz
+f = 10 kHz
+f = 100 kHz
+PSRR
+83
+85
+80
+63
+dB
+Output Voltage Noise
+f = 10 Hz to 100 kHz
+IOUT = 20 mA
+VN
+8.5
+VRMS
+Thermal Shutdown Threshold
+Temperature rising
+TSDH
+160
+?C
+Temperature falling
+TSDL
+140
+?C
+Active output discharge resistance
+VEN < 0.4 V, Version A only
+RDIS
+280
+
+Product parametric performance is indicated in the Electrical Characteristics for the listed test conditions, unless otherwise noted. Product
+performance may not be indicated by the Electrical Characteristics if operated under different conditions.
+4. Performance guaranteed over the indicated operating temperature range by design and/or characterization. Production tested at TA = 25?C.
+Low duty cycle pulse techniques are used during the testing to maintain the junction temperature as close to ambient as possible.
+5. Respect SOA.
+6. Dropout voltage is characterized when VOUT falls 100 mV below VOUT(NOM).
+
+NCP167
+www.onsemi.com
+4
+TYPICAL CHARACTERISTICS
+Figure 3. Output Voltage vs. Temperature ?
+VOUT = 2.85 V
+Figure 4. Quiescent Current vs. Input Voltage
+TJ, JUNCTION TEMPERATURE (?C)
+VIN, INPUT VOLTAGE (V)
+120
+80
+60
+40
+20
+0
+?20
+?40
+2.80
+2.81
+2.83
+2.90
+5.0
+4.0
+3.5
+3.0
+2.0
+1.0
+0.5
+0
+0
+2
+4
+8
+10
+12
+14
+16
+Figure 5. Ground Current vs. Output Current
+Figure 6. Dropout Voltage vs. Output Current ?
+VOUT = 1.8 V
+IOUT, OUTPUT CURRENT (mA)
+IOUT, OUTPUT CURRENT (A)
+1000
+100
+10
+1
+0.1
+0.01
+0.001
+0
+200
+400
+600
+1000
+1200
+1600
+1800
+0.7
+0.6
+0.5
+0.4
+0.3
+0.2
+0.1
+0
+0
+0.05
+0.10
+0.20
+0.30
+0.35
+0.40
+0.50
+Figure 7. Dropout Voltage vs. Output Current ?
+VOUT = 2.85 V
+Figure 8. Dropout Voltage vs. Output Current ?
+VOUT = 3.3 V
+IOUT, OUTPUT CURRENT (A)
+IOUT, OUTPUT CURRENT (A)
+0.7
+0.6
+0.5
+0.4
+0.3
+0.2
+0.1
+0
+0
+0.03
+0.06
+0.09
+0.15
+0.21
+0.27
+0.30
+0.7
+0.6
+0.5
+0.4
+0.3
+0.2
+0.1
+0
+0
+0.03
+0.06
+0.09
+0.18
+0.21
+0.27
+0.30
+VOUT, OUTPUT VOLTAGE (V)
+IQ, QUIESCENT CURRENT (A)
+IGND, GROUND CURRENT (A)
+VDROP, DROPOUT VOLTAGE (V)
+VDROP, DROPOUT VOLTAGE (V)
+VDROP, DROPOUT VOLTAGE (V)
+IOUT = 10 mA
+VIN = 3.85 V
+VOUT = 2.85 V
+CIN = 1 F
+COUT = 1 F
+100
+2.82
+2.84
+2.86
+2.85
+2.87
+2.89
+2.88
+VOUT = 2.85 V
+CIN = 1 F
+COUT = 1 F
+1.5
+2.5
+4.5
+5.5
+6
+TJ = 125?C
+TJ = 25?C
+TJ = ?40?C
+TJ = 125?C
+TJ = 25?C
+TJ = ?40?C
+VOUT = 1.8 V
+CIN = 1 F
+COUT = 1 F
+TJ = 125?C
+TJ = 25?C
+TJ = ?40?C
+VOUT = 2.85 V
+CIN = 1 F
+COUT = 1 F
+VOUT = 3.3 V
+CIN = 1 F
+COUT = 1 F
+TJ = 125?C
+TJ = 25?C
+TJ = ?40?C
+TJ = 125?C
+TJ = 25?C
+TJ = ?40?C
+VIN = 3.85 V
+VOUT = 2.85 V
+CIN = 1 F
+COUT = 1 F
+800
+1400
+0.8
+0.15
+0.25
+0.45
+0.8
+0.12
+0.18
+0.24
+0.8
+0.12
+0.15
+0.24
+
+NCP167
+www.onsemi.com
+5
+TYPICAL CHARACTERISTICS
+Figure 9. Current Limit vs. Temperature
+Figure 10. Short Circuit Current vs.
+Temperature
+TJ, JUNCTION TEMPERATURE (?C)
+TJ, JUNCTION TEMPERATURE (?C)
+100
+80
+60
+40
+20
+0
+?20
+?40
+550
+600
+700
+750
+850
+900
+1000
+1050
+120
+100
+80
+40
+20
+0
+?20
+?40
+550
+600
+700
+750
+850
+900
+1000
+1050
+Figure 11. Short Circuit Current vs. Input
+Voltage
+Figure 12. Disable Current vs. Temperature
+VIN, INPUT VOLTAGE (V)
+TJ, JUNCTION TEMPERATURE (?C)
+5.0
+4.0
+3.0
+2.0
+1.5
+1.0
+0.5
+0
+0
+100
+300
+400
+500
+700
+800
+1000
+120
+100
+60
+40
+20
+0
+?20
+?40
+0
+0.05
+0.10
+0.20
+0.30
+0.35
+0.40
+0.50
+Figure 13. Current to Enable Pin vs.
+Temperature
+Figure 14. Enable Voltage Threshold vs.
+Temperature
+TJ, JUNCTION TEMPERATURE (?C)
+TJ, JUNCTION TEMPERATURE (?C)
+100
+80
+60
+40
+20
+0
+?20
+?40
+0
+40
+120
+160
+240
+280
+320
+400
+100
+80
+60
+40
+20
+0
+?20
+?40
+300
+350
+400
+500
+600
+650
+700
+800
+ICL, CURRENT LIMIT (mA)
+ISC, SHORT CIRCUIT CURRENT (mA)
+ISC, SHORT CIRCUIT CURRENT (mA)
+IDIS, DISABLE CURRENT (A)
+IEN, ENABLE CURRENT (nA)
+VEN, VOLTAGE ON ENABLE PIN (V)
+120
+650
+800
+950
+VIN = 3.85 V
+VOUT = 2.85 V
+CIN = 1 F
+COUT = 1 F
+VIN = 3.85 V
+VOUT = 2.85 V
+CIN = 1 F
+COUT = 1 F
+60
+650
+800
+950
+CIN = 1 F
+COUT = 1 F
+TJ = 125?C
+TJ = 25?C
+TJ = ?40?C
+2.5
+3.5
+4.5
+5.5
+200
+600
+900
+80
+CIN = 1 F
+COUT = 1 F
+0.15
+0.25
+0.45
+VIN = 5.5 V
+VIN = 3.85 V
+VEN = 5.5 V
+OFF ?> ON
+ON ?> OFF
+VIN = 5.5 V
+VOUT = 2.85 V
+IOUT = 1 mA
+CIN = 1 F
+COUT = 1 F
+120
+80
+200
+360
+120
+VIN = 5.5 V
+VOUT = 2.85 V
+IOUT = 10 mA
+CIN = 1 F
+COUT = 1 F
+450
+550
+750
+
+NCP167
+www.onsemi.com
+6
+TYPICAL CHARACTERISTICS
+Figure 15. Power Supply Rejection Ratio vs.
+Current, VDROP = 0.5 V, COUT = 1 F
+Figure 16. Power Supply Rejection Ratio vs.
+Current, VDROP = 0.3 V, COUT = 1 F
+FREQUENCY (kHz)
+FREQUENCY (kHz)
+10M
+1M
+100K
+10K
+1K
+100
+0
+10
+30
+40
+50
+60
+80
+100
+Figure 17. Power Supply Rejection Ratio vs.
+Input Voltage, IOUT = 100 mA, COUT = 1 F
+Figure 18. Power Supply Rejection Ratio vs.
+Input Voltage, IOUT = 20 mA, COUT = 1 F
+FREQUENCY (kHz)
+FREQUENCY (kHz)
+Figure 19. Output Voltage Noise Spectral Density
+for VOUT = 3.3 V, IOUT = 20 mA, COUT = 1 F
+Figure 20. Output Voltage Noise Spectral Density
+for VOUT = 3.3 V, IOUT = 250 mA, COUT = 1 F
+FREQUENCY (kHz)
+FREQUENCY (kHz)
+1M
+100K
+10K
+1K
+100
+10
+10
+100
+1K
+10K
+100K
+1M
+100K
+10K
+1K
+100
+10
+10
+100
+1K
+10K
+100K
+RR, RIPPLE REJECTION (dB)
+RR, RIPPLE REJECTION (dB)
+RR, RIPPLE REJECTION (dB)
+RR, RIPPLE REJECTION (dB)
+OUTPUT VOLTAGE NOISE (nV/?Hz)
+OUTPUT VOLTAGE NOISE (nV/?Hz)
+VIN = 3.8 V
+VOUT = 3.3 V
+CIN = 1 F
+COUT = 1 F
+MLCC, X7R, 0805
+20
+70
+90
+10M
+1M
+100K
+10K
+1K
+100
+0
+10
+30
+40
+50
+60
+80
+100
+20
+70
+90
+VOUT = 3.3 V
+IOUT = 100 mA
+CIN = 1 F
+COUT = 1 F
+MLCC, X7R, 0805
+10M
+1M
+100K
+10K
+1K
+100
+0
+10
+30
+40
+50
+60
+80
+100
+20
+70
+90
+10M
+1M
+100K
+10K
+1K
+100
+0
+10
+30
+40
+50
+60
+80
+100
+20
+70
+90
+VOUT = 3.3 V
+IOUT = 20 mA
+CIN = 1 F
+COUT = 1 F
+MLCC, X7R, 0805
+VIN = 3.6 V
+VOUT = 3.3 V
+CIN = 1 F
+COUT = 1 F
+MLCC, X7R, 0805
+VIN = 3.6 V
+VOUT = 3.3 V
+IOUT = 20 mA
+CIN = 1 F
+COUT = 1 F
+MLCC, X7R, 0805
+VIN = 3.8 V
+VOUT = 3.3 V
+IOUT = 250 mA
+CIN = 1 F
+COUT = 1 F
+MLCC, X7R, 0805
+100 mA
+1 mA
+20 mA
+100 mA
+1 mA
+20 mA
+4.3 V
+3.8 V
+3.6 V
+4.3 V
+3.8 V
+3.6 V
+
+NCP167
+www.onsemi.com
+7
+APPLICATIONS INFORMATION
+General
+The NCP167 is an ultra?low noise 700 mA low dropout
+regulator designed to meet the requirements of RF
+applications and high performance analog circuits. The
+NCP167 device provides very high PSRR and excellent
+dynamic response. In connection with low quiescent current
+this device is well suitable for battery powered application
+such as cell phones, tablets and other. The NCP167 is fully
+protected in case of current overload, output short circuit and
+overheating.
+Input Capacitor Selection (CIN)
+Input capacitor connected as close as possible is necessary
+for ensure device stability. The X7R or X5R capacitor
+should be used for reliable performance over temperature
+range. The value of the input capacitor should be 1 F or
+greater to ensure the best dynamic performance. This
+capacitor will provide a low impedance path for unwanted
+AC signals or noise modulated onto constant input voltage.
+There is no requirement for the ESR of the input capacitor
+but it is recommended to use ceramic capacitors for their low
+ESR and ESL. A good input capacitor will limit the
+influence of input trace inductance and source resistance
+during sudden load current changes.
+Output Decoupling (COUT)
+The NCP167 requires an output capacitor connected as
+close as possible to the output pin of the regulator. The
+recommended capacitor value is 1 F and X7R or X5R
+dielectric due to its low capacitance variations over the
+specified temperature range. The NCP167 is designed to
+remain stable with minimum effective capacitance of 0.7 F
+to account for changes with temperature, DC bias and
+package size. Especially for small package size capacitors
+such as 0201 the effective capacitance drops rapidly with the
+applied DC bias. Please refer Figure 21.
+Figure 21. Capacity vs DC Bias Voltage
+There is no requirement for the minimum value of
+Equivalent Series Resistance (ESR) for the COUT but the
+maximum value of ESR should be less than 1.7 . Larger
+output capacitors and lower ESR could improve the load
+transient response or high frequency PSRR. It is not
+recommended to use tantalum capacitors on the output due
+to their large ESR. The equivalent series resistance of
+tantalum capacitors is also strongly dependent on the
+temperature, increasing at low temperature.
+Enable Operation
+The NCP167 uses the EN pin to enable/disable its device
+and to deactivate/activate the active discharge function. If
+the EN pin voltage is <0.4 V the device is guaranteed to be
+disabled. The pass transistor is turned?off so that there is
+virtually no current flow between the IN and OUT. The
+active discharge transistor is active so that the output voltage
+VOUT is pulled to GND through a 280  resistor. In the
+disable state the device consumes as low as typ. 10 nA from
+the VIN. If the EN pin voltage >1.2 V the device is
+guaranteed to be enabled. The NCP167 regulates the output
+voltage and the active discharge transistor is turned?off. The
+EN pin has internal pull?down current source with typ. value
+of 200 nA which assures that the device is turned?off when
+the EN pin is not connected. In the case where the EN
+function isn?t required the EN should be tied directly to IN.
+Output Current Limit
+Output Current is internally limited within the IC to a
+typical 1000 mA. The NCP167 will source this amount of
+current measured with a voltage drops on the 90% of the
+nominal VOUT. If the Output Voltage is directly shorted to
+ground (VOUT = 0 V), the short circuit protection will limit
+the output current to 1050 mA (typ.). The current limit and
+short circuit protection will work properly over whole
+temperature range and also input voltage range. There is no
+limitation for the short circuit duration.
+Thermal Shutdown
+When the die temperature exceeds the Thermal Shutdown
+threshold (TSD = 160?C typical), Thermal Shutdown event
+is detected and the device is disabled. The IC will remain in
+this state until the die temperature decreases below the
+Thermal Shutdown Reset threshold (TSDU = 140?C typical).
+Once the IC temperature falls below the 140?C the LDO is
+enabled again. The thermal shutdown feature provides the
+protection from a catastrophic device failure due to
+accidental overheating. This protection is not intended to be
+used as a substitute for proper heat sinking.
+Reverse Current
+The PMOS pass transistor has an inherent body diode
+which will be forward biased in the case that VOUT > VIN.
+Due to this fact in cases, where the extended reverse current
+condition can be anticipated the device may require
+additional external protection.
+
+NCP167
+www.onsemi.com
+8
+Power Supply Rejection Ratio
+The NCP167 features very high Power Supply Rejection
+ratio. If desired the PSRR at higher frequencies in the range
+100 kHz ? 10 MHz can be tuned by the selection of COUT
+capacitor and proper PCB layout.
+Turn?On Time
+The turn?on time is defined as the time period from EN
+assertion to the point in which VOUT will reach 98% of its
+nominal value. This time is dependent on various
+application conditions such as VOUT(NOM), COUT, TA.
+Power Dissipation
+As power dissipated in the NCP167 increases, it might
+become necessary to provide some thermal relief. The
+maximum power dissipation supported by the device is
+dependent upon board design and layout. Mounting pad
+configuration on the PCB, the board material, and the
+ambient temperature affect the rate of junction temperature
+rise for the part. The maximum power dissipation the
+NCP167 can handle is given by:
+PD(MAX) 
+125oC  TA
+JA
+(eq. 1)
+The power dissipated by the NCP167 for given application
+conditions can be calculated from the following equations:
+PD  VIN  IGND  IOUT	VIN  VOUT
+(eq. 2)
+Figure 22. JA and PD (MAX) vs. Copper Area (CSP4)
+0
+0.2
+0.4
+0.6
+0.8
+1.0
+1.2
+1.4
+1.6
+80
+90
+100
+110
+120
+130
+140
+150
+160
+0
+100
+200
+300
+400
+500
+600
+700
+PCB COPPER AREA (mm2)
+JA, JUNCTION TO AMBIENT THERMAL RESISTANCE (?C/W)
+PD(MAX), MAXIMUM POWER DISSIPATION (W)
+JA, 2 oz Cu
+JA, 1 oz Cu
+PD(MAX), TA = 25?C, 1 oz Cu
+PD(MAX), TA = 25?C, 2 oz Cu
+
+NCP167
+www.onsemi.com
+9
+Figure 23. JA and PD (MAX) vs. Copper Area (XDFN4)
+0.3
+0.4
+0.5
+0.6
+0.8
+0.7
+0.9
+1.0
+150
+160
+170
+180
+190
+200
+210
+220
+0
+100
+200
+300
+400
+500
+600
+700
+PCB COPPER AREA (mm2)
+JA, JUNCTION TO AMBIENT THERMAL RESISTANCE (?C/W)
+PD(MAX), MAXIMUM POWER DISSIPATION (W)
+JA, 2 oz Cu
+JA, 1 oz Cu
+PD(MAX), TA = 25?C, 1 oz Cu
+PD(MAX), TA = 25?C, 2 oz Cu
+PCB Layout Recommendations
+To obtain good transient performance and good regulation
+characteristics place CIN and COUT capacitors close to the
+device pins and make the PCB traces wide. In order to
+minimize the solution size, use 0402 or 0201 capacitors with
+appropriate capacity. Larger copper area connected to the
+pins will also improve the device thermal resistance. The
+actual power dissipation can be calculated from the equation
+above (Equation 2). Expose pad can be tied to the GND pin
+for improvement power dissipation and lower device
+temperature.
+
+NCP167
+www.onsemi.com
+10
+ORDERING INFORMATION (XDFN4)
+Device
+Nominal
+Output
+Voltage
+Description
+Marking
+Package
+Shipping?
+NCP167AMX180TBG
+1.8 V
+700 mA, Active Discharge
+CH
+XDFN4
+(Pb?Free)
+3000 or 5000 / Tape & Reel
+(Note 7)
+NCP167AMX280TBG
+2.8 V
+700 mA, Active Discharge
+CP
+NCP167AMX285TBG
+2.85 V
+700 mA, Active Discharge
+CK
+NCP167AMX300TBG
+3.0 V
+700 mA, Active Discharge
+CQ
+NCP167AMX330TBG
+3.3 V
+700 mA, Active Discharge
+CR
+NCP167AMX350TBG
+3.5 V
+700 mA, Active Discharge
+CL
+NCP167BMX330TBG
+3.3 V
+700 mA, Non-Active
+Discharge
+AR
+7. Product processed after October 1, 2022 are shipped with quantity 5000 units / tape & reel.
+ORDERING INFORMATION (WLCSP4)
+Device
+Nominal
+Output
+Voltage
+Description
+Marking*
+Rotation
+Package
+Shipping?
+NCP167AFCT180T2G
+1.8 V
+700 mA, Active Discharge
+H
+0?
+WLCSP4
+(Pb-Free)
+5000 or
+10000 / Tape
+& Reel
+(Note 8)
+NCP167AFCT285T2G
+2.85 V
+K
+0?
+NCP167AFCT295T2G
+2.95 V
+P
+0?
+NCP167AFCT330T2G
+3.3 V
+R
+0?
+NCP167AFCT350T2G
+3.5 V
+L
+0?
+NCP167AFCTC350T2G
+3.5 V
+700 mA, Active Discharge,
+Backside Coating
+L
+0?
+NCP167BFCT330T2G
+3.3 V
+700 mA, Non?Active
+Discharge
+R
+180?
+*Marking letter with overbar.
+8. Product processed after April 1, 2023 are shipped with quantity 10000 units / tape & reel
+
+WLCSP4, 0.64x0.64x0.33
+CASE 567JZ
+ISSUE B
+DATE 16 MAY 2022
+X
+= Specific Device Code
+M
+= Date Code
+*This information is generic. Please refer to
+device data sheet for actual part marking.
+Pb?Free indicator, ?G? or microdot ??, may
+or may not be present. Some products may
+not follow the Generic Marking.
+GENERIC
+MARKING DIAGRAM*
+XM
+MECHANICAL CASE OUTLINE
+PACKAGE DIMENSIONS
+onsemi and                     are trademarks of Semiconductor Components Industries, LLC dba onsemi or its subsidiaries in the United States and/or other countries. onsemi reserves
+the right to make changes without further notice to any products herein. onsemi makes no warranty, representation or guarantee regarding the suitability of its products for any particular
+purpose, nor does onsemi assume any liability arising out of the application or use of any product or circuit, and specifically disclaims any and all liability, including without limitation
+special, consequential or incidental damages. onsemi does not convey any license under its patent rights nor the rights of others.
+98AON85781F
+DOCUMENT NUMBER:
+DESCRIPTION:
+Electronic versions are uncontrolled except when accessed directly from the Document Repository.
+Printed  versions are uncontrolled  except when stamped  ?CONTROLLED COPY? in red.
+PAGE 1 OF 1
+WLCSP4, 0.64X0.64x0.33
+? Semiconductor Components Industries, LLC, 2014
+www.onsemi.com
+
+XDFN4 1.0x1.0, 0.65P
+CASE 711AJ
+ISSUE C
+DATE 08 MAR 2022
+GENERIC
+MARKING DIAGRAM*
+XX
+= Specific Device Code
+M
+= Date Code
+XX M
+1
+*This information is generic. Please refer to
+device data sheet for actual part marking.
+Pb?Free indicator, ?G? or microdot ??, may
+or may not be present. Some products may
+not follow the Generic Marking.
+MECHANICAL CASE OUTLINE
+PACKAGE DIMENSIONS
+onsemi and                     are trademarks of Semiconductor Components Industries, LLC dba onsemi or its subsidiaries in the United States and/or other countries. onsemi reserves
+the right to make changes without further notice to any products herein. onsemi makes no warranty, representation or guarantee regarding the suitability of its products for any particular
+purpose, nor does onsemi assume any liability arising out of the application or use of any product or circuit, and specifically disclaims any and all liability, including without limitation
+special, consequential or incidental damages. onsemi does not convey any license under its patent rights nor the rights of others.
+98AON67179E
+DOCUMENT NUMBER:
+DESCRIPTION:
+Electronic versions are uncontrolled except when accessed directly from the Document Repository.
+Printed  versions are uncontrolled  except when stamped  ?CONTROLLED COPY? in red.
+PAGE 1 OF 1
+XDFN4, 1.0X1.0, 0.65P
+? Semiconductor Components Industries, LLC, 2012
+www.onsemi.com
+
+onsemi, 
+ , and other names, marks, and brands are registered and/or common law trademarks of Semiconductor Components Industries, LLC dba ?onsemi? or its affiliates
+and/or subsidiaries in the United States and/or other countries. onsemi owns the rights to a number of patents, trademarks, copyrights, trade secrets, and other intellectual property.
+A listing of onsemi?s product/patent coverage may be accessed at www.onsemi.com/site/pdf/Patent?Marking.pdf. onsemi reserves the right to make changes at any time to any
+products or information herein, without notice. The information herein is provided ?as?is? and onsemi makes no warranty, representation or guarantee regarding the accuracy of the
+information, product features, availability, functionality, or suitability of its products for any particular purpose, nor does onsemi assume any liability arising out of the application or use
+of any product or circuit, and specifically disclaims any and all liability, including without limitation special, consequential or incidental damages. Buyer is responsible for its products
+and applications using onsemi products, including compliance with all laws, regulations and safety requirements or standards, regardless of any support or applications information
+provided by onsemi. ?Typical? parameters which may be provided in onsemi data sheets and/or specifications can and do vary in different applications and actual performance may
+vary over time. All operating parameters, including ?Typicals? must be validated for each customer application by customer?s technical experts. onsemi does not convey any license
+under any of its intellectual property rights nor the rights of others. onsemi products are not designed, intended, or authorized for use as a critical component in life support systems
+or any FDA Class 3 medical devices or medical devices with a same or similar classification in a foreign jurisdiction or any devices intended for implantation in the human body. Should
+Buyer purchase or use onsemi products for any such unintended or unauthorized application, Buyer shall indemnify and hold onsemi and its officers, employees, subsidiaries, affiliates,
+and distributors harmless against all claims, costs, damages, and expenses, and reasonable attorney fees arising out of, directly or indirectly, any claim of personal injury or death
+associated with such unintended or unauthorized use, even if such claim alleges that onsemi was negligent regarding the design or manufacture of the part. onsemi is an Equal
+Opportunity/Affirmative Action Employer. This literature is subject to all applicable copyright laws and is not for resale in any manner.
+ADDITIONAL INFORMATION
+TECHNICAL PUBLICATIONS:
+Technical Library: www.onsemi.com/design/resources/technical?documentation
+onsemi Website: www.onsemi.com
+ONLINE SUPPORT: www.onsemi.com/support
+For additional information, please contact your local Sales Representative at
+www.onsemi.com/support/sales
+?

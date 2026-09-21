@@ -1,0 +1,136 @@
+1 
+www.handsontec.com 
+ 
+ 
+ 
+Handson Technology 
+User Guide 
+E18-D80NK Adjustable Infra-Red (IR) Proximity Sensor 
+ 
+E18-D80NK Infrared Obstacle Avoidance Sensor is a low-cost IR Proximity Sensor with an adjustable 
+range of 3cm to 80cm. E18-D80 IR Sensor is widely used in robots to avoid obstacles, industrial assembly 
+lines, Reverse Car Parking, and many other automation applications. The detection range can be adjusted 
+according to the application using the multi-turn pot-meter that is located at the back of the sensor. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+SKU: SSR1069 
+Brief Data: 
+ 
+? Operating Voltage: 5Vdc. 
+? Current consumption: > (25~100)mA. 
+? Dimension: ?17mm (diameter) x 45mm (length). 
+? Cable length: 45cm. 
+? Detection of objects: Transparent or Opaque. 
+? Diffuse reflective type. 
+? Sensing range: 3cm to 80cm (depends on obstacle surface). 
+? NPN output (normally high). 
+? Environment temperature: -25 ?C ~ 55 ?C. 
+? Weight: 42g. 
+ 
+ 
+ 
+
+2 
+www.handsontec.com 
+ 
+ 
+Mechanical Dimension: 
+Unit: mm 
+ 
+ 
+Pin Functional Diagram: 
+ 
+ 
+ 
+ 
+ 
+ 
+
+3 
+www.handsontec.com 
+ 
+ 
+Schematic Diagram: 
+ 
+ 
+ 
+ 
+Web Resources: 
+? 
+https://create.arduino.cc/projecthub/ashish_cd/interfacing-e18-d80nk-ir-proximity-sensor-with-arduino-
+a4bbd0 
+? 
+https://robojax.com/learn/arduino/?vid=robojax-E18-D80NK-IR-Switch 
+ 
+ 
+ 
+ 
+ 
+ 
+
+4 
+www.handsontec.com 
+ 
+ 
+ 
+Handsontec.com 
+We have the parts for your ideas 
+ 
+HandsOn Technology provides a multimedia and interactive platform for 
+everyone interested in electronics. From beginner to diehard, from student 
+to lecturer. Information, education, inspiration and entertainment. Analog 
+and digital, practical and theoretical; software and hardware.  
+ 
+ 
+HandsOn Technology support Open Source Hardware (OSHW) 
+Development Platform. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Learn : Design : Share 
+ 
+ 
+www.handsontec.com 
+ 
+ 
+ 
+
+5 
+www.handsontec.com 
+ 
+ 
+The Face behind our product quality? 
+In a world of constant change and continuous technological development, a new or replacement 
+product is never far away ? and they all need to be tested. 
+Many vendors simply import and sell wihtout checks and this cannot be the ultimate interests of 
+anyone, particularly the customer. Every part sell on Handsotec is fully tested. So when buying from 
+Handsontec products range, you can be confident you?re getting outstanding quality and value. 
+ 
+We keep adding the new parts so that you can get rolling on your next project. 
+ 
+Breakout Boards & Modules 
+ 
+Connectors 
+Electro-Mechanical Parts 
+ 
+Engineering Material 
+ 
+Mechanical Hardware 
+ 
+P 
+Electronics Components 
+Power Supply 
+Arduino Board & Shield 
+ 
+Tools & Accessory 
+ 
+ 

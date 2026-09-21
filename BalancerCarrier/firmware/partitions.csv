@@ -1,0 +1,7 @@
+# Name, Type, SubType, Offset, Size, Flags
+# FeatherS3[D] has 16 MB of flash against BalancerREF's 8 MB. The app partition keeps
+# the proven 3 MB; every extra byte goes to flight-log storage.
+nvs, data, nvs, 0x9000, 0x6000,
+phy_init, data, phy, 0xf000, 0x1000,
+factory, app, factory, 0x10000, 0x300000,
+storage, data, spiffs, 0x310000, 0xCF0000,

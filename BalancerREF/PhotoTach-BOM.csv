@@ -1,24 +1,30 @@
-Ref,Qty,Description,Manufacturer,MPN,DigiKey PN / page,Approx unit USD,Notes
-D1,1,Red 625 nm high-power LED 1 A max 2.2 V Vf 3535,Cree LED,XPEBRD-L1-0000-00501,XPEBRD-L1-0000-00501CT-ND (digikey.com/en/products/detail/cree-led/XPEBRD-L1-0000-00501/4177320),1.50,Pulsed 500 mA 5 us at 20 kHz; visible aiming spot; any XPEBRD-L1 bin works
-LENS1,1,9.9 mm TINA spot lens 10-15 deg with adhesive holder for Cree XP-E,Ledil,FA10887_TINA-RS,711-1113-ND (digikey.com/product-detail/en/FA10887_TINA-RS/711-1113-ND/2354842),3.50,Holder included; adhesive to PCB. Carclo 10193 and 10003 were out of stock 2026-09-09
-LENS1-ALT,0,LISA2 spot lens 15-24 deg with pin holder for Cree XP (alternate),Ledil,FP11055_LISA2-RS-PIN,711-1105-ND (digikey.co.uk/product-detail/en/FP11055_LISA2-RS-PIN/711-1105-ND/2354834),3.00,Wider beam: about 8 in wide at 24 in; more aim tolerance, ~40 percent less irradiance, still ample
-PD1,1,Silicon PIN photodiode 7.5 mm2 900 nm peak 100 ns,Vishay,BPW34,BPW34-ND (digikey.com/en/products/detail/vishay-semiconductor-opto-division/BPW34/1681149),1.20,Through-hole; BPW34S is the SMD equivalent. Red response about 60 percent of peak which is fine
-U4,1,Dual 10 MHz RRIO CMOS op amp SOIC-8,Texas Instruments,TLV9062IDR,296-47857-1-ND (digikey.com/en/products/detail/texas-instruments/TLV9062IDR/8133206),0.65,A: transimpedance 10k; B: AC-coupled gain 20. VSSOP TLV9062IDGKR reel was out of stock 2026-09-09; same die
-U4-ALT,0,Dual 10 MHz op amp SOIC-8 (drop-in alternate),Microchip,MCP6292-E/SN,MCP6292-E/SN-ND (digikey.com/en/products/detail/MCP6292-E/SN/MCP6292-E/SN-ND/574101),0.70,Same pinout and bandwidth class; use if TLV9062 also runs out
-U5,1,Comparator push-pull SOT-23-5 (existing part),STMicroelectronics,TS3021IYLT,already in Rev B BOM,0.45,Fixed divider threshold plus 470k hysteresis; RV1 deleted
-U9,1,Single 2-input NAND gate with Schmitt-trigger inputs SOT-23-5,Texas Instruments,SN74LVC1G132DBVR,296-13321-1-ND (digikey.com/en/products/detail/texas-instruments/SN74LVC1G132DBVR/638507),0.12,"Synchronous gate: comparator NAND delayed emitter pulse. MUST be the 1G132, not the 1G08 it replaced - the Schmitt inputs are required for the R29/C26 edge and U10 is wired for the NAND polarity. Ref was U6 in the pre-split numbering; it is U9 on the main board"
-U7,1,Retriggerable monostable with Schmitt inputs SSOP-8,Texas Instruments,SN74LVC1G123DCTR,digikey.com/en/products/detail/texas-instruments/SN74LVC1G123DCTR/863597,0.55,100 us stretch: Rext 100k Cext 1 nF; output to GPIO8
-Q1,1,N-channel MOSFET 30 V 5.7 A SOT-23 (existing part),Alpha and Omega,AO3400A,already in Rev B BOM,0.20,Switches the LED pulse current; gate from GPIO9 PWM
-R_LED,1,3.9 ohm 1206 0.5 W pulse resistor,generic,any 1206 3R9 1 percent,search "3.9 ohm 1206 0.5W",0.10,Sets about 490 mA peak at a full 4.2 V cell. Size it at the TOP of the SYS_SW range, not the battery: the BQ24075 regulates OUT to 5.5 V, which with a low-Vf bin gives ~897 mA - under D1 1 A absolute max. The old 3R0 gave ~1.1 A there
-C_BULK,1,100 uF 6.3 V low-ESR (polymer or MLCC 1210),generic,any,search "100uF 6.3V polymer" or "100uF 1210",0.30,Local reservoir for 5 us 500 mA pulses; place at the LED resistor
-R_TIA,1,10k 0603 1 percent,generic,any,stock,0.01,Transimpedance feedback
-C_TIA,1,10 pF 0603 C0G,generic,any,stock,0.01,TIA stability across the 10k
-C_AC,1,10 nF 0603 X7R,generic,any,stock,0.01,AC coupling into gain stage
-R_G1/R_G2,2,10k and 200k 0603 1 percent,generic,any,stock,0.02,Gain 20 for the second stage
-R_TH1/R_TH2,2,Threshold divider 0603 (values set on bench from measured pulse height; start 47k/10k),generic,any,stock,0.02,Replaces RV1
-R_HYS,1,470k 0603 (existing R26 value),generic,any,stock,0.01,Comparator hysteresis
-R_DLY/C_DLY,2,1k and 470 pF 0603,generic,any,stock,0.02,Delays the emitter pulse copy about 0.5 us into the AND gate to match receiver latency
-R_EXT/C_EXT,2,100k 0603 and 1 nF 0603 C0G,generic,any,stock,0.02,Monostable 100 us timing
-C_DEC,3,100 nF 0603,generic,any,stock,0.03,Decoupling for U4 U6 U7
-WINDOW,1,Red-tinted acrylic window 3 mm covering LED and photodiode apertures,enclosure part,n/a,not a Digi-Key item (McMaster or Tap Plastics),2.00,Acts as the long-pass filter like the Banner acrylic lens; keep an internal baffle between LED and photodiode
-TAPE,1,Retroreflective tape 25 mm wide,3M,3M 7610 or Banner BRT-THG-2X2,not a Digi-Key item,10.00,Required: ordinary reflective tape returns far too little at 24 in
+Board,Ref,Qty,Description,Manufacturer,MPN,DigiKey PN / page,Approx unit USD,Notes
+OptHead,D1,1,"Red 625 nm high-power LED, 1 A max, Vf 2.2 V, 3535",Cree LED,XPEBRD-L1-0000-00501,XPEBRD-L1-0000-00501CT-ND,1.50,"Pulsed 500 mA, 5 us at 20 kHz (10 percent duty); visible aiming spot; any XPEBRD-L1 bin works"
+OptHead,PD1,1,"Si PIN photodiode, SMD DIL 4.5x4 mm, 7.02 mm2, peak 620 nm, IR-filtered 400-690 nm, tr 90 ns",ams OSRAM,SFH 2440,"SFH 2440, or SFH 2440-Z for tape and reel",1.30,"CHANGED 2026-09-21. Was BPW34S. Osram SMD version is discontinued, and Vishay BPW34S is LEADED (doc 81521: ""packed in tubes, specifications like BPW34""), so the old line paired an SMD footprint with a through-hole part number. SFH 2440 is pad-identical to Osram_BPW34S-SMD so there is no layout change; peak 620 nm matches the 625 nm emitter, and its 400-690 nm window blocks the IR the BPW34 (peak 900 nm) was most sensitive to. NOT SFH 2430: 200 us rise time, 1000 pF, unusable for tach phase."
+OptHead,LENS1,1,9.9 mm TINA spot lens 10-15 deg with adhesive holder for Cree XP-E,Ledil,FA10887_TINA-RS,711-1113-ND,3.50,Holder included; adhesive to PCB. Carclo 10193 and 10003 were out of stock 2026-09-09
+OptHead,LENS1-ALT,0,LISA2 spot lens 15-24 deg with pin holder (alternate),Ledil,FP11055_LISA2-RS-PIN,711-1105-ND,3.00,Wider beam: about 8 in wide at 24 in; more aim tolerance
+OptHead,U8,1,"Dual 10 MHz RRIO CMOS op amp, SOIC-8",Texas Instruments,TLV9062IDR,296-47857-1-ND,0.65,"REF WAS WRONG: listed as U4, but U4 on this board is the TS3021. A: transimpedance 10k; B: AC-coupled gain 20. VSSOP TLV9062IDGKR was out of stock 2026-09-09, same die"
+OptHead,U8-ALT,0,"Dual 10 MHz op amp, SOIC-8, drop-in alternate",Microchip,MCP6292-E/SN,MCP6292-E/SN-ND,0.70,Same pinout and bandwidth class; use if the TLV9062 runs out
+OptHead,U4,1,"Comparator, push-pull, SOT-23-5",STMicroelectronics,TS3021IYLT,already in Rev B BOM,0.45,"REF WAS WRONG: listed as U5, but U5 on BalancerREF is the BQ24075 charger. Fixed divider threshold plus 470k hysteresis; RV1 deleted"
+OptHead,Q1,1,"N-channel MOSFET 30 V 5.7 A, SOT-23",Alpha and Omega,AO3400A,already in Rev B BOM,0.20,Switches the LED pulse current; gate driven from OPT_LED_EN through R19
+OptHead,J5,1,"JST GH 7-way horizontal, 1.25 mm pitch",JST,SM07B-GHS-TB,455-1650-1-ND,0.60,"To main board: VBAT, GND, OPT_LED_EN, GND, OPT_COMP, GND, +3V3"
+OptHead,R18,1,3.9 ohm 1206 0.5 W pulse resistor,generic,any 1206 3R9 1 percent,"search ""3.9 ohm 1206 0.5W""",0.10,"Sets about 490 mA peak at a full 4.2 V cell; size at the top of the VBAT range. MUST stay 1206: the pulse withstand is a function of body size, not resistance"
+OptHead,R19,1,100 ohm 0603,generic,any,stock,0.01,ADDED - had no BOM line. Gate series resistor for Q1
+OptHead,R20,1,100k 0603,generic,any,stock,0.01,ADDED - had no BOM line
+OptHead,R21,1,10k 0603 1 percent,generic,any,stock,0.01,Transimpedance feedback
+OptHead,"R22, R23",2,10k and 120k 0603 1 percent,generic,any,stock,0.02,Gain stage. WAS WRONG: BOM said 200k; schematic R23 is 120k
+OptHead,"R24, R25",2,"10k 0603 1 percent, qty 2",generic,any,stock,0.02,ADDED - had no BOM line. OPT_VREF mid-rail divider; without these the op amp has no reference
+OptHead,"R26, R27",2,22k and 10k 0603 1 percent,generic,any,stock,0.02,"Comparator threshold divider. Values are fixed in the schematic now; the BOM previously said ""set on bench"""
+OptHead,R28,1,470k 0603,generic,any,stock,0.01,Comparator hysteresis. The old BOM note mis-referenced this as R26; R26 is the 22k threshold leg
+OptHead,R32,1,33 ohm 0603,generic,any,stock,0.01,ADDED - had no BOM line
+OptHead,C20,1,"100 uF 10 V low-ESR, 1210",generic,any,"search ""100uF 10V 1210""",0.30,"Local reservoir for the 5 us 500 mA pulses; place at R18. WAS WRONG: BOM said 6.3 V, schematic is 10 V"
+OptHead,C21,1,22 pF 0805 C0G,generic,any,stock,0.01,"CHANGED 2026-09-21 from 10 pF. TIA stability: SFH 2440 roughly doubles junction capacitance (135 pF vs ~72 pF at zero bias), so Cf_min = sqrt(Cin/(2*pi*Rf*GBW)) rises to about 12.3 pF with R21 10k and the TLV9062 10 MHz GBW; the fitted 10 pF would peak. 22 pF still leaves 723 kHz. Package WAS WRONG: BOM said 0603, schematic is 0805."
+OptHead,C22,1,10 nF 0805 X7R,generic,any,stock,0.01,"AC coupling into the gain stage. Package WAS WRONG: BOM said 0603, schematic is 0805"
+OptHead,"C23, C24, C25",3,"100 nF 0805, qty 3",generic,any,stock,0.03,"Decoupling for U4 and U8. Package WAS WRONG: BOM said 0603, schematic is 0805"
+BalancerREF,U9,1,"Single 2-input NAND gate, Schmitt inputs, SOT-23-5",Texas Instruments,SN74LVC1G132DBVR,296-13321-1-ND,0.12,"Synchronous gate: comparator NAND delayed emitter pulse. MUST be the 1G132, not the 1G08 it replaced"
+BalancerREF,U10,1,"Retriggerable monostable, Schmitt inputs, SSOP-8",Texas Instruments,SN74LVC1G123DCTR,digikey.com/en/products/detail/texas-instruments,0.55,"REF WAS WRONG: listed as U7, but U7 on BalancerREF is the SRV05-4 ESD array. Trigger is pin 1 A falling, with B and CLR held high"
+BalancerREF,"R29, C26",2,1k 0603 and 470 pF 0805 C0G,generic,any,stock,0.02,Delays the emitter pulse copy about 0.5 us into the gate to match receiver latency
+BalancerREF,"R30, C28",2,10k 0603 and 10 nF 0805 C0G,generic,any,stock,0.02,"CHANGED 2026-09-20 from 100k / 1 nF. One-shot timing: 10k/10n is the characterised row in TI SCES586E section 5.8, tw 100-110 us guaranteed across all four supply voltages. 100k is ten times beyond the largest Rext TI characterises."
+BalancerREF,"R39, R40",2,"100k 0603, qty 2",generic,any,stock,0.02,R39 holds OPT_COMP low when the head is unplugged from J5; R40 holds the R29/C26 strobe low
+mechanical,WINDOW,1,"Red-tinted acrylic window, 3 mm, covering LED and photodiode",enclosure part,n/a,McMaster or Tap Plastics,2.00,Long-pass filter; keep an internal baffle between LED and photodiode. Less critical now that the SFH 2440 blocks IR itself
+mechanical,TAPE,1,"Retroreflective tape, 25 mm wide",3M,3M 7610 or Banner BRT-THG-2X2,not a Digi-Key item,10.00,Required: ordinary reflective tape returns far too little at 24 in

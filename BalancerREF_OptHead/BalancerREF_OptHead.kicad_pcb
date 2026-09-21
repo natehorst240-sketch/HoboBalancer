@@ -1361,7 +1361,7 @@
 	(footprint "R_1206_3216Metric"
 		(layer "F.Cu")
 		(uuid "8816d53f-b390-4eec-b4a5-d539fd7ece4b")
-		(at 107.5 108.8)
+		(at 107.5 109.05)
 		(descr "Resistor SMD 1206 (3216 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf)")
 		(tags "resistor")
 		(property "Reference" "R18"
@@ -2593,13 +2593,13 @@
 	(footprint "LED_Cree-XP"
 		(layer "F.Cu")
 		(uuid "ab1d3685-424b-4501-85a5-f0e0c4b32f92")
-		(at 112.5 109 180)
+		(at 113.3 109 180)
 		(descr "LED Cree-XP http://www.cree.com/~/media/Files/Cree/LED-Components-and-Modules/XLamp/Data-and-Binning/XLampXPE2.pdf")
 		(tags "LED Cree XP")
 		(property "Reference" "D1"
 			(at -3.3 0 180)
 			(layer "F.SilkS")
-			(uuid "170ec583-011b-4fb3-bd3a-5a0ba028a59a")
+			(uuid "b27c579b-0ff2-44f4-a144-00beb8f55d67")
 			(effects
 				(font
 					(size 1 1)
@@ -2610,7 +2610,7 @@
 		(property "Value" "XPEBRD-L1 625nm"
 			(at 0 2.75 180)
 			(layer "F.Fab")
-			(uuid "802484dc-4490-4d21-b7a2-8556fdae13dc")
+			(uuid "f593c5e2-ee59-4440-92f5-80721659b250")
 			(effects
 				(font
 					(size 1 1)
@@ -2623,7 +2623,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "7750ffa7-d557-482b-9c9e-00ad967ae950")
+			(uuid "078ba1a6-5d80-459a-a406-e182d1f04266")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2636,7 +2636,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "bd4ec62d-e3f7-4b6b-99b9-2719a3704444")
+			(uuid "92d587f5-636f-48c0-b2eb-e202ada483ed")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3910,7 +3910,7 @@
 			)
 		)
 	)
-	(footprint "Osram_BPW34S-SMD"
+	(footprint "Osram_SFH2440"
 		(layer "F.Cu")
 		(uuid "d73919f4-61e4-41b8-a4fb-0e34d5ffa980")
 		(at 113 126.8 180)
@@ -3927,7 +3927,7 @@
 				)
 			)
 		)
-		(property "Value" "BPW34S"
+		(property "Value" "SFH 2440"
 			(at 0 3.17 180)
 			(layer "F.Fab")
 			(uuid "3e7dbd64-fc83-4ad0-8a4c-d302dc4785b4")
@@ -5162,7 +5162,7 @@
 				)
 			)
 		)
-		(property "Value" "10p C0G"
+		(property "Value" "22p C0G"
 			(at 0 1.68 0)
 			(layer "F.Fab")
 			(uuid "713b2fda-4a4d-4195-97ee-8d64d6b1372b")
@@ -5321,6 +5321,28 @@
 		(fill no)
 		(layer "Edge.Cuts")
 		(uuid "2d5519ab-92b6-4f85-b373-d4479640bb0e")
+	)
+	(gr_text "HoboVibe Optical Tach"
+		(at 112.4 104.8 0)
+		(layer "F.SilkS")
+		(uuid "30dc4657-4191-44f8-91c3-36cfa56dc5f7")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.13)
+			)
+		)
+	)
+	(gr_text "1"
+		(at 105.4 144.75 0)
+		(layer "F.SilkS")
+		(uuid "5c3a4597-87e8-4489-840a-2c9d1fe3b4a7")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+		)
 	)
 	(gr_text "BAFFLE"
 		(at 112 120.65 0)
@@ -5790,20 +5812,36 @@
 		(uuid "e468894e-c5cc-44ae-9615-ac031ba31a10")
 	)
 	(segment
-		(start 108.375 112.75)
+		(start 110.25 112.75)
+		(end 109.85 112.35)
+		(width 0.2)
+		(layer "F.Cu")
+		(net "/MOS_GATE")
+		(uuid "0d5a303b-8e5e-4c8f-b13c-40b6a7ba1ada")
+	)
+	(segment
+		(start 110.5625 112.75)
+		(end 110.25 112.75)
+		(width 0.2)
+		(layer "F.Cu")
+		(net "/MOS_GATE")
+		(uuid "7927649d-4c6c-43a7-8bca-ec9295baaa6d")
+	)
+	(segment
+		(start 109.85 112.35)
+		(end 108.075 112.35)
+		(width 0.2)
+		(layer "F.Cu")
+		(net "/MOS_GATE")
+		(uuid "c399c196-a9ce-4abe-ba95-c3ec7b6ecc38")
+	)
+	(segment
+		(start 108.075 112.35)
 		(end 108.025 112.4)
 		(width 0.2)
 		(layer "F.Cu")
 		(net "/MOS_GATE")
-		(uuid "3d7f99b9-8cb5-4335-9fda-6e249b3b551d")
-	)
-	(segment
-		(start 110.5625 112.75)
-		(end 108.375 112.75)
-		(width 0.2)
-		(layer "F.Cu")
-		(net "/MOS_GATE")
-		(uuid "9c1e87e0-ccda-4d0e-9d28-7ed0c032ae19")
+		(uuid "d0923c62-b4b1-490d-a0b6-08991946ec03")
 	)
 	(segment
 		(start 108.025 114.2)
@@ -5814,20 +5852,20 @@
 		(uuid "e3ffdfe7-8637-415d-a7d4-7757cb6c6373")
 	)
 	(segment
-		(start 113.9 109)
-		(end 113.9 112.2375)
+		(start 112.4375 113.7)
+		(end 114.7 111.4375)
 		(width 0.8)
 		(layer "F.Cu")
 		(net "Net-(D1-K)")
-		(uuid "93156583-d270-4e14-9376-8ffb476a881a")
+		(uuid "bde06fb2-fe25-40f2-9aad-c9997d1c812e")
 	)
 	(segment
-		(start 113.9 112.2375)
-		(end 112.4375 113.7)
+		(start 114.7 111.4375)
+		(end 114.7 109)
 		(width 0.8)
 		(layer "F.Cu")
 		(net "Net-(D1-K)")
-		(uuid "978ae088-490b-44fc-b27e-436df72fb63a")
+		(uuid "f08b8846-6806-41d9-af6b-b8585a809025")
 	)
 	(segment
 		(start 116.2 133.6)
@@ -5942,6 +5980,14 @@
 		(uuid "015ae072-6b33-45b7-9e6d-0f802790be9a")
 	)
 	(segment
+		(start 105.875 109.05)
+		(end 102.8 112.125)
+		(width 0.8)
+		(layer "F.Cu")
+		(net "/SYS_SW")
+		(uuid "264d15aa-f693-4c8e-9da8-23a1f0264a0c")
+	)
+	(segment
 		(start 101.4 143)
 		(end 103.6 145.2)
 		(width 0.8)
@@ -5964,22 +6010,6 @@
 		(layer "F.Cu")
 		(net "/SYS_SW")
 		(uuid "afc7d3ac-c7da-4d5e-bbb5-2a349028442b")
-	)
-	(segment
-		(start 106.0375 108.8)
-		(end 106.0375 108.8875)
-		(width 0.8)
-		(layer "F.Cu")
-		(net "/SYS_SW")
-		(uuid "be8b9bb7-86a4-4f05-b27c-126632f2881a")
-	)
-	(segment
-		(start 106.0375 108.8875)
-		(end 102.8 112.125)
-		(width 0.8)
-		(layer "F.Cu")
-		(net "/SYS_SW")
-		(uuid "d3dd01a4-5bb5-4153-a523-795b4a9655ba")
 	)
 	(segment
 		(start 104.8 114.125)
@@ -6006,20 +6036,28 @@
 		(uuid "f792ebcc-b78c-47e0-9e8a-8604e88989c9")
 	)
 	(segment
-		(start 109.1625 109)
-		(end 108.9625 108.8)
+		(start 106.0375 109.05)
+		(end 105.875 109.05)
 		(width 0.8)
 		(layer "F.Cu")
-		(net "Net-(D1-A)")
-		(uuid "99a11d06-eee3-44ef-85ac-798adbee995d")
+		(net "/SYS_SW")
+		(uuid "fd2a412c-74eb-4e7e-82e6-1dc0bbabad34")
 	)
 	(segment
-		(start 111.1 109)
-		(end 109.1625 109)
+		(start 109.0125 109)
+		(end 108.9625 109.05)
 		(width 0.8)
 		(layer "F.Cu")
 		(net "Net-(D1-A)")
-		(uuid "e1a7af70-3984-4daa-8499-44225fa4ad9a")
+		(uuid "0d18a6b1-0729-40ad-a093-8321a2619543")
+	)
+	(segment
+		(start 111.9 109)
+		(end 109.0125 109)
+		(width 0.8)
+		(layer "F.Cu")
+		(net "Net-(D1-A)")
+		(uuid "698caf5c-e063-412b-9b48-ef66dd003aaf")
 	)
 	(segment
 		(start 103 140.8)
@@ -6561,28 +6599,6 @@
 				(xy 110.58751 133.087017) (xy 110.461989 133.159487) (xy 110.359487 133.261989) (xy 110.287017 133.38751)
 				(xy 110.2495 133.527525) (xy 100.5005 133.527525) (xy 100.5005 100.5995) (xy 100.519407 100.541309)
 				(xy 100.568907 100.505345) (xy 100.5995 100.5005) (xy 124.4005 100.5005)
-			)
-		)
-	)
-	(gr_text "OPTHEAD RevB"
-		(at 112.5 104.0 0)
-		(layer "F.SilkS")
-		(uuid "30dc4657-4191-44f8-91c3-36cfa56dc5f7")
-		(effects
-			(font
-				(size 0.9 0.9)
-				(thickness 0.13)
-			)
-		)
-	)
-	(gr_text "1"
-		(at 107.5 144.6 0)
-		(layer "F.SilkS")
-		(uuid "5c3a4597-87e8-4489-840a-2c9d1fe3b4a7")
-		(effects
-			(font
-				(size 0.6 0.6)
-				(thickness 0.1)
 			)
 		)
 	)
