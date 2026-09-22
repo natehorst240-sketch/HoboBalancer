@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "C:\\Users\\nateh\\hgs-linux\\Balancer\\BalancerCarrier\\BalancerCarrier.kicad_sch")
-		(date "2026-09-21T06:06:42")
+		(date "2026-09-21T19:38:01")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -2649,6 +2649,11 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "C2")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
 				(ref "C7")
 				(pin "1")
 				(pintype "passive")
@@ -2855,12 +2860,6 @@
 			(name "/GPS_3V3")
 			(class "Default")
 			(node
-				(ref "J4")
-				(pin "1")
-				(pinfunction "Pin_1_1")
-				(pintype "passive")
-			)
-			(node
 				(ref "U1")
 				(pin "13")
 				(pinfunction "LDO2_OUT_13")
@@ -2872,12 +2871,6 @@
 			(name "/GPS_PPS")
 			(class "Default")
 			(node
-				(ref "J4")
-				(pin "5")
-				(pinfunction "Pin_5_5")
-				(pintype "passive")
-			)
-			(node
 				(ref "U1")
 				(pin "20")
 				(pinfunction "IO6_20")
@@ -2885,32 +2878,9 @@
 			)
 		)
 		(net
-			(code "10")
-			(name "/GPS_UART_RX")
-			(class "Default")
-			(node
-				(ref "J4")
-				(pin "3")
-				(pinfunction "Pin_3_3")
-				(pintype "passive")
-			)
-			(node
-				(ref "U1")
-				(pin "6")
-				(pinfunction "IO7_6")
-				(pintype "bidirectional")
-			)
-		)
-		(net
 			(code "11")
 			(name "/GPS_UART_TX")
 			(class "Default")
-			(node
-				(ref "J4")
-				(pin "4")
-				(pinfunction "Pin_4_4")
-				(pintype "passive")
-			)
 			(node
 				(ref "U1")
 				(pin "5")
@@ -2982,19 +2952,8 @@
 			(name "/MAG_TIMING")
 			(class "Default")
 			(node
-				(ref "C2")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
 				(ref "R7")
 				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "U2")
-				(pin "14")
-				(pinfunction "RC_TIMING_14")
 				(pintype "passive")
 			)
 		)
@@ -3002,11 +2961,6 @@
 			(code "16")
 			(name "/OPT_CEXT")
 			(class "Default")
-			(node
-				(ref "C4")
-				(pin "2")
-				(pintype "passive")
-			)
 			(node
 				(ref "U4")
 				(pin "6")
@@ -3018,12 +2972,6 @@
 			(code "17")
 			(name "/OPT_COMP")
 			(class "Default")
-			(node
-				(ref "J5")
-				(pin "5")
-				(pinfunction "Pin_5_5")
-				(pintype "passive")
-			)
 			(node
 				(ref "R13")
 				(pin "1")
@@ -3040,17 +2988,6 @@
 			(code "18")
 			(name "/OPT_LED_EN")
 			(class "Default")
-			(node
-				(ref "J5")
-				(pin "3")
-				(pinfunction "Pin_3_3")
-				(pintype "passive")
-			)
-			(node
-				(ref "R11")
-				(pin "1")
-				(pintype "passive")
-			)
 			(node
 				(ref "U1")
 				(pin "18")
@@ -3174,22 +3111,6 @@
 		)
 		(net
 			(code "25")
-			(name "/VR_IN")
-			(class "Default")
-			(node
-				(ref "R6")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "U2")
-				(pin "3")
-				(pinfunction "VR_IN_3")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "26")
 			(name "GND")
 			(class "Default")
 			(node
@@ -3259,6 +3180,12 @@
 				(ref "J5")
 				(pin "4")
 				(pinfunction "Pin_4_4")
+				(pintype "passive")
+			)
+			(node
+				(ref "J5")
+				(pin "5")
+				(pinfunction "Pin_5_5")
 				(pintype "passive")
 			)
 			(node
@@ -3356,6 +3283,22 @@
 			)
 		)
 		(net
+			(code "26")
+			(name "Net-(J5-Pin_3)")
+			(class "Default")
+			(node
+				(ref "J5")
+				(pin "3")
+				(pinfunction "Pin_3_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "R11")
+				(pin "1")
+				(pintype "passive")
+			)
+		)
+		(net
 			(code "27")
 			(name "Net-(LED1-A)")
 			(class "Default")
@@ -3388,6 +3331,76 @@
 		)
 		(net
 			(code "29")
+			(name "Net-(U2-VR_IN)")
+			(class "Default")
+			(node
+				(ref "R6")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U2")
+				(pin "3")
+				(pinfunction "VR_IN_3")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "30")
+			(name "unconnected-(C4-Pad2)")
+			(class "Default")
+			(node
+				(ref "C4")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "31")
+			(name "unconnected-(J4-Pin_1-Pad1)")
+			(class "Default")
+			(node
+				(ref "J4")
+				(pin "1")
+				(pinfunction "Pin_1_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "32")
+			(name "unconnected-(J4-Pin_3-Pad3)")
+			(class "Default")
+			(node
+				(ref "J4")
+				(pin "3")
+				(pinfunction "Pin_3_3")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "33")
+			(name "unconnected-(J4-Pin_4-Pad4)")
+			(class "Default")
+			(node
+				(ref "J4")
+				(pin "4")
+				(pinfunction "Pin_4_4")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "34")
+			(name "unconnected-(J4-Pin_5-Pad5)")
+			(class "Default")
+			(node
+				(ref "J4")
+				(pin "5")
+				(pinfunction "Pin_5_5")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "35")
 			(name "unconnected-(U1-5V-Pad3)")
 			(class "Default")
 			(node
@@ -3398,7 +3411,7 @@
 			)
 		)
 		(net
-			(code "30")
+			(code "36")
 			(name "unconnected-(U1-EN-Pad2)")
 			(class "Default")
 			(node
@@ -3409,7 +3422,7 @@
 			)
 		)
 		(net
-			(code "31")
+			(code "37")
 			(name "unconnected-(U1-IO0-Pad26)")
 			(class "Default")
 			(node
@@ -3420,7 +3433,7 @@
 			)
 		)
 		(net
-			(code "32")
+			(code "38")
 			(name "unconnected-(U1-IO3-Pad7)")
 			(class "Default")
 			(node
@@ -3431,7 +3444,18 @@
 			)
 		)
 		(net
-			(code "33")
+			(code "39")
+			(name "unconnected-(U1-IO7-Pad6)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "6")
+				(pinfunction "IO7_6")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "40")
 			(name "unconnected-(U1-IO8-Pad12)")
 			(class "Default")
 			(node
@@ -3442,7 +3466,7 @@
 			)
 		)
 		(net
-			(code "34")
+			(code "41")
 			(name "unconnected-(U1-IO9-Pad11)")
 			(class "Default")
 			(node
@@ -3453,7 +3477,7 @@
 			)
 		)
 		(net
-			(code "35")
+			(code "42")
 			(name "unconnected-(U1-IO33-Pad10)")
 			(class "Default")
 			(node
@@ -3464,7 +3488,7 @@
 			)
 		)
 		(net
-			(code "36")
+			(code "43")
 			(name "unconnected-(U1-IO38-Pad9)")
 			(class "Default")
 			(node
@@ -3475,7 +3499,7 @@
 			)
 		)
 		(net
-			(code "37")
+			(code "44")
 			(name "unconnected-(U1-RST-Pad28)")
 			(class "Default")
 			(node
@@ -3486,7 +3510,7 @@
 			)
 		)
 		(net
-			(code "38")
+			(code "45")
 			(name "unconnected-(U1-RX-Pad15)")
 			(class "Default")
 			(node
@@ -3497,7 +3521,7 @@
 			)
 		)
 		(net
-			(code "39")
+			(code "46")
 			(name "unconnected-(U1-TX-Pad14)")
 			(class "Default")
 			(node
@@ -3508,7 +3532,7 @@
 			)
 		)
 		(net
-			(code "40")
+			(code "47")
 			(name "unconnected-(U2-GATED_OUT-Pad10)")
 			(class "Default")
 			(node
@@ -3519,7 +3543,7 @@
 			)
 		)
 		(net
-			(code "41")
+			(code "48")
 			(name "unconnected-(U2-MODE-Pad5)")
 			(class "Default")
 			(node
@@ -3530,7 +3554,7 @@
 			)
 		)
 		(net
-			(code "42")
+			(code "49")
 			(name "unconnected-(U2-NC-Pad1)")
 			(class "Default")
 			(node
@@ -3541,7 +3565,7 @@
 			)
 		)
 		(net
-			(code "43")
+			(code "50")
 			(name "unconnected-(U2-NC-Pad4)")
 			(class "Default")
 			(node
@@ -3552,7 +3576,7 @@
 			)
 		)
 		(net
-			(code "44")
+			(code "51")
 			(name "unconnected-(U2-NC-Pad6)")
 			(class "Default")
 			(node
@@ -3563,7 +3587,7 @@
 			)
 		)
 		(net
-			(code "45")
+			(code "52")
 			(name "unconnected-(U2-NC-Pad13)")
 			(class "Default")
 			(node
@@ -3574,7 +3598,18 @@
 			)
 		)
 		(net
-			(code "46")
+			(code "53")
+			(name "unconnected-(U2-RC_TIMING-Pad14)")
+			(class "Default")
+			(node
+				(ref "U2")
+				(pin "14")
+				(pinfunction "RC_TIMING_14")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "54")
 			(name "unconnected-(U5-INT2-Pad9)")
 			(class "Default")
 			(node
@@ -3585,7 +3620,7 @@
 			)
 		)
 		(net
-			(code "47")
+			(code "55")
 			(name "unconnected-(U5-RES-Pad10)")
 			(class "Default")
 			(node
@@ -3596,7 +3631,7 @@
 			)
 		)
 		(net
-			(code "48")
+			(code "56")
 			(name "unconnected-(U5-RES-Pad11)")
 			(class "Default")
 			(node
