@@ -12,8 +12,19 @@ dropped TP4, TP5, TP6, TP11, TP12, TP13 and TP14 from this spec - they left the 
 back in 58b622f and the spec had gone stale against its own netlist.
 """
 from sexp_helpers import *
+import subprocess, sys, tempfile
 ROOT=Path(__file__).resolve().parents[1]
-d=parse((ROOT/'review'/'BalancerREF.net').read_text())
+# Check the schematic as it is now, not review/BalancerREF.net, which is only as fresh as
+# its last regeneration. `--netlist FILE` checks a saved netlist instead.
+CLI=Path('C:/Program Files/KiCad/10.0/bin/kicad-cli.exe')
+if '--netlist' in sys.argv:
+ netlist=Path(sys.argv[sys.argv.index('--netlist')+1]).read_text()
+else:
+ with tempfile.TemporaryDirectory() as tmp:
+  out=Path(tmp)/'BalancerREF.net'
+  subprocess.run([str(CLI),'sch','export','netlist','--format','kicadsexpr','-o',str(out),str(ROOT/'BalancerREF.kicad_sch')],check=True,capture_output=True)
+  netlist=out.read_text()
+d=parse(netlist)
 nets={};actual={}
 for n in children(one(d,'nets'),'net'):
  name=one(n,'name')[1];members={one(p,'ref')[1]+'.'+one(p,'pin')[1] for p in children(n,'node')};nets[name]=members
@@ -24,8 +35,17 @@ groups={
 # D3 is a UNIdirectional SMF5.0A: pin 1 is the cathode and belongs on VBUS. It was
 # the other way round through Rev F, which is a forward diode across the USB supply.
 'VBUS':'J1.A4 J1.A9 J1.B4 J1.B9 U5.13 U7.5 C1.1 C2.1 D3.1',
-'BAT':'U5.2 U5.3 Q4.2 TP3.1 C3.1',
-'BAT_CONNECTOR':'J2.1 Q4.3',
+# Battery path switch: Q4 and Q5 (AO3401A P-FETs, SOT-23 1=G 2=S 3=D) back to back,
+# sources joined, so their body diodes block both ways when off. Q6 (AO3400A) turns
+# them on only when J2 carries a correctly polarised cell: J2.1 through R43/R44 lifts
+# Q6's gate, Q6 pulls the common gate low through R42. Reversed or absent cell leaves
+# Q6 off and R41 holds the gates at the sources; C31 slows the turn-on.
+'BAT':'U5.2 U5.3 Q5.3 TP3.1 C3.1',
+'BAT_CONNECTOR':'J2.1 Q4.3 R43.1',
+'BPS_SRC':'Q4.2 Q5.2 R41.1 C31.1',
+'BPS_GATE':'Q4.1 Q5.1 R41.2 C31.2 R42.1',
+'BPS_PULLDOWN':'R42.2 Q6.3',
+'BPS_SENSE':'R43.2 R44.1 Q6.1',
 # D2 and Q3 are gone: the BQ24075's internal power path feeds OUT directly, so
 # SYS no longer carries a Schottky drop from VBUS.
 'SYS':'U5.10 U5.11 SW1.1 C30.1',
@@ -68,7 +88,7 @@ groups={
 'STATUS_A':'R10.2 LED1.2',
 'GPS_TX':'U1.5 J4.4','GPS_RX':'U1.6 J4.3','GPS_PPS':'U1.17 J4.5',
 }
-grounds='U1.1 U1.2 U1.42 U1.43 '+' '.join('U1.'+str(i) for i in range(46,66))+' U2.2 U2.3 U2.6 U2.7 U3.2 U3.9 U3.11 U5.4 U5.8 U5.15 U5.17 U6.3 U6.9 U6.11 U7.2 U9.3 U10.4 J1.A1 J1.A12 J1.B1 J1.B12 J1.SH J2.2 J3.2 J4.2 J5.2 J5.4 J5.6 TP2.1 Q4.1 LED1.1 D3.2 R39.2 R40.2 R1.1 R2.1 R3.2 R12.2 R17.2 R35.2 R36.2 SW2.1 SW3.1 '+' '.join('C'+str(i)+'.2' for i in list(range(1,20))+[26,27,29,30])
+grounds='U1.1 U1.2 U1.42 U1.43 '+' '.join('U1.'+str(i) for i in range(46,66))+' U2.2 U2.3 U2.6 U2.7 U3.2 U3.9 U3.11 U5.4 U5.8 U5.15 U5.17 U6.3 U6.9 U6.11 U7.2 U9.3 U10.4 J1.A1 J1.A12 J1.B1 J1.B12 J1.SH J2.2 J3.2 J4.2 J5.2 J5.4 J5.6 TP2.1 Q6.2 R44.2 LED1.1 D3.2 R39.2 R40.2 R1.1 R2.1 R3.2 R12.2 R17.2 R35.2 R36.2 SW2.1 SW3.1 '+' '.join('C'+str(i)+'.2' for i in list(range(1,20))+[26,27,29,30])
 groups['GND']=grounds
 failures=[];covered=set()
 for group,spec in groups.items():
