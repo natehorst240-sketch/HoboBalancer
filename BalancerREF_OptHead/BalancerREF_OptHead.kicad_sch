@@ -3855,7 +3855,7 @@
 				)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "4.99k"
 			(at 165.1 78.74 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3897,7 +3897,7 @@
 				)
 			)
 		)
-		(property "MPN" "10k"
+		(property "MPN" "4.99k"
 			(at 165.1 73.66 90)
 			(hide yes)
 			(show_name no)
@@ -4949,7 +4949,7 @@
 				)
 			)
 		)
-		(property "Value" "22p C0G"
+		(property "Value" "47p C0G"
 			(at 165.1 62.23 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4991,7 +4991,7 @@
 				)
 			)
 		)
-		(property "MPN" "22p C0G"
+		(property "MPN" "47p C0G"
 			(at 165.1 63.5 90)
 			(hide yes)
 			(show_name no)
@@ -7483,7 +7483,7 @@
 				)
 			)
 		)
-		(property "Value" "120k"
+		(property "Value" "240k"
 			(at 248.92 81.28 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7525,7 +7525,7 @@
 				)
 			)
 		)
-		(property "MPN" "120k"
+		(property "MPN" "240k"
 			(at 248.92 76.2 90)
 			(hide yes)
 			(show_name no)
