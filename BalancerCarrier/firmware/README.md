@@ -33,7 +33,7 @@ unchanged.
 
 ## Rev C hardware (firmware 0.4.0, 2026-09-09)
 
-Firmware 0.4.0 targets schematic Rev C only. Accelerometer: ST IIS3DWB on SPI2 (GPIO14 SCK, 15 MOSI, 16 MISO, 17 CS, mode 3, 10 MHz), SPI-only per DS12569, +/-2 g, LPF2 at ODR/10 (2.67 kHz). The sensor streams its fixed 26.667 kHz ODR into its FIFO with the watermark at 16 samples; INT1 (GPIO6) is the FIFO-threshold line and is timestamped by the same MCPWM capture channel that timestamped data-ready before. Each block is read in one 112-byte SPI transfer and averaged into a single 1666.7 Hz measurement sample whose timestamp is the capture tick minus 7.5 sample periods (the block mean). A block that is not exactly 16 entries, carries a non-accelerometer tag, or is read more than 500 us late is discarded and counted, so a missed interrupt shows up as a sample gap rather than a wrong number. The boxcar average adds 0.28 ms of deterministic delay (about 0.7 degrees at 390 RPM), the same class as the old LIS2DW12 filter lag and absorbed by the same calibration. Emitter GPIO9 is a 20 kHz, 10 percent LEDC PWM when the TR-VERT profile is active and 0 otherwise; the receiver's synchronous detector uses the same pulse. The IIS3DWB has no wake-on-motion, so deep sleep wakes on EXT1 when MAG_TACH (GPIO7) or the acquire button (GPIO10) pulses low; the optical profile has no wake source while its emitter is off, which is fine because flight logging uses MR-VERT. The vendored driver is `vendor/iis3dwb_reg.c` (see UPSTREAM.txt); the LIS2DW12 driver is gone.
+Firmware 0.4.0 targets schematic Rev C only. Accelerometer: ST IIS3DWB on SPI2 (GPIO14 SCK, 15 MOSI, 16 MISO, 17 CS, mode 3, 10 MHz), SPI-only per DS12569, fixed +/-16 g (see `src/accelscale.hpp`), LPF2 at ODR/10 (2.67 kHz). The sensor streams its fixed 26.667 kHz ODR into its FIFO with the watermark at 16 samples; INT1 (GPIO6) is the FIFO-threshold line and is timestamped by the same MCPWM capture channel that timestamped data-ready before. Each block is read in one 112-byte SPI transfer and averaged into a single 1666.7 Hz measurement sample whose timestamp is the capture tick minus 7.5 sample periods (the block mean). A block that is not exactly 16 entries, carries a non-accelerometer tag, or is read more than 500 us late is discarded and counted, so a missed interrupt shows up as a sample gap rather than a wrong number. The boxcar average adds 0.28 ms of deterministic delay (about 0.7 degrees at 390 RPM), the same class as the old LIS2DW12 filter lag and absorbed by the same calibration. Emitter GPIO9 is a 20 kHz, 10 percent LEDC PWM when the TR-VERT profile is active and 0 otherwise; the receiver's synchronous detector uses the same pulse. The IIS3DWB has no wake-on-motion, so deep sleep wakes on EXT1 when MAG_TACH (GPIO7) or the acquire button (GPIO10) pulses low; the optical profile has no wake source while its emitter is off, which is fine because flight logging uses MR-VERT. The vendored driver is `vendor/iis3dwb_reg.c` (see UPSTREAM.txt); the LIS2DW12 driver is gone.
 
 ## Build and flash
 
@@ -109,7 +109,9 @@ Limit the RPM range to the test regime where a saved calibration was established
 
 ## What IPS and phase mean here
 
-The IIS3DWB runs at its fixed **26.667 kHz ODR, +/-2 g, LPF2 ODR/10**, decimated by 16 in firmware to **1666.7 Hz** measurement samples (see the Rev C hardware section). Full scale, batch rate and FIFO mode are read back after configuration. SPI at 10 MHz.
+The IIS3DWB runs at its fixed **26.667 kHz ODR, fixed +/-16 g, LPF2 ODR/10**, decimated by 16 in firmware to **1666.7 Hz** measurement samples (see the Rev C hardware section). Full scale, batch rate and FIFO mode are read back after configuration. SPI at 10 MHz.
+
+The range is fixed at +/-16 g and never switched during a session, so no run can mix differently scaled samples. DS12569 states noise density is independent of full scale; at 0.488 mg/LSB the step is about 1/28 of the ~3.9 mg RMS per-sample noise, so the wide range costs no usable resolution (0.08 IPS at 300 RPM is ~6.5 mg peak). Clipping is judged on every raw FIFO sample before the 16-sample average, at 95% of full scale because LPF2 can round a saturated peak slightly low, and is tracked per axis. The per-revolution fit models DC and 1..4/rev together so strong 2/rev content does not leak into the 1/rev vector. Each tach edge is held until the first sample at or after it arrives, because a block's mean timestamp can precede an edge that was delivered first.
 
 The two tachs and the FIFO-watermark line are captured by three channels of one MCPWM capture timer. ISR code only queues timestamps. A priority-22 task reads the sensor; analysis and USB/BLE use separate lower-priority tasks. Delayed sensor reads (>500 microseconds after the ISR timestamp), queue overflows, missing samples, and read failures invalidate the acquisition. Hardware timestamps do not remove the accelerometer's internal filter delay or an interrupt serviced too late; both are bench checks.
 
@@ -132,24 +134,31 @@ Raw XYZ magnitudes/phases remain unchanged in every result. No 30-degree or two-
 
 ## Reading quality flags
 
-`valid` means no detected hard acquisition fault, not calibrated accuracy. `stable` additionally requires confirmed axis, period CV <=2%, and reasonably consistent per-revolution vibration vectors. `phase_valid` additionally requires a usable amplitude. The adjusted phase becomes JSON null when phase is not usable; raw values remain available for diagnosis and must be considered together with the flags.
+`valid` means no detected hard acquisition fault, not calibrated accuracy. `stable` additionally requires confirmed axis, period CV <=2%, and reasonably consistent per-revolution vibration vectors. `phase_valid` additionally requires a usable amplitude. `quality` summarizes the result:
+
+- `stable_vector` (`phase_valid`): amplitude and phase both repeat. Only these runs feed run-to-run delta and the `compare` calibration.
+- `direction_only` (`direction_valid` but not `stable`): phase repeats per revolution but amplitude varies (flag 128 without 4096). The phase is published for a rough correction; the amplitude must not be used for calibration or a final acceptance decision.
+- `unreliable`: a hard fault (including selected-axis overrange), bad tach, unconfirmed axis, weak signal, or inconsistent angle (flag 4096). The adjusted phase is JSON null.
+
+`raw_amplitude_scatter_ips_peak` and `per_rev_phase_scatter_deg` split `raw_vector_scatter_ips_peak` into its along-vector and across-vector parts. Each axis in `raw_axes` reports `clipped`; clipping on an unused axis is reported but does not invalidate the run. Raw values remain available for diagnosis and must be considered together with the flags.
 
 | Bit | Meaning |
 |---:|---|
 | 1 | Missing/stale/out-of-range tach |
 | 2 | Fewer than 8 usable complete revolutions |
 | 4 | Sample gap, inconsistent sample count, or buffer capacity exceeded |
-| 8 | Any accelerometer axis near +/-2 g full scale, including gravity |
+| 8 | Selected axis reached 95% of +/-16 g on any raw sample, including gravity (message: overrange) |
 | 16 | Sensor I2C error |
 | 32 | Capture or sample queue overflow |
 | 64 | RPM period variation >2% |
-| 128 | Vibration vector scatter >20% of coherent amplitude, with 0.005 IPS floor |
+| 128 | Vibration vector scatter (amplitude and phase combined) >20% of coherent amplitude, with 0.005 IPS floor |
 | 256 | Weak phase: amplitude below 0.005 IPS or insufficient relative to measured vector scatter |
 | 512 | Vertical axis not explicitly confirmed |
 | 1024 | Late sample read, invalid time ordering, or degenerate fit |
 | 2048 | Run cancelled |
+| 4096 | Phase unstable: across-vector per-revolution scatter >20% of coherent amplitude (about 11 degrees), with 0.005 IPS floor |
 
-Scatter is a repeatability metric, not a calibrated noise floor or statistical accuracy interval. There is no universal accept/reject balancing threshold. A periodic interference or extra tach pattern can be consistent yet wrong. The +/-2 g range includes static gravity: larger vibration can clip and must not be interpreted as a lower IPS result. Run-to-run delta is provided only for stable runs within 2% RPM under the same profile settings; the operator must also maintain the same physical mounting.
+Scatter is a repeatability metric, not a calibrated noise floor or statistical accuracy interval. There is no universal accept/reject balancing threshold. A periodic interference or extra tach pattern can be consistent yet wrong. The +/-16 g range includes static gravity: a clipped selected axis always invalidates the run and is never reported as a lower IPS result. Run-to-run delta is provided only for stable runs within 2% RPM under the same profile settings; the operator must also maintain the same physical mounting.
 
 ## In-flight logging (flight mode)
 
@@ -210,7 +219,9 @@ These numbers are examples, not measured results. Enter peak IPS (convert RMS fo
 
 ## Verification and first hardware checks
 
-`tests/run_host_tests.sh` compiles and runs the exact firmware DSP code on a Linux host with GCC, AddressSanitizer and UndefinedBehaviorSanitizer. On this Windows workstation it runs under WSL. Tests cover synthetic velocity/phase recovery, DC and 2/rev rejection, raw/calibrated separation, sign/direction, timer rollover, missing samples/tach, glitches, clipping, weak signal, amplitude variation and RPM endpoints. `tests/test_tools.py` checks fragmented transport parsing and logger protocol behavior.
+`tests/run_host_tests.sh` compiles and runs the exact firmware DSP code on a Linux host with GCC, AddressSanitizer and UndefinedBehaviorSanitizer. On this Windows workstation it runs under WSL. Tests cover synthetic velocity/phase recovery, DC and 2/rev rejection, raw/calibrated separation, sign/direction, timer rollover, missing samples/tach, glitches, clipping, weak signal, amplitude variation and RPM endpoints. A raw-path generator feeds int16 samples at the full 26.667 kHz ODR (gravity, 2/3-rev harmonics, datasheet noise, quantization and rail saturation) through the same `decodeBlock` and `Measurement` code across 300/500/1900/2200 RPM and 0.08/0.5/2.0 IPS, plus overrange, single-sample impacts on used and unused axes, and phase wander. `tools/sim.sh` runs the same raw-path generator (`tests/rawsim.hpp`) as a bench simulator, so vibration cases can be tried before live runs. With no arguments it runs every preset (clean, main-rotor minimum, tail-rotor maximum, heavy 2/rev, overrange, impacts, amplitude and phase wander, RPM drift, tach jitter/dropout/glitch, sample gap, weak signal, extra noise, unconfirmed axis) and checks each against its expected quality; `list` shows presets and settings; a preset name and/or `key=value` settings print one full result, e.g. `wsl sh tools/sim.sh rpm=390 ips=0.8 h2=1.2 tach_jitter=100`. It exercises the measurement code only, not task timing, SPI or the tach front end.
+
+`tests/test_tools.py` checks fragmented transport parsing and logger protocol behavior.
 
 Before useful rotor comparison, verify: sensor initialization and static XYZ sign; regular 1666.7 Hz FIFO-block interrupts and sub-500 us block reads with BLE active; known tach pulse frequency and single edge per revolution; injected vibration magnitude/phase over the intended RPM range; optical polarity and magnetic leading edge; button/LED operation; USB/BLE disconnects; retained settings after reset. Keep the mounting axis and measurement convention in every comparison record. No physical prototype results are claimed by software tests.
 

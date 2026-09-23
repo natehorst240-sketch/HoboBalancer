@@ -30,7 +30,7 @@ namespace {
 constexpr char version[]="0.4.0-reference";
 enum Kind:uint8_t { Drdy=0,Mag=1,Opt=2,Data=3 };
 struct Capture {uint32_t tick;int64_t wall;Kind kind;};
-struct Event {uint32_t tick;int64_t wall;Kind kind;float g[3];};
+struct Event {uint32_t tick;int64_t wall;Kind kind;float g[3];uint8_t clipped;};
 struct Command {char text[256];};
 struct Message {char text[3072];};
 QueueHandle_t captureQueue,eventQueue,commandQueue,outputQueue;
@@ -138,13 +138,14 @@ void sensorTask(void *) {
         if(xQueueReceive(captureQueue,&c,portMAX_DELAY)!=pdTRUE)continue;
         Event e{};e.tick=c.tick;e.wall=c.wall;e.kind=c.kind;
         if(c.kind==Drdy) {
-            float g[3];unsigned n=0;
-            if(!sensorOk || !accel::readBlock(g,n)) {++ioErrors;continue;}
+            accel::Block b;unsigned n=0;
+            if(!sensorOk || !accel::readBlock(b,n)) {++ioErrors;continue;}
             // A block read landing after the next watermark is stale. Never silently accept it.
             if(esp_timer_get_time()-c.wall>500) {++timingErrors;continue;}
             // The watermark marks the last sample of the block; the block mean sits (N-1)/2 samples earlier.
             e.tick=c.tick-uint32_t(ticksPerSample*(accel::decimation-1)/2.0+0.5);
-            for(int a=0;a<3;a++) {e.g[a]=g[a];liveG[a]=g[a];}
+            for(int a=0;a<3;a++) {e.g[a]=b.g[a];liveG[a]=b.g[a];}
+            e.clipped=b.clipped;
             liveSampleMs=uint32_t(esp_timer_get_time()/1000);
             e.kind=Data;
         }
@@ -180,7 +181,7 @@ void status() {
     cJSON_AddStringToObject(j,"profile",profileName());cJSON_AddBoolToObject(j,"acquiring",running);cJSON_AddBoolToObject(j,"continuous",continuous);num(j,"sequence",sequence);
     cJSON_AddBoolToObject(j,"sensor_ok",sensorOk);cJSON_AddBoolToObject(j,"reference_only",true);
     cJSON_AddBoolToObject(j,"ble_connected",ble_connected());num(j,"sample_rate_hz",accel::sampleRateHz);
-    num(j,"full_scale_g",2);num(j,"lpf_nominal_hz",accel::odrHz/accel::lpfDivider);num(j,"decimation",accel::decimation);
+    num(j,"full_scale_g",accel::fullScaleG);num(j,"lpf_nominal_hz",accel::odrHz/accel::lpfDivider);num(j,"decimation",accel::decimation);
     cJSON_AddStringToObject(j,"sensor","IIS3DWB SPI");num(j,"capture_hz",captureHz);
     num(j,"battery_v",supplyVolts());num(j,"output_drops",outputLost);
     cJSON_AddBoolToObject(j,"input_present",inputPresent());cJSON_AddBoolToObject(j,"charging",charging());
@@ -210,17 +211,24 @@ void resultJson(const puck::Result &r) {
     cJSON_AddStringToObject(j,"profile",profileName());cJSON_AddBoolToObject(j,"continuous",continuous);num(j,"sequence",sequence);
     cJSON_AddBoolToObject(j,"valid",r.valid);
     cJSON_AddBoolToObject(j,"stable",r.stable);cJSON_AddBoolToObject(j,"phase_valid",r.phaseValid);
+    cJSON_AddBoolToObject(j,"direction_valid",r.directionValid);
+    cJSON_AddStringToObject(j,"quality",r.quality==puck::Quality::StableVector?"stable_vector":
+        r.quality==puck::Quality::DirectionOnly?"direction_only":"unreliable");
+    if(r.flags&puck::Clipping)cJSON_AddStringToObject(j,"message","overrange on selected axis; check mounting and repeat");
     num(j,"flags",r.flags);num(j,"rpm",r.rpm);num(j,"rpm_cv",r.rpmCv);
     num(j,"revolutions",r.revolutions);num(j,"samples",r.samples);num(j,"rejected_tach_edges",r.rejectedEdges);
-    num(j,"raw_vector_scatter_ips_peak",r.vectorScatter);
+    num(j,"raw_vector_scatter_ips_peak",r.vectorScatter);num(j,"raw_amplitude_scatter_ips_peak",r.amplitudeScatter);
+    num(j,"per_rev_phase_scatter_deg",r.phaseScatterDeg);
     auto *axes=cJSON_AddArrayToObject(j,"raw_axes");const char *names[]={"X","Y","Z"};
     for(int a=0;a<3;a++) {
         auto *v=cJSON_CreateObject();cJSON_AddStringToObject(v,"axis",names[a]);
         num(v,"ips_peak",r.rawPeak[a]);num(v,"ips_rms",r.rawPeak[a]/std::sqrt(2.0));
-        num(v,"velocity_phase_deg",r.rawPhase[a]);num(v,"dc_g",r.dcG[a]);cJSON_AddItemToArray(axes,v);
+        num(v,"velocity_phase_deg",r.rawPhase[a]);num(v,"dc_g",r.dcG[a]);
+        cJSON_AddBoolToObject(v,"clipped",(r.clippedAxes>>a)&1);cJSON_AddItemToArray(axes,v);
     }
     num(j,"adjusted_ips_peak",r.peak);num(j,"adjusted_ips_rms",r.rms);
-    if(r.phaseValid)num(j,"adjusted_velocity_phase_deg",r.phase);else cJSON_AddNullToObject(j,"adjusted_velocity_phase_deg");
+    // Direction-only runs keep their phase for rough correction; calibration still needs phase_valid.
+    if(r.directionValid)num(j,"adjusted_velocity_phase_deg",r.phase);else cJSON_AddNullToObject(j,"adjusted_velocity_phase_deg");
     num(j,"signed_acceleration_phase_deg",r.accelerationPhase);
     cJSON_AddStringToObject(j,"raw_phase_definition","positive velocity peak after selected tach edge; time-forward degrees");
     auto *c=cJSON_AddObjectToObject(j,"config");configJson(c,configs[profile]);
@@ -418,7 +426,7 @@ void analysisTask(void *) {
             if(e.kind==(profile?Opt:Mag))lastTachSeen=e.wall;
             if(!running || e.wall<runStart)continue;
             if(e.kind==Data) {
-                lastDrdy=e.wall;puck::Sample s{e.tick,{e.g[0],e.g[1],e.g[2]}};measurement.sample(s);
+                lastDrdy=e.wall;puck::Sample s{e.tick,{e.g[0],e.g[1],e.g[2]},e.clipped};measurement.sample(s);
             } else if(e.kind==(profile?Opt:Mag) && measurement.tach(e.tick))lastTach=e.wall;
         }
         if(xQueueReceive(commandQueue,&cmd,0)==pdTRUE)command(cmd.text);

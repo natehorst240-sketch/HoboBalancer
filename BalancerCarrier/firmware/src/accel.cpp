@@ -1,4 +1,5 @@
 #include "accel.hpp"
+#include "accelscale.hpp"
 #include "board.hpp"
 #include "iis3dwb_reg.h"
 #include <cstring>
@@ -33,6 +34,9 @@ int32_t busRead(void *, uint8_t reg, uint8_t *buf, uint16_t len) {
     return spi_device_polling_transmit(device, &t) == ESP_OK ? 0 : -1;
 }
 void delayMs(uint32_t ms) { vTaskDelay(pdMS_TO_TICKS(ms ? ms : 1)); }
+constexpr iis3dwb_fs_xl_t fullScaleReg = IIS3DWB_16g;
+static_assert(accel::fullScaleG == 16 && accel::mgPerLsb == 0.488, "register and scale factor must agree");
+int16_t rawBlock[maxDrain][3];
 }  // namespace
 
 namespace accel {
@@ -52,9 +56,9 @@ bool setup() {
     uint8_t rst = 1;
     for (int i = 0; i < 50 && rst; ++i) { vTaskDelay(pdMS_TO_TICKS(2)); if (iis3dwb_reset_get(&ctx, &rst)) return false; }
     if (rst) return false;
-    // SPI only (DS12569: I2C cannot sustain the data rate), 2 g, LPF2 at ODR/10, FIFO streaming in blocks.
+    // SPI only (DS12569: I2C cannot sustain the data rate), fixed full scale (accelscale.hpp), LPF2 at ODR/10, FIFO streaming in blocks.
     if (iis3dwb_i2c_interface_set(&ctx, IIS3DWB_I2C_DISABLE) || iis3dwb_block_data_update_set(&ctx, 1) ||
-        iis3dwb_auto_increment_set(&ctx, 1) || iis3dwb_xl_full_scale_set(&ctx, IIS3DWB_2g) ||
+        iis3dwb_auto_increment_set(&ctx, 1) || iis3dwb_xl_full_scale_set(&ctx, fullScaleReg) ||
         iis3dwb_xl_filt_path_on_out_set(&ctx, IIS3DWB_LP_ODR_DIV_10) ||
         iis3dwb_fifo_watermark_set(&ctx, decimation) || iis3dwb_fifo_xl_batch_set(&ctx, IIS3DWB_XL_BATCHED_AT_26k7Hz) ||
         iis3dwb_fifo_mode_set(&ctx, IIS3DWB_STREAM_MODE)) return false;
@@ -65,7 +69,7 @@ bool setup() {
     // Read back the configuration we depend on rather than trusting the writes.
     iis3dwb_fs_xl_t fs; iis3dwb_bdr_xl_t bdr; iis3dwb_fifo_mode_t mode;
     if (iis3dwb_xl_full_scale_get(&ctx, &fs) || iis3dwb_fifo_xl_batch_get(&ctx, &bdr) || iis3dwb_fifo_mode_get(&ctx, &mode)) return false;
-    ready = fs == IIS3DWB_2g && bdr == IIS3DWB_XL_BATCHED_AT_26k7Hz && mode == IIS3DWB_STREAM_MODE;
+    ready = fs == fullScaleReg && bdr == IIS3DWB_XL_BATCHED_AT_26k7Hz && mode == IIS3DWB_STREAM_MODE;
     return ready;
 }
 
@@ -84,7 +88,7 @@ void powerDown() {
     iis3dwb_fifo_mode_set(&ctx, IIS3DWB_BYPASS_MODE);
 }
 
-bool readBlock(float g[3], unsigned &entries) {
+bool readBlock(Block &block, unsigned &entries) {
     entries = 0;
     if (!ready) return false;
     uint16_t level = 0;
@@ -95,15 +99,12 @@ bool readBlock(float g[3], unsigned &entries) {
     if (iis3dwb_fifo_out_multi_raw_get(&ctx, fifoBuffer, uint16_t(n))) return false;
     // One block per interrupt: any other count means an interrupt was missed or the FIFO ran ahead.
     if (n != decimation) return false;
-    double sum[3] = {0, 0, 0};
     for (unsigned i = 0; i < n; ++i) {
         if ((fifoBuffer[i].tag >> 3) != IIS3DWB_XL_TAG) return false;
-        for (int a = 0; a < 3; ++a) {
-            const int16_t raw = int16_t(uint16_t(fifoBuffer[i].data[2 * a]) | (uint16_t(fifoBuffer[i].data[2 * a + 1]) << 8));
-            sum[a] += iis3dwb_from_fs2g_to_mg(raw);
-        }
+        for (int a = 0; a < 3; ++a)
+            rawBlock[i][a] = int16_t(uint16_t(fifoBuffer[i].data[2 * a]) | (uint16_t(fifoBuffer[i].data[2 * a + 1]) << 8));
     }
-    for (int a = 0; a < 3; ++a) g[a] = float(sum[a] / n * 0.001);
+    decodeBlock(rawBlock, n, block);
     return true;
 }
 
