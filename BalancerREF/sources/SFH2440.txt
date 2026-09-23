@@ -1,0 +1,660 @@
+SFH 2440
+????
+1 Version 1.3 | 2021-06-08
+ ?
+Produktdatenblatt  |  Version 1.1
+ www.osram-os.com
+Applications
+SFH 2440
+ 
+DIL SMT Ambient Light Sensor
+Silicon Photodiode with V? Characteristic
+	?
+?
+	 Health Monitoring (Heart Rate Monitoring, 
+Pulse Oximetry)
+	?
+?
+	 Remote Control, Proximity, Ambient Light 
+Sensing
+Features:  
+	?
+?
+	 Package: clear epoxy
+	?
+?
+	 Qualifications: The product qualification test plan is based on the guidelines of AEC-Q101-REV-C, 
+Stress Test Qualification for Automotive Grade Discrete Semiconductors.
+	?
+?
+	 ESD: 1.5 kV acc. to ANSI/ESDA/JEDEC JS-001 (HBM)
+	?
+?
+	 Spectral sensitivity adapted to human eye sensitivity (V?)
+	?
+?
+	 Low temperature coefficient of spectral sensitivity
+	?
+?
+	 High linearity
+	?
+?
+	 DIL plastic package with high packing density
+	?
+?
+	 Fast switching time
+Ordering Information?
+Type
+Photocurrent?1)
+Photocurrent?
+Ordering Code
+typ.
+Ev?=?1000?lx; Std. Light A; VR?=?5?V
+Ev?=?1000?lx; Std. Light A; VR?=?5?V
+IP
+IP
+SFH 2440
+? 7.20 ?A
+9.4 ?A
+Q65111A8524
+ 
+?
+
+SFH 2440
+????
+2 Version 1.3 | 2021-06-08
+ ?
+Maximum Ratings
+TA?=?25??C
+Parameter
+Symbol
+Values
+Operating Temperature
+Top
+min. 
+max.
+-40 ?C 
+100 ?C
+Storage temperature
+Tstg
+min. 
+max.
+-40 ?C 
+100 ?C
+Reverse voltage
+VR
+max.
+16 V
+Total power dissipation
+Ptot
+max.
+150 mW
+ESD withstand voltage 
+acc. to ANSI/ESDA/JEDEC JS-001 (HBM)
+VESD
+max.
+1.5 kV
+ 
+?
+
+SFH 2440
+????
+3 Version 1.3 | 2021-06-08
+ ?
+Characteristics
+TA?=?25??C
+Parameter
+Symbol
+ 
+Values
+Spectral sensitivity 
+VR?=?5?V; Std. Light A; T = 2856 K
+S
+min. 
+typ.
+7 nA/lx 
+9.4 nA/lx
+Wavelength of max sensitivity
+?S max
+typ.
+620 nm
+Spectral range of sensitivity
+?10%
+typ.
+400?...?690 nm
+Radiant sensitive area
+A
+typ.
+7.02 mm?
+Dimensions of active chip area
+L x W
+typ.
+2.65?x?2.65 
+mm?x?mm
+Half angle
+?
+typ.
+60 ?
+Dark current 
+VR?=?5?V
+IR
+typ. 
+max.
+1 nA 
+10 nA
+Spectral sensitivity of the chip 
+??=?550?nm
+S?
+typ.
+0.37 A / W
+Quantum yield of the chip 
+??=?550?nm
+?
+typ.
+0.83 Electrons 
+/ Photon
+Short-circuit current 
+Ev?=?1000?lx; Std. Light A; VR?=?0?V
+ISC
+typ.
+8.1 ?A
+Rise time 
+VR?=?5?V; RL?=?50??; ??=?550?nm
+tr
+typ.
+0.09 ?s
+Fall time 
+VR?=?5?V; RL?=?50??; ??=?550?nm
+tf
+typ.
+0.09 ?s
+Forward voltage 
+IF?=?100?mA; E?=?0?
+VF
+typ.
+1 V
+Capacitance 
+VR?=?0?V; f?=?1?MHz; E?=?0?
+C0
+typ.
+135 pF
+Noise equivalent power 
+VR?=?5?V; ??=?550?nm
+NEP
+typ.
+0.048 pW / 
+Hz1/2
+Detection limit 
+VR?=?5?V; ??=?850?nm
+D*
+typ.
+5.5e12 cm x 
+Hz1/2 / W
+ 
+?
+
+SFH 2440
+????
+4 Version 1.3 | 2021-06-08
+ ?
+Relative Spectral Sensitivity 2), 3)
+Srel?=?f?(?)
+400
+0
+nm
+%
+OHF05712
+20
+40
+60
+80
+100
+?
+rel
+S
+10
+30
+50
+70
+500 600 700 800 900
+1100
+Directional Characteristics 2), 3)
+Srel?=?f?(?)
+OHF01402
+90
+80
+70
+60
+50
+40
+30
+20
+10
+20
+40
+60
+80
+100
+120
+0.4
+0.6
+0.8
+1.0
+?
+0.2
+0.4
+0.6
+0.8
+1.0
+100
+0
+0
+0
+?
+
+SFH 2440
+????
+5 Version 1.3 | 2021-06-08
+ ?
+Dark Current 2), 3)
+IR?=?f?(VR);?E?=?0?
+0
+I
+OHF05714
+R
+VR
+nA
+V
+4
+8
+12
+16
+2
+10
+6
+0
+0.4
+0.8
+1.2
+1.6
+Capacitance 2), 3)
+C?=?f?(VR); f?=?1MHz; E?=?0; TA?=?25?C
+?
+
+SFH 2440
+????
+6 Version 1.3 | 2021-06-08
+ ?
+Photocurrent
+IP,rel?=?f?(TA); Ev?=?1000?lx; VR?=?5?V
+OHF05713
+I
+P
+(25 ?C)
+P
+I
+90
+-40
+TA
+?C
+95
+100
+105
+110
+%
+-20
+0
+20
+40
+60
+100
+Power Consumption
+Ptot?=?f?(TA)
+0
+0
+P
+OHF05583
+tot
+TA
+25
+50
+75
+100
+40
+80
+120
+mW
+160
+?C
+100
+60
+20
+temp. ambient
+temp. solder point
+A
+T
+S
+T
+TS
+A
+T
+?
+
+SFH 2440
+????
+7 Version 1.3 | 2021-06-08
+ ?
+Dimensional Drawing 4)
+Further Information:
+  
+Approximate Weight:
+43.0 mg
+Package marking:
+Cathode
+?
+
+SFH 2440
+????
+8 Version 1.3 | 2021-06-08
+ ?
+Recommended Solder Pad 4)
+?
+
+SFH 2440
+????
+9 Version 1.3 | 2021-06-08
+ ?
+Reflow Soldering Profile
+Product complies to MSL Level 4 acc. to JEDEC J-STD-020E
+0
+0
+s
+OHA04525
+50
+100
+150
+200
+250
+300
+50
+100
+150
+200
+250
+300
+t
+T
+?C
+St
+t
+Pt
+Tp
+240 ?C
+217 ?C
+245 ?C
+25 ?C
+L
+Profile Feature
+Symbol
+Pb-Free (SnAgCu) Assembly
+Unit
+Minimum
+Recommendation
+Maximum
+Ramp-up rate to preheat*)
+25 ?C to 150 ?C
+2
+3
+K/s
+Time tS
+TSmin to TSmax
+tS
+60
+100
+120
+s
+Ramp-up rate to peak*)
+TSmax to TP
+2
+3
+K/s
+Liquidus temperature
+TL
+217
+?C
+Time above liquidus temperature
+tL
+80
+100
+s
+Peak temperature
+TP
+245
+260
+?C
+Time within 5 ?C of the specified peak
+temperature TP - 5 K
+tP
+10
+20
+30
+s
+Ramp-down rate*
+TP to 100 ?C
+3
+6
+K/s
+Time
+25 ?C to TP
+480
+s
+ 
+All temperatures refer to the center of the package, measured on the top of the component
+* slope calculation DT/Dt: Dt max. 5 s; fulfillment for the whole T-range
+?
+
+SFH 2440
+????
+10 Version 1.3 | 2021-06-08
+ ?
+Taping 4)
+?
+
+SFH 2440
+????
+11 Version 1.3 | 2021-06-08
+ ?
+Tape and Reel 5)
+Reel Dimensions
+A
+W
+Nmin
+W1
+W2 max
+Pieces per PU
+180 mm
+12 + 0.3 / - 0.1 mm
+60 mm
+12.4 + 2 mm
+18.4 mm
+1500
+ 
+?
+
+SFH 2440
+????
+12 Version 1.3 | 2021-06-08
+ ?
+Barcode-Product-Label (BPL)
+Dry Packing Process and Materials 4)
+OHA00539
+OSRAM
+Moisture-sensitive label or print
+Barcode label
+Desiccant
+Humidity indicator
+Barcode label
+OSRAM
+Please check the HIC immidiately after
+bag opening.
+Discard if circles overrun.
+Avoid metal contact.
+WET
+Do not eat.
+Comparator
+check dot
+parts still adequately dry.
+examine units, if necessary
+examine units, if necessary
+5%
+15%
+10%
+bake units
+bake units
+If wet,
+change desiccant
+If wet,
+Humidity Indicator
+MIL-I-8835
+If wet,
+Moisture Level 3
+Floor time  168 Hours
+Moisture Level 6
+Floor time    6 Hours
+a) Humidity Indicator Card is > 10% when read at 23 ?C ? 5 ?C, or
+reflow, vapor-phase reflow, or equivalent processing (peak package
+2. After this bag is opened, devices that will be subjected to infrared
+1. Shelf life in sealed bag: 24 months at < 40 ?C and < 90% relative humidity (RH).
+Moisture Level 5a
+at factory conditions of
+(if blank, seal date is identical with date code).
+a) Mounted within
+b) Stored at
+body temp.
+3. Devices require baking, before mounting, if:
+Bag seal date
+Moisture Level 1
+Moisture Level 2
+Moisture Level 2a
+4. If baking is required, 
+b) 2a or 2b is not met.
+Date and time opened:
+reference IPC/JEDEC J-STD-033 for bake procedure.
+Floor time see below
+If blank, see bar code label
+Floor time > 1 Year
+Floor time    1 Year
+Floor time    4 Weeks
+10% RH.
+_<
+Moisture Level 4
+Moisture Level 5
+?C).
+OPTO SEMICONDUCTORS
+MOISTURE SENSITIVE
+This bag contains
+CAUTION
+Floor time  72 Hours
+Floor time  48 Hours
+Floor time  24 Hours
+30 ?C/60% RH.
+_<
+LEVEL
+If blank, see
+bar code label
+Moisture-sensitive product is packed in a dry bag containing desiccant and a humidity card according JEDEC-STD-033.
+?
+
+SFH 2440
+????
+13 Version 1.3 | 2021-06-08
+ ?
+Notes
+The evaluation of eye safety occurs according to the standard IEC 62471:2006 (photo biological safety of 
+lamps and lamp systems). Within the risk grouping system of this IEC standard, the device specified in this 
+data sheet fall into the class exempt group (exposure time 10000 s). Under real circumstances (for expo-
+sure time, conditions of the eye pupils, observation distance), it is assumed that no endangerment to the 
+eye exists from these devices. As a matter of principle, however, it should be mentioned that intense light 
+sources have a high secondary exposure potential due to their blinding effect. When looking at bright light 
+sources (e.g. headlights), temporary reduction in visual acuity and afterimages can occur, leading to irrita-
+tion, annoyance, visual impairment, and even accidents, depending on the situation.
+Subcomponents of this device contain, in addition to other substances, metal filled materials including silver. 
+Metal filled materials can be affected by environments that contain traces of aggressive substances. There-
+fore, we recommend that customers minimize device exposure to aggressive substances during storage, 
+production, and use. Devices that showed visible discoloration when tested using the described tests above 
+did show no performance deviations within failure limits during the stated test duration. Respective failure 
+limits are described in the IEC60810.
+For further application related information please visit www.osram-os.com/appnotes
+?
+
+SFH 2440
+????
+14 Version 1.3 | 2021-06-08
+ ?
+Disclaimer
+Attention please!
+The information describes the type of component and shall not be considered as assured characteristics.
+Terms of delivery and rights to change design reserved. Due to technical requirements components may 
+contain dangerous substances.
+For information on the types in question please contact our Sales Organization.
+If printed or downloaded, please find the latest version on the OSRAM OS website.
+Packing
+Please use the recycling operators known to you. We can also help you ? get in touch with your nearest 
+sales office. By agreement we will take packing material back, if it is sorted. You must bear the costs of 
+transport. For packing material that is returned to us unsorted or which we are not obliged to accept, we 
+shall have to invoice you for any costs incurred.
+Product and functional safety devices/applications or medical devices/applications
+OSRAM OS components are not developed, constructed or tested for the application as safety relevant 
+component or for the application in medical devices.
+OSRAM OS products are not qualified at module and system level for such application.
+In case buyer ? or customer supplied by buyer ? considers using OSRAM OS components in product safety 
+devices/applications or medical devices/applications, buyer and/or customer has to inform the local sales 
+partner of OSRAM OS immediately and OSRAM OS and buyer and /or customer will analyze and coordi-
+nate the customer-specific request between OSRAM OS and buyer and/or customer.
+?
+
+SFH 2440
+????
+15 Version 1.3 | 2021-06-08
+ ?
+Glossary
+1)
+Photocurrent:?The photocurrent values are measured (by irradiating the devices with a homogenous 
+light source and applying a voltage to the device) with a tolerance of ?11 %.
+2)
+Typical Values:?Due to the special conditions of the manufacturing processes of semiconductor devic-
+es, the typical data or calculated correlations of technical parameters can only reflect statistical figures. 
+These do not necessarily correspond to the actual parameters of each single product, which could dif-
+fer from the typical data and calculated correlations or the typical characteristic line. If requested, e.g. 
+because of technical improvements, these typ. data will be changed without any further notice.
+3)
+Testing temperature:?TA = 25?C (unless otherwise specified)
+4)
+Tolerance of Measure:?Unless otherwise noted in drawing, tolerances are specified with ?0.1 and 
+dimensions are specified in mm.
+5)
+Tape and Reel:?All dimensions and tolerances are specified acc. IEC 60286-3 and specified in mm.
+?
+
+SFH 2440
+????
+16 Version 1.3 | 2021-06-08
+ ?
+Revision History
+Version
+Date
+Change
+1.3
+2021-06-08
+Schematic Transportation Box 
+Dimensions of Transportation Box
+?
+
+SFH 2440
+????
+17 Version 1.3 | 2021-06-08
+ ?
+Published by OSRAM Opto Semiconductors GmbH 
+Leibnizstra?e 4, D-93055 Regensburg 
+www.osram-os.com ? All Rights Reserved.
+?

@@ -1,0 +1,1140 @@
+  
+August 2016 
+DocID028425 Rev 2 
+1/19 
+This is information on a product in full production. 
+www.st.com 
+ 
+ 
+TS3021H
+Automotive rail-to-rail 1.8 V high-speed comparator
+Datasheet - production data
+ 
+ 
+Features 
+? 
+AEC-Q100 and Q003 qualified 
+? 
+Extended temperature range:  
+-40 ?C to 150 ?C 
+? 
+Propagation delay: 38 ns 
+? 
+Low current consumption: 73 ?A 
+? 
+Rail-to-rail inputs 
+? 
+Push-pull outputs 
+? 
+Supply operation from 1.8 to 5 V 
+? 
+High ESD tolerance: 5 kV HBM, 300 V MM 
+? 
+Latch-up immunity: 200 mA 
+? 
+SMD package 
+ 
+Related products 
+? 
+TS3021 for standard temperature range  
+(-40 ?C to 125 ?C) 
+Applications 
+? 
+Automotive 
+? 
+Telecom 
+? 
+Instrumentation 
+? 
+Signal conditioning 
+? 
+High-speed sampling systems 
+? 
+Portable communication systems 
+Description 
+The TS3021H single comparator features high-
+speed response time with rail-to-rail inputs. With 
+a supply voltage specified from 2 to 5 V, this 
+comparator can operate over a wide temperature 
+range: -40 ?C to 150 ?C. 
+The TS3021H comparator offers micropower 
+consumption as low as a few tens of 
+microamperes thus providing an excellent ratio of 
+power consumption current versus response 
+time. 
+The TS3021H includes push-pull outputs and is 
+available in the small SOT23-5 package. 
+ 
+SOT23-5
+OUT
+VCC-
+IN+
+VCC+
+IN-
+1
+2
+3
+4
+5
++
+-
+
+Contents 
+TS3021H 
+ 
+2/19 
+DocID028425 Rev 2 
+ 
+ 
+Contents 
+1 
+Absolute maximum ratings and operating conditions ................. 3 
+2 
+Electrical characteristics ................................................................ 4 
+3 
+Package information ..................................................................... 15 
+3.1 
+SOT23-5 package information ........................................................ 16 
+4 
+Ordering information ..................................................................... 17 
+5 
+Revision history ............................................................................ 18 
+ 
+
+TS3021H 
+Absolute maximum ratings and operating 
+conditions 
+ 
+DocID028425 Rev 2 
+3/19 
+ 
+1 
+Absolute maximum ratings and operating conditions 
+Table 1: Absolute maximum ratings (AMR) 
+Symbol 
+Parameter 
+Value 
+Unit 
+VCC 
+Supply voltage, VCC = (VCC+) - (VCC-) (1) 
+5.5 
+V 
+VID 
+Differential input voltage (2) 
+?5 
+VIN 
+Input voltage range 
+(VCC-) - 0.3 to (VCC+) + 0.3 
+IIN 
+Input current (3) 
+10 
+mA 
+Rthja 
+Thermal resistance junction-to-ambient (4) 
+250 
+?C/W 
+Rthjc 
+Thermal resistance junction-to-case (4) 
+81 
+Tstg 
+Storage temperature 
+-65 to 160 
+?C 
+Tj 
+Junction temperature 
+160 
+TLEAD 
+Lead temperature (soldering 10 s) 
+260 
+ESD 
+HBM: human body model (5) 
+5000 
+V 
+CDM: charged device model (6) 
+1500 
+Latch-up immunity 
+200 
+mA 
+ 
+Notes: 
+(1)All voltage values, except the differential voltage, are referenced to (VCC-) 
+(2)The magnitude of the input and output voltages must never exceed the supply rail ?0.3 V 
+(3)The input current must be limited by a resistor in series with the inputs.  
+(4)Short circuits can cause excessive heating. These values are typical 
+(5)Human body model: a 100 pF capacitor is charged to the specified voltage, then discharged through a 1.5 k? 
+resistor between two pins of the device. This is done for all couples of connected pin combinations while the other 
+pins are floating. 
+(6)Charged device model: all pins and the package are charged together to the specified voltage and then 
+discharged directly to the ground through only one pin. This is done for all pins. 
+ 
+Table 2: Operating conditions 
+Symbol 
+Parameter 
+Value 
+Unit 
+VCC 
+Supply voltage 
+0 ?C < Tamb < 150 ?C 
+1.8 to 5 
+V 
+-40 ?C < Tamb < 150 ?C 
+2 to 5 
+Vicm 
+Common-mode input 
+voltage range 
+-40 ?C < Tamb < 85 ?C 
+(VCC- ) - 0.2 to (VCC+) + 0.2 
+85 ?C < Tamb < 150 ?C 
+(VCC- ) to (VCC+) 
+Toper 
+Operating temperature range 
+-40 to 150 
+?C 
+ 
+
+Electrical characteristics 
+TS3021H 
+ 
+4/19 
+DocID028425 Rev 2 
+ 
+2 
+Electrical characteristics 
+Table 3: Electrical characteristics at VCC = 2 V, Tamb = 25 ? C, and full Vicm range  
+(unless otherwise specified) 
+Symbol 
+Parameter 
+Test conditions (1) 
+Min. 
+Typ. 
+Max. 
+Unit 
+VIO 
+Input offset voltage 
+Tamb 
+0.5 
+6 
+mV 
+-40 ?C < Tamb < 150 ?C 
+0.5 
+7 
+?Vio/?T 
+Input offset voltage drift  
+-40 ?C < Tamb < 150 ?C 
+3 
+20 
+?V/?C 
+IIO 
+Input offset current (2) 
+Tamb 
+1 
+20 
+nA 
+-40 ?C < Tamb < 150 ?C 
+100 
+IIB 
+Input bias current (2) 
+Tamb 
+86 
+160 
+-40 ?C < Tamb < 150 ?C 
+300 
+ICC 
+Supply current 
+No load, output high, Vicm = 0 V 
+73 
+90 
+?A 
+No load, output high, Vicm = 0 V,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+115 
+No load, output low, Vicm = 0 V 
+84 
+105 
+No load, output low, Vicm = 0 V,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+125 
+ISC 
+Short-circuit current 
+Source 
+9 
+mA 
+Sink 
+10 
+VOH 
+Output voltage high 
+Isource = 1 mA 
+1.88 
+1.92 
+V 
+-40 ?C < Tamb < 150 ?C 
+1.79 
+VOL 
+Output voltage low 
+Isink = 1 mA 
+60 
+100 
+mV 
+-40 ?C < Tamb < 150 ?C 
+170 
+CMRR 
+Common-mode rejection 
+ratio  
+0 < Vicm < 2 V 
+ 
+67 
+ 
+dB 
+SVR 
+Supply voltage rejection 
+?Vcc = 2 to 5 V, Vicm = 0 V 
+58 
+73 
+TPLH 
+Propagation delay, low to 
+high output level (3) 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 100 mV 
+ 
+38 
+60 
+ns 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 100 mV,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+120 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 20 mV 
+ 
+48 
+75 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 20 mV,  
+-40 ?C < Tamb < 150 ?C  
+ 
+ 
+140 
+  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+TS3021H 
+Electrical characteristics 
+ 
+DocID028425 Rev 2 
+5/19 
+ 
+Symbol 
+Parameter 
+Test conditions (1) 
+Min. 
+Typ. 
+Max. 
+Unit 
+TPHL 
+Propagation delay, high to 
+low output level (4) 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 100 mV 
+ 
+40 
+60 
+ns 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 100 mV,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+120 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 20 mV 
+ 
+49 
+75 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 20 mV,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+140 
+TF 
+Fall time 
+f = 10 kHz, CL = 50 pF,  
+RL = 10 k?, overdrive = 100 mV 
+ 
+8 
+ 
+TR 
+Rise time 
+f = 10 kHz, CL = 50 pF,  
+RL = 10 k?, overdrive = 100 mV 
+ 
+9 
+ 
+ 
+Notes: 
+(1)All values over the temperature range are guaranteed through correlation and simulation. No production test is performed at the 
+temperature range limits. 
+(2)Maximum values include unavoidable inaccuracies of the industrial tests. 
+(3)Response time is measured 10%/90% of the final output value with the following conditions: inverting input voltage (IN-) = Vicm 
+and non-inverting input voltage (IN+) moving from Vicm - 100 mV to Vicm + overdrive. 
+(4)Response time is measured 10%/90% of the final output value with the following conditions: Inverting input voltage (IN-) = Vicm 
+and non-inverting input voltage (IN+) moving from Vicm + 100 mV to Vicm - overdrive. 
+ 
+ 
+ 
+
+Electrical characteristics 
+TS3021H 
+ 
+6/19 
+DocID028425 Rev 2 
+ 
+ 
+Table 4: Electrical characteristics at VCC = 3.3 V, Tamb = 25 ? C, and full Vicm range  
+(unless otherwise specified) 
+Symbol 
+Parameter 
+Test conditions (1) 
+Min. 
+Typ. 
+Max. 
+Unit 
+VIO 
+Input offset voltage 
+Tamb 
+0.2 
+6 
+mV 
+-40 ?C < Tamb < 150 ?C  
+0.2 
+7 
+?Vio/?T 
+Input offset voltage drift  
+-40 ?C < Tamb < 150 ?C 
+3 
+20 
+?V/?C 
+IIO 
+Input offset current (2) 
+Tamb 
+1 
+20 
+nA 
+-40 ?C < Tamb < 150 ?C 
+100 
+IIB 
+Input bias current (2) 
+Tamb 
+86 
+160 
+-40 ?C < Tamb < 150 ?C 
+300 
+ICC 
+Supply current 
+No load, output high, Vicm = 0 V 
+75 
+90 
+?A 
+No load, output high, Vicm = 0 V,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+120 
+No load, output low, Vicm = 0 V 
+86 
+110 
+No load, output low, Vicm = 0 V,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+125 
+ISC 
+Short-circuit current 
+Source 
+26 
+mA 
+Sink 
+24 
+VOH 
+Output voltage high 
+Isource = 1 mA 
+3.20 
+3.25 
+V 
+-40 ?C < Tamb < 150 ?C 
+3.16 
+VOL 
+Output voltage low 
+Isink = 1 mA 
+40 
+80 
+mV 
+-40 ?C < Tamb < 150 ?C 
+120 
+CMRR 
+Common-mode rejection 
+ratio  
+0 < Vicm < 3.3 V 
+ 
+75 
+ 
+dB 
+SVR 
+Supply voltage rejection 
+?Vcc = 2 to 5 V, Vicm = 0 V 
+58 
+73 
+TPLH 
+Propagation delay, low to 
+high output level (3) 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 100 mV 
+ 
+39 
+65 
+ns 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 100 mV,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+115 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 20 mV 
+ 
+50 
+85 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 20 mV,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+145 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+TS3021H 
+Electrical characteristics 
+ 
+DocID028425 Rev 2 
+7/19 
+ 
+Symbol 
+Parameter 
+Test conditions (1) 
+Min. 
+Typ. 
+Max. 
+Unit 
+TPHL 
+Propagation delay, high to 
+low output level (4) 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 100 mV 
+ 
+41 
+65 
+ns 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 100 mV, 
+ -40 ?C < Tamb < 150 ?C 
+ 
+ 
+115 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 20 mV 
+ 
+51 
+80 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 20 mV,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+145 
+TF 
+Fall time 
+f = 10 kHz, CL = 50 pF,  
+RL = 10 k?, overdrive = 100 mV 
+ 
+5 
+ 
+TR 
+Rise time 
+f = 10 kHz, CL = 50 pF,  
+RL = 10 k?, overdrive = 100 mV 
+ 
+7 
+ 
+ 
+Notes: 
+(1)All values over the temperature range are guaranteed through correlation and simulation. No production test is performed at the 
+temperature range limits. 
+(2)Maximum values include unavoidable inaccuracies of the industrial tests 
+(3)Response time is measured 10%/90% of the final output value with the following conditions: inverting input voltage (IN-) = Vicm 
+and non-inverting input voltage (IN+) moving from Vicm - 100 mV to Vicm + overdrive. 
+(4)Response time is measured 10%/90% of the final output value with the following conditions: Inverting input voltage (IN-) = Vicm 
+and non-inverting input voltage (IN+) moving from Vicm + 100 mV to Vicm - overdrive. 
+ 
+ 
+ 
+
+Electrical characteristics 
+TS3021H 
+ 
+8/19 
+DocID028425 Rev 2 
+ 
+ 
+Table 5: Electrical characteristics at VCC = 5 V, Tamb = 25 ? C, and full Vicm range  
+(unless otherwise specified) 
+Symbol 
+Parameter 
+Test conditions (1) 
+Min. 
+Typ. 
+Max. 
+Unit 
+VIO 
+Input offset voltage 
+Tamb 
+0.2 
+6 
+mV 
+-40 ?C < Tamb < 150 ?C 
+0.2 
+7 
+?Vio/?T 
+Input offset voltage drift  
+-40 ?C < Tamb < 150 ?C 
+3 
+20 
+?V/?C 
+IIO 
+Input offset current (2) 
+Tamb 
+1 
+20 
+nA 
+-40 ?C < Tamb < 150 ?C 
+100 
+IIB 
+Input bias current (2) 
+Tamb 
+86 
+160 
+-40 ?C < Tamb < 150 ?C 
+300 
+ICC 
+Supply current 
+No load, output high, Vicm = 0 V 
+77 
+95 
+?A 
+No load, output high, Vicm = 0 V,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+125 
+No load, output low, Vicm = 0 V 
+89 
+115 
+No load, output low, Vicm = 0 V,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+135 
+ISC 
+Short-circuit current 
+Source 
+51 
+mA 
+Sink 
+40 
+VOH 
+Output voltage high 
+Isource = 4 mA 
+4.80 
+4.84 
+V 
+-40 ?C < Tamb < 150 ?C 
+4.68 
+VOL 
+Output voltage low 
+Isink = 4 mA 
+130 
+180 
+mV 
+-40 ?C < Tamb < 150 ?C 
+270 
+CMRR 
+Common-mode rejection 
+ratio  
+0 < Vicm < 5 V 
+ 
+79 
+ 
+dB 
+SVR 
+Supply voltage rejection 
+?Vcc = 2 to 5 V, Vicm = 0 V 
+58 
+73 
+TPLH 
+Propagation delay, low to 
+high output level (3) 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 100 mV 
+ 
+42 
+75 
+ns 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 100 mV,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+120 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 20 mV 
+ 
+54 
+105 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 20 mV,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+150 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+TS3021H 
+Electrical characteristics 
+ 
+DocID028425 Rev 2 
+9/19 
+ 
+Symbol 
+Parameter 
+Test conditions (1) 
+Min. 
+Typ. 
+Max. 
+Unit 
+TPHL 
+Propagation delay, high to 
+low output level (4) 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 100 mV 
+ 
+45 
+75 
+ns 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 100 mV,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+120 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 20 mV 
+ 
+55 
+95 
+Vicm = 0 V, f = 10 kHz,  
+CL = 50 pF, overdrive = 20 mV,  
+-40 ?C < Tamb < 150 ?C 
+ 
+ 
+150 
+TF 
+Fall time 
+f = 10 kHz, CL = 50 pF,  
+RL = 10 k?, overdrive = 100 mV 
+ 
+4 
+ 
+TR 
+Rise time 
+f = 10 kHz, CL = 50 pF,  
+RL = 10 k?, overdrive = 100 mV 
+ 
+4 
+ 
+ 
+Notes: 
+(1)All values over the temperature range are guaranteed through correlation and simulation. No production test is performed at the 
+temperature range limits. 
+(2)Maximum values include unavoidable inaccuracies of the industrial tests 
+(3)Response time is measured 10%/90% of the final output value with the following conditions: inverting input voltage (IN-) = Vicm 
+and non-inverting input voltage (IN+) moving from Vicm - 100 mV to Vicm + overdrive. 
+(4)Response time is measured 10%/90% of the final output value with the following conditions: Inverting input voltage (IN-) = Vicm 
+and non-inverting input voltage (IN+) moving from Vicm + 100 mV to Vicm - overdrive. 
+ 
+ 
+ 
+
+Electrical characteristics 
+TS3021H 
+ 
+10/19 
+DocID028425 Rev 2 
+ 
+ 
+Figure 1: Current consumption vs. supply voltage  
+(Vicm = 0 V, output high) 
+ 
+Figure 2: Current consumption vs. supply voltage  
+(Vicm = Vcc output high) 
+ 
+ 
+Figure 3: Current consumption vs. supply voltage  
+(Vicm = 0 V, output low) 
+ 
+Figure 4: Current consumption vs. supply voltage  
+(Vicm = Vcc output low) 
+ 
+ 
+Figure 5: Output voltage vs. source current, Vcc = 2 V 
+ 
+Figure 6: Output voltage vs. sink current, Vcc = 2 V 
+ 
+ 
+
+TS3021H 
+Electrical characteristics 
+ 
+DocID028425 Rev 2 
+11/19 
+ 
+Figure 7: Output voltage vs. source current, Vcc = 3.3 V 
+ 
+Figure 8: Output voltage vs. sink current, Vcc = 3.3 V 
+ 
+ 
+Figure 9: Output voltage vs. source current, Vcc = 5 V 
+ 
+Figure 10: Output voltage vs. sink current, Vcc = 5 V 
+ 
+ 
+Figure 11: Input offset voltage vs. input common-mode 
+voltage and temperature 
+ 
+Figure 12: Input bias current vs. input differential voltage 
+and temperature 
+ 
+ 
+
+Electrical characteristics 
+TS3021H 
+ 
+12/19 
+DocID028425 Rev 2 
+ 
+Figure 13: Input bias current vs. input  
+common-mode voltage 
+ 
+Figure 14: Input bias current vs. temperature 
+ 
+ 
+ 
+Figure 15: Current consumption vs. commutation 
+frequency 
+ 
+Figure 16: Propagation delay (HL) vs. overdrive at  
+Vcc = 2 V, Vicm = 0 V 
+ 
+ 
+Figure 17: Propagation delay (HL) vs. overdrive at  
+Vcc = 2 V, Vicm = Vcc 
+ 
+Figure 18: Propagation delay (LH) vs. overdrive at  
+Vcc = 2 V, Vicm = 0 V 
+ 
+ 
+
+TS3021H 
+Electrical characteristics 
+ 
+DocID028425 Rev 2 
+13/19 
+ 
+Figure 19: Propagation delay (LH) vs. overdrive  
+at Vcc = 2 V, Vicm = Vcc 
+ 
+Figure 20: Propagation delay (HL) vs. overdrive  
+at Vcc = 3.3 V, Vicm = 0 V 
+ 
+ 
+Figure 21: Propagation delay (HL) vs. overdrive  
+at Vcc = 3.3 V, Vicm = Vcc 
+ 
+Figure 22: Propagation delay (LH) vs. overdrive  
+at Vcc = 3.3 V, Vicm = 0 V 
+ 
+ 
+Figure 23: Propagation delay (LH) vs. overdrive  
+at Vcc = 3.3 V, Vicm = Vcc 
+ 
+Figure 24: Propagation delay (HL) vs. overdrive  
+at Vcc = 5 V, Vicm = 0 V 
+ 
+ 
+
+Electrical characteristics 
+TS3021H 
+ 
+14/19 
+DocID028425 Rev 2 
+ 
+Figure 25: Propagation delay (HL) vs. overdrive  
+at Vcc = 5 V, Vicm = Vcc 
+ 
+Figure 26: Propagation delay (LH) vs. overdrive  
+at Vcc = 5 V, Vicm = 0 V 
+ 
+ 
+Figure 27: Propagation delay (LH) vs. overdrive  
+at Vcc = 5 V, Vicm = Vcc 
+ 
+Figure 28: Propagation delay vs. temperature,  
+Vcc = 5 V, overdrive = 100 mV 
+ 
+ 
+Figure 29: Propagation delay vs. common-mode voltage, Vcc = 5 V 
+ 
+ 
+
+TS3021H 
+Package information 
+ 
+DocID028425 Rev 2 
+15/19 
+ 
+3 
+Package information 
+In order to meet environmental requirements, ST offers these devices in different grades of 
+ECOPACK? packages, depending on their level of environmental compliance. ECOPACK? 
+specifications, grade definitions and product status are available at: www.st.com. 
+ECOPACK? is an ST trademark.  
+ 
+ 
+
+Package information 
+TS3021H 
+ 
+16/19 
+DocID028425 Rev 2 
+ 
+ 
+3.1 
+SOT23-5 package information 
+Figure 30: SOT23-5 package outline 
+ 
+ 
+Table 6: SOT23-5 mechanical data 
+Ref. 
+Dimensions 
+Millimeters 
+Inches 
+Min. 
+Typ. 
+Max. 
+Min. 
+Typ. 
+Max. 
+A 
+0.90 
+1.20 
+1.45 
+0.035 
+0.047 
+0.057 
+A1 
+0.15 
+0.006 
+A2 
+0.90 
+1.05 
+1.30 
+0.035 
+0.041 
+0.051 
+B 
+0.35 
+0.40 
+0.50 
+0.014 
+0.016 
+0.020 
+C 
+0.09 
+0.15 
+0.20 
+0.004 
+0.006 
+0.008 
+D 
+2.80 
+2.90 
+3.00 
+0.110 
+0.114 
+0.118 
+D1 
+1.90 
+0.075 
+e 
+0.95 
+0.037 
+E 
+2.60 
+2.80 
+3.00 
+0.102 
+0.110 
+0.118 
+F 
+1.50 
+1.60 
+1.75 
+0.059 
+0.063 
+0.069 
+L 
+0.10 
+0.35 
+0.60 
+0.004 
+0.014 
+0.024 
+K 
+0 degrees 
+10 degrees 
+0 degrees 
+10 degrees 
+ 
+
+TS3021H 
+Ordering information 
+ 
+DocID028425 Rev 2 
+17/19 
+ 
+4 
+Ordering information 
+Table 7: Order codes 
+Order code 
+Temperature range 
+Package 
+Packaging 
+Marking 
+TS3021HIYLT (1) 
+-40 to 150 ?C 
+SOT23-5 
+Tape and reel 
+K528 
+ 
+Notes: 
+(1)Qualified and characterized according to AEC-Q100 and Q003 or equivalent, advanced screening according 
+to AEC-Q001 and Q 002 or equivalent. 
+ 
+
+Revision history 
+TS3021H 
+ 
+18/19 
+DocID028425 Rev 2 
+ 
+5 
+Revision history 
+Table 8: Document revision history 
+Date 
+Version 
+Changes 
+13-Oct-2015 
+1 
+Initial release 
+24-Aug-2016 
+2 
+Updated document title (automotive qualified) 
+Added AEC-Q100 and Q003 qualified in Features section 
+Table 1: "Absolute maximum ratings (AMR)": removed ESD MM 
+value. 
+Table 7: "Order codes": updated footnote, product is now automotive 
+qualified. 
+ 
+ 
+
+TS3021H 
+ 
+ 
+DocID028425 Rev 2 
+19/19 
+ 
+ 
+IMPORTANT NOTICE ? PLEASE READ CAREFULLY 
+ 
+STMicroelectronics NV and its subsidiaries (?ST?) reserve the right to make changes, corrections, enhancements, modifications, and 
+improvements to ST products and/or to this document at any time without notice. Purchasers should obtain the latest relevant information on ST 
+products before placing orders. ST products are sold pursuant to ST?s terms and conditions of sale in place at the time of order 
+acknowledgement.  
+ 
+Purchasers are solely responsible for the choice, selection, and use of ST products and ST assumes no liability for application assistance or the 
+design of Purchasers? products. 
+ 
+No license, express or implied, to any intellectual property right is granted by ST herein. 
+ 
+Resale of ST products with provisions different from the information set forth herein shall void any warranty granted by ST for such product. 
+ 
+ST and the ST logo are trademarks of ST. All other product or service names are the property of their respective owners. 
+ 
+Information in this document supersedes and replaces information previously supplied in any prior versions of this document. 
+ 
+? 2016 STMicroelectronics ? All rights reserved 
+ 
+ 
