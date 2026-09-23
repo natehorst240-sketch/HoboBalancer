@@ -1,8 +1,12 @@
 ** Drc report for BalancerREF.kicad_pcb **
-** Created on 2026-09-17T22:49:20 **
+** Created on 2026-09-19T21:50:19 **
 ** Report includes: Errors, Warnings, Exclusions **
 
 ** Found 7 DRC violations **
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1944 mm)
+    Rule: board setup constraints hole; error
+    @(123.5100 mm, 142.5250 mm): Pad A1 [GND] of J1 on F.Cu
+    @(123.8200 mm, 143.6000 mm): NPTH pad of J1
 [hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1944 mm)
     Rule: board setup constraints hole; error
     @(123.5100 mm, 142.5250 mm): Pad B12 [GND] of J1 on F.Cu
@@ -15,10 +19,9 @@
     Rule: board setup constraints hole; error
     @(129.9100 mm, 142.5250 mm): Pad B1 [GND] of J1 on F.Cu
     @(129.6000 mm, 143.6000 mm): NPTH pad of J1
-[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1944 mm)
-    Rule: board setup constraints hole; error
-    @(123.5100 mm, 142.5250 mm): Pad A1 [GND] of J1 on F.Cu
-    @(123.8200 mm, 143.6000 mm): NPTH pad of J1
+[lib_footprint_mismatch]: Footprint 'ESP32-S2-MINI-1' does not match copy in library 'RF_Module'
+    Local override; warning
+    @(125.0000 mm, 105.7000 mm): Footprint U1
 [silk_edge_clearance]: Silkscreen clipped by board edge
     Rule: board setup constraints silk; warning
     @(100.0000 mm, 100.0000 mm): Rectangle on Edge.Cuts
@@ -27,13 +30,70 @@
     Rule: board setup constraints silk; warning
     @(100.0000 mm, 100.0000 mm): Rectangle on Edge.Cuts
     @(132.8000 mm, 95.3500 mm): Segment of U1 on F.Silkscreen
-[lib_footprint_mismatch]: Footprint 'ESP32-S2-MINI-1' does not match copy in library 'RF_Module'
-    Local override; warning
-    @(125.0000 mm, 105.7000 mm): Footprint U1
 
 ** Found 0 unconnected pads **
 
-** Found 0 Footprint errors **
+** Found 20 Footprint errors **
+[footprint_symbol_field_mismatch]: Missing symbol field 'MPN' in footprint
+    Local override; warning
+    @(103.8000 mm, 121.2000 mm): Footprint J5
+[footprint_symbol_mismatch]: R_0603_1608Metric doesn't match footprint given by symbol (Resistor_SMD:R_0603_1608Metric)
+    Local override; warning
+    @(142.4000 mm, 120.4000 mm): Footprint R35
+[footprint_symbol_field_mismatch]: Missing symbol field 'MPN' in footprint
+    Local override; warning
+    @(142.4000 mm, 120.4000 mm): Footprint R35
+[footprint_symbol_mismatch]: R_0603_1608Metric doesn't match footprint given by symbol (Resistor_SMD:R_0603_1608Metric)
+    Local override; warning
+    @(137.5000 mm, 121.6750 mm): Footprint R36
+[footprint_symbol_field_mismatch]: Missing symbol field 'MPN' in footprint
+    Local override; warning
+    @(137.5000 mm, 121.6750 mm): Footprint R36
+[footprint_symbol_mismatch]: R_0603_1608Metric doesn't match footprint given by symbol (Resistor_SMD:R_0603_1608Metric)
+    Local override; warning
+    @(139.6500 mm, 124.6000 mm): Footprint R37
+[footprint_symbol_field_mismatch]: Missing symbol field 'MPN' in footprint
+    Local override; warning
+    @(139.6500 mm, 124.6000 mm): Footprint R37
+[footprint_symbol_mismatch]: R_0603_1608Metric doesn't match footprint given by symbol (Resistor_SMD:R_0603_1608Metric)
+    Local override; warning
+    @(106.6000 mm, 116.3375 mm): Footprint R39
+[footprint_symbol_field_mismatch]: Missing symbol field 'MPN' in footprint
+    Local override; warning
+    @(106.6000 mm, 116.3375 mm): Footprint R39
+[footprint_symbol_mismatch]: R_0603_1608Metric doesn't match footprint given by symbol (Resistor_SMD:R_0603_1608Metric)
+    Local override; warning
+    @(106.6000 mm, 116.3375 mm): Footprint R39
+[footprint_symbol_field_mismatch]: Missing symbol field 'MPN' in footprint
+    Local override; warning
+    @(106.6000 mm, 116.3375 mm): Footprint R39
+[footprint_symbol_mismatch]: QFN-16-1EP_3x3mm_P0.5mm_EP1.675x1.675mm doesn't match footprint given by symbol (Package_DFN_QFN:QFN-16-1EP_3x3mm_P0.5mm_EP1.675x1.675mm)
+    Local override; warning
+    @(140.0000 mm, 121.5000 mm): Footprint U5
+[footprint_symbol_field_mismatch]: Missing symbol field 'MPN' in footprint
+    Local override; warning
+    @(140.0000 mm, 121.5000 mm): Footprint U5
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(146.7000 mm, 146.4500 mm): Footprint H2
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(103.3000 mm, 146.4500 mm): Footprint H1
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(146.7000 mm, 103.5500 mm): Footprint H4
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(103.3000 mm, 103.5500 mm): Footprint H3
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(103.4000 mm, 108.8000 mm): Footprint FID5
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(143.0000 mm, 146.5000 mm): Footprint FID4
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(146.5000 mm, 107.0000 mm): Footprint FID6
 
 ** Ignored checks **
     - Footprint has no courtyard defined

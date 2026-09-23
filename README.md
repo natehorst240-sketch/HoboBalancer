@@ -17,13 +17,16 @@ KiCad 9 will not open them.
 | Directory | Board | Revision | State |
 |---|---|---|---|
 | `.` (root) | `Balancer` — STM32 balancer | Rev A | Schematic only; `Balancer.kicad_pcb` is an empty stub |
-| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev F** | 50 × 50 mm, 4 layer, routed except four power nets (see below) |
+| `BalancerREF/` | **HOBOVibe** — ESP32-S3 reference puck | **Rev G** | 50 × 50 mm, 4 layer, fully routed, DRC clean apart from three accepted warnings (see below) |
 | `BalancerREF_OptHead/` | Optical tach head | **Rev B** | 25 × 50 mm, 2 layer, routed; no mounting holes yet |
 
 Both boards are routed. On the main board `SYS`, `SYS_SW`, `BAT` and `USB_VBUS` had been
 routed across In2.Cu, which is the +3V3 plane; those tracks were removed on 2026-09-18 so
-the plane is whole again, and the four nets need re-routing on the outer layers. The last
-DRC report in the repo (`BalancerREF/review/drc-review.rpt`) predates that change.
+the plane is whole again, and those four nets were then re-routed on the outer layers (PR #7,
+merged with Rev G on 2026-09-19). The Rev G connections (U7 pass-through, R39) are routed too.
+`BalancerREF/review/drc-review.rpt` (KiCad 10.0.6) shows 0 errors and 0 unconnected; what is
+left is the GCT USB-C footprint's own peg-to-pad spacing (4), the ESP32 antenna overhanging
+the edge by design (2) and the locally edited U1 footprint (1).
 Placement was machine-generated and then adjusted by hand; look at it in pcbnew before
 trusting it.
 
@@ -233,6 +236,12 @@ The optical tach could never have worked. Flipping the detector fixes it without
 anything else; `BalancerREF/DATASHEET-VERIFICATION.md` traces the chain stage by stage,
 including why the connectivity checkers passed the whole time — they prove the netlist
 matches the intent, not that the intent works.
+
+Rev G is the **Reddit-review revision** (2026-09-19). Three schematic corrections on the
+main board: the USB VBUS TVS (D3) was drawn forward biased, the USB data lines now pass
+through the ESD array (U7) instead of hanging off it as stubs, and U9's OPT_COMP input
+gets a pull-down so it does not float when the optical head is unplugged. The board
+carries the new pad nets, and the USB pass-through and the new resistor are routed.
 
 Two review items were checked and deliberately **not** changed — SW1's current rating
 and U1's footprint. `BalancerREF/DATASHEET-VERIFICATION.md` records why, so they are not
