@@ -25,6 +25,9 @@ public:
     // Feed one byte; returns true when a complete, checksum-valid RMC or GGA updated the fix.
     bool feed(char c);
     const Fix &fix() const { return fix_; }
+    // Advances once per parsed RMC, the only sentence carrying speed and course. The flight
+    // gate samples on this, so a GGA in the same epoch never counts the fix twice.
+    uint32_t motionSequence() const { return motion_; }
     uint32_t sentences() const { return sentences_; }
     uint32_t rejected() const { return rejected_; }
 private:
@@ -35,7 +38,7 @@ private:
     unsigned len_ = 0;
     bool inSentence_ = false;
     Fix fix_{};
-    uint32_t sentences_ = 0, rejected_ = 0;
+    uint32_t sentences_ = 0, rejected_ = 0, motion_ = 0;
 };
 
 // Accumulates fixes over one acquisition window and decides whether the

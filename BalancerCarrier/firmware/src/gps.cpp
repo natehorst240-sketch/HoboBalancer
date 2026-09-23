@@ -34,7 +34,8 @@ void reader(void *) {
             portENTER_CRITICAL(&lock);
             latestFix = nmea.fix();
             portEXIT_CRITICAL(&lock);
-            ++sequence;
+            // Only RMC is new motion data for the gate; any valid sentence proves the baud rate.
+            sequence = nmea.motionSequence();
             lastValidUs = esp_timer_get_time();
         }
         sentenceCount = nmea.sentences();

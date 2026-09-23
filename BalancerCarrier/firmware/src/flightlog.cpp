@@ -105,12 +105,17 @@ bool Nmea::parseRmc(char **f, int n) {
         }
     }
     fix_ = next;
+    ++motion_;
     return true;
 }
 
 // $xxGGA,hhmmss.ss,lat,N,lon,E,quality,numSats,hdop,alt,M,...
 bool Nmea::parseGga(char **f, int n) {
     if (n < 10) return false;
+    // Quality 0 (or empty) is the receiver saying it has no fix. If RMC has stopped, this is
+    // the only sentence still arriving, so it must clear validity rather than leave the last
+    // RMC position standing. A nonzero quality leaves validity to RMC.
+    if (f[6][0] == 0 || f[6][0] == '0') fix_.valid = false;
     double sats = 0, alt = 0;
     if (!number(f[7], sats)) return false;
     fix_.sats = int(sats);

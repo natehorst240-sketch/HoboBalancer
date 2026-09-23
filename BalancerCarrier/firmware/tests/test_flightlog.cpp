@@ -41,6 +41,19 @@ int main() {
     check(nmea.fix().sats == 8, "satellites");
     near(nmea.fix().altM, 545.4, 1e-9, "altitude");
 
+    // Only RMC carries speed and course, so only RMC advances the sequence the gate reads.
+    const uint32_t motion = nmea.motionSequence();
+    sentence(line, sizeof(line), "GNGGA,123519.50,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,");
+    check(feedAll(nmea, line) && nmea.motionSequence() == motion, "GGA does not feed the gate again");
+    check(nmea.fix().valid, "GGA with a fix leaves RMC validity alone");
+    // RMC lost, GGA still arriving without a fix: the old fix must not stay valid.
+    sentence(line, sizeof(line), "GNGGA,123521.00,,,,,0,00,99.9,,M,,M,,");
+    check(feedAll(nmea, line), "no-fix GGA parses");
+    check(!nmea.fix().valid, "no-fix GGA clears a stale RMC fix");
+    check(nmea.motionSequence() == motion, "no-fix GGA does not feed the gate");
+    sentence(line, sizeof(line), "GPRMC,123522.00,A,4807.038,N,01131.000,E,22.4,84.4,230394,,,A");
+    check(feedAll(nmea, line) && nmea.fix().valid && nmea.motionSequence() == motion + 1, "RMC advances the gate sequence");
+
     sentence(line, sizeof(line), "GPRMC,123520.00,V,,,,,,,230394,,,N");
     check(feedAll(nmea, line), "void RMC still parses");
     check(!nmea.fix().valid && nmea.fix().timeValid, "void fix keeps time, clears validity");
