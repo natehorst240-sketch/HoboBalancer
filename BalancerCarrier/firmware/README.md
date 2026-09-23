@@ -1,6 +1,6 @@
-# BalancerREF ESP32-S3 firmware
+# BalancerCarrier firmware
 
-Bench-test firmware for the **BalancerREF Rev B reference puck**, ESP32-S3-MINI-1-N8, 8 MB flash, no PSRAM. It is separate from the full analyzer project. The schematic and PCB files are not changed by this firmware project. No aircraft weight corrections are automatically calculated or applied.
+Bench-test firmware for **BalancerCarrier**, the puck rebuilt as a carrier board around an **Unexpected Maker FeatherS3[D]** (ESP32-S3, 16 MB flash, 8 MB QSPI PSRAM). It is not interchangeable with the BalancerREF firmware: the pin map differs (see `src/board.hpp`), and a BalancerREF image drives pins that are inputs on this board. It is separate from the full analyzer project. The schematic and PCB files are not changed by this firmware project. No aircraft weight corrections are automatically calculated or applied.
 
 Implemented: MR-VERT magnetic tach, TR-VERT optical tach/emitter, all three IIS3DWB axes over SPI, hardware timestamps, finite and continuous back-to-back acquisitions, autonomous in-flight logging with GPS tagging and tach/button-wake deep sleep, approximate 1/rev velocity magnitude and phase, stability flags, run trends, BLE, native USB JSON console, persistent per-profile settings, and MicroVib comparison proposals. Wi-Fi is never initialized.
 
@@ -8,48 +8,34 @@ The code can check signal consistency but cannot certify IPS accuracy. Physical 
 
 ## Hardware support status
 
-The BQ24075 charger **is** driven, as of schematic Rev F. `board.hpp` carries the
-four pins (`chgEn1`, `chgEn2`, `pgood`, `chgStat`), `tests/check_pinmap.py` verifies
-them against the KiCad pin audit, and `setupCharger()` runs at boot:
+The FeatherS3[D] owns power, so the carrier has no charger pins:
 
-- **Input current limit is set to USB500 at boot.** EN1/EN2 have 285 kOhm internal
-  pull-downs, so the part powers up in USB100 - a 100 mA limit that has to cover
-  system load *and* charge current, which an ESP32-S3 with BLE up largely consumes
-  on its own. USB500 is the ceiling on purpose: 500 mA is the most a non-negotiated
-  port must supply, and this board has no USB-PD or BC1.2. The resistor-programmed
-  ~1.0 A setting stays a deliberate opt-in for a known wall adapter.
-  SLUS810N Table 7-2 is indexed **(EN2, EN1)**, the reverse of the naming order.
-- **`pgood` is the input-present signal**, and `chgStat` reports charging. Both are
-  open-drain and **active low**, with 100k pull-ups on the board. `status` reports
-  them as `input_present` and `charging`. `chgStat` goes high both when charging
-  completes and when the charger is disabled, so it is not an input-present signal
-  on its own.
-- The Rev D SYS_SW-versus-BAT comparison and its divider are gone from the hardware,
-  so `pgood` is the only way to detect an input. `supplyVolts()` reads the cell only
-  while running on battery - while charging, OUT is driven from IN.
+- **Charging and USB** are the module's. There are no EN1/EN2/PGOOD/CHG signals; `status.charging` comes from the fuel gauge.
+- **Battery voltage and charge state** come from the module's MAX17048 fuel gauge on its I2C bus (GPIO8 SDA, GPIO9 SCL, address 0x36; pull-ups fitted on the module). `battery_v` is the cell itself, including while charging.
+- **USB present** is the module's VBUS divider on GPIO34 (`status.input_present`).
+- **GPS power** is the module's LDO2 (NCP167, 700 mA) on GPIO39. It is off at reset, so the GPS is dead until firmware raises it; it is fed from VBUS, which ORs USB and battery, so it runs on battery.
 
-The rest of the firmware still targets Rev C behaviour; the sections below are
-unchanged.
+`tests/check_pinmap.py` checks `board.hpp` against the carrier schematic's netlist, and the module-internal pins against their documented values.
 
-## Rev C hardware (firmware 0.4.0, 2026-09-09)
+## Carrier hardware
 
-Firmware 0.4.0 targets schematic Rev C only. Accelerometer: ST IIS3DWB on SPI2 (GPIO14 SCK, 15 MOSI, 16 MISO, 17 CS, mode 3, 10 MHz), SPI-only per DS12569, fixed +/-16 g (see `src/accelscale.hpp`), LPF2 at ODR/10 (2.67 kHz). The sensor streams its fixed 26.667 kHz ODR into its FIFO with the watermark at 16 samples; INT1 (GPIO6) is the FIFO-threshold line and is timestamped by the same MCPWM capture channel that timestamped data-ready before. Each block is read in one 112-byte SPI transfer and averaged into a single 1666.7 Hz measurement sample whose timestamp is the capture tick minus 7.5 sample periods (the block mean). A block that is not exactly 16 entries, carries a non-accelerometer tag, or is read more than 500 us late is discarded and counted, so a missed interrupt shows up as a sample gap rather than a wrong number. The boxcar average adds 0.28 ms of deterministic delay (about 0.7 degrees at 390 RPM), the same class as the old LIS2DW12 filter lag and absorbed by the same calibration. Emitter GPIO9 is a 20 kHz, 10 percent LEDC PWM when the TR-VERT profile is active and 0 otherwise; the receiver's synchronous detector uses the same pulse. The IIS3DWB has no wake-on-motion, so deep sleep wakes on EXT1 when MAG_TACH (GPIO7) or the acquire button (GPIO10) pulses low; the optical profile has no wake source while its emitter is off, which is fine because flight logging uses MR-VERT. The vendored driver is `vendor/iis3dwb_reg.c` (see UPSTREAM.txt); the LIS2DW12 driver is gone.
+GPIO numbers are ESP32-S3 GPIOs, not FeatherS3 header pins. Accelerometer: ST IIS3DWB on SPI2 (GPIO12 SCK, 11 MOSI, 14 MISO, 17 CS, mode 3, 10 MHz), SPI-only per DS12569, fixed +/-16 g (see `src/accelscale.hpp`), LPF2 at ODR/10 (2.67 kHz). The sensor streams its fixed 26.667 kHz ODR into its FIFO with the watermark at 16 samples; INT1 (GPIO18) is the FIFO-threshold line and is timestamped by the same MCPWM capture channel that timestamped data-ready before. Each block is read in one 112-byte SPI transfer and averaged into a single 1666.7 Hz measurement sample whose timestamp is the capture tick minus 7.5 sample periods (the block mean). A block that is not exactly 16 entries, carries a non-accelerometer tag, or is read more than 500 us late is discarded and counted, so a missed interrupt shows up as a sample gap rather than a wrong number. The boxcar average adds 0.28 ms of deterministic delay (about 0.7 degrees at 390 RPM), the same class as the old LIS2DW12 filter lag and absorbed by the same calibration. The optical comparator input is GPIO35 and the status LED GPIO37. Emitter GPIO36 is a 20 kHz, 10 percent LEDC PWM when the TR-VERT profile is active and 0 otherwise; the receiver's synchronous detector uses the same pulse. The IIS3DWB has no wake-on-motion, so deep sleep wakes on EXT1 when MAG_TACH (GPIO1) or the acquire button (GPIO5) pulses low; both must stay on RTC GPIOs 0-21 for EXT1 to arm; the optical profile has no wake source while its emitter is off, which is fine because flight logging uses MR-VERT. The vendored driver is `vendor/iis3dwb_reg.c` (see UPSTREAM.txt); the LIS2DW12 driver is gone.
 
 ## Build and flash
 
-Pinned platform: PlatformIO `espressif32@6.12.0`, ESP-IDF 5.5 family. The DevKitC N8 board definition supplies the matching processor/flash configuration; actual GPIOs are explicitly set for this custom schematic in `src/board.hpp`. DIO flash is selected conservatively. The unmodified ST driver is vendored at a recorded commit with its license.
+Pinned platform: PlatformIO `espressif32@6.12.0`, ESP-IDF 5.5 family. The generic `esp32-s3-devkitc-1` board definition is used deliberately, with flash size (16 MB), PSRAM mode (quad) and console pinned in `platformio.ini` and `sdkconfig.defaults`; actual GPIOs are set for the carrier schematic in `src/board.hpp`. `esp_lcd` is excluded in `CMakeLists.txt`: it is unused, and xtensa GCC 14.2.0 segfaults compiling it. DIO flash is selected conservatively. The unmodified ST driver is vendored at a recorded commit with its license.
 
 From this directory, using Python 3.11:
 
 ```powershell
-python -m pip install platformio==6.1.18
+python -m pip install platformio
 python -m platformio run
 python -m platformio run --target upload --upload-port COM5
 ```
 
-Firmware 0.4.0-reference compiles cleanly with this pinned toolchain (verified 2026-09-07, PlatformIO 6.1.18 from `../.venv-firmware`; 698 kB image). Earlier source had never been compiled and carried three warnings-as-errors and one driver signature mismatch, all fixed without changing behavior. `tools/package_release.py` copies the images and a manifest into `release/`.
+The carrier build compiles cleanly (verified 2026-09-23, PlatformIO 6.2.0: RAM 15.7%, flash 22.8% of the 3 MB app partition, no warnings in project sources). `tools/package_release.py` copies the images from `.pio/build/balancercarrier`, a manifest and flashing instructions into `release/`.
 
-Replace COM5 with the puck's native USB port. On first flash: switch ON, hold BOOT, press/release RESET, release BOOT, then upload. Reset once after flashing if it remains in download mode. GPIO19/20 are native USB D-/D+; BOOT is GPIO0. Rev B can power/program from USB with no battery. Charging is handled by hardware regardless of firmware or switch position. Firmware has no charger STAT input and cannot report charge completion.
+Replace COM5 with the FeatherS3[D]'s native USB port. On first flash: hold BOOT on the module, tap RST, release BOOT, then upload. Reset once after flashing if it remains in download mode. The module powers and programs from USB with no battery, and charges the cell in hardware regardless of firmware.
 
 Do not flash a whole merged image over an existing board if you intend to preserve its settings without first reviewing the image's NVS region. Normal PlatformIO upload leaves the NVS partition intact. No device has been flashed during development here.
 
@@ -109,7 +95,7 @@ Limit the RPM range to the test regime where a saved calibration was established
 
 ## What IPS and phase mean here
 
-The IIS3DWB runs at its fixed **26.667 kHz ODR, fixed +/-16 g, LPF2 ODR/10**, decimated by 16 in firmware to **1666.7 Hz** measurement samples (see the Rev C hardware section). Full scale, batch rate and FIFO mode are read back after configuration. SPI at 10 MHz.
+The IIS3DWB runs at its fixed **26.667 kHz ODR, fixed +/-16 g, LPF2 ODR/10**, decimated by 16 in firmware to **1666.7 Hz** measurement samples (see the Carrier hardware section). Full scale, batch rate and FIFO mode are read back after configuration. SPI at 10 MHz.
 
 The range is fixed at +/-16 g and never switched during a session, so no run can mix differently scaled samples. DS12569 states noise density is independent of full scale; at 0.488 mg/LSB the step is about 1/28 of the ~3.9 mg RMS per-sample noise, so the wide range costs no usable resolution (0.08 IPS at 300 RPM is ~6.5 mg peak). Clipping is judged on every raw FIFO sample before the 16-sample average, at 95% of full scale because LPF2 can round a saturated peak slightly low, and is tracked per axis. The per-revolution fit models DC and 1..4/rev together so strong 2/rev content does not leak into the 1/rev vector. Each tach edge is held until the first sample at or after it arrives, because a block's mean timestamp can precede an edge that was delivered first.
 
@@ -166,7 +152,7 @@ Scatter is a repeatability metric, not a calibrated noise floor or statistical a
 
 **USB rules.** A USB data connection pauses autonomous acquisition and blocks sleep so the puck can be commanded and downloaded; unplugging resumes. A plain charger does not enumerate and does not pause it.
 
-**Sleep.** After 3 minutes without a tach edge (and at least 3 minutes awake) the puck sends the GPS to backup mode, powers the IIS3DWB down and enters deep sleep armed on EXT1 (MAG_TACH GPIO7 or the acquire button GPIO10 going low). Rotor spin-up on the magnetic pickup or a button press wakes it; handling alone does not. The LM1815 stays powered, so sleep current is dominated by it (a few mA); budget about 260 mAh for a day of two flight hours plus eight dormant hours. Wake cause is written as a `boot` record and shown in `status.wake`.
+**Sleep.** After 3 minutes without a tach edge (and at least 3 minutes awake) the puck sends the GPS to backup mode, powers the IIS3DWB down and enters deep sleep armed on EXT1 (MAG_TACH GPIO1 or the acquire button GPIO5 going low). Rotor spin-up on the magnetic pickup or a button press wakes it; handling alone does not. The LM1815 stays powered, so sleep current is dominated by it (a few mA); budget about 260 mAh for a day of two flight hours plus eight dormant hours. Wake cause is written as a `boot` record and shown in `status.wake`.
 
 **Level-flight gate.** Each record carries `lvl`, true only when the window was `stable`, at least 3 valid fixes arrived, mean ground speed was at least 2 m/s, speed spread was at most 1.5 m/s, circular course spread at most 10 degrees, and the sign-adjusted vertical DC was within 6 percent of 1 g. Turns, climbs, descents, hover and ground runs therefore log with `lvl:false` and can be filtered out. GPS gives ground speed, not airspeed; fly reciprocal headings if wind matters.
 
@@ -189,7 +175,7 @@ python tools/puck.py --port COM5 --erase
 
 The tool refuses to report success, and tells you not to erase, if the received count differs from the puck's.
 
-**GPS.** J4 on the schematic: UART1, GPIO1 TX to module RX, GPIO2 RX from module TX, GPIO13 PPS (wired, unused by firmware), 3.3 V, 8N1 NMEA. The reader auto-detects 38400 (u-blox M10/F10 default) or 9600 (Quectel L76-K, u-blox M8) by cycling every 4 s until checksum-valid sentences arrive; `status.gps.baud` shows the rate in use. Sleep sends both UBX-RXM-PMREQ (u-blox backup, wake on UART) and `$PMTK161,0` (Quectel standby, wake on any byte); each vendor ignores the other. Candidate modules: u-blox NEO-F10N (Digi-Key 672-NEO-F10N-00B-TR-ND is the bare LCC module and needs a carrier with an L1/L5 antenna path; the SparkFun NEO-F10N breakout is the drop-in form) or Quectel L76-K (2.7-3.4 V, internal LNA, passive patch antenna, about 25 mA tracking, roughly 0.5 mA in standby; the Waveshare L76K breakout brings out VCC/GND/TX/RX/PPS). RMC and GGA from any talker are parsed with checksum verification; `status.gps` reports presence, fix, satellites, speed and rejected sentences. Backup mode uses UBX-RXM-PMREQ and wakes on UART activity, which the firmware sends at boot; a non-u-blox module will simply ignore the sleep request and keep drawing its normal current. PPS is not used yet.
+**GPS.** J4 on the schematic: UART1, GPIO10 TX to module RX, GPIO7 RX from module TX, GPIO6 PPS (wired, unused by firmware), 3.3 V from the FeatherS3[D]'s LDO2 (enabled by firmware), 8N1 NMEA. Only RMC, which carries speed and course, feeds the level-flight gate, once per epoch; a GGA reporting no fix clears the fix so a lost RMC stream cannot leave a stale position counted as current. The reader auto-detects 38400 (u-blox M10/F10 default) or 9600 (Quectel L76-K, u-blox M8) by cycling every 4 s until checksum-valid sentences arrive; `status.gps.baud` shows the rate in use. Sleep sends both UBX-RXM-PMREQ (u-blox backup, wake on UART) and `$PMTK161,0` (Quectel standby, wake on any byte); each vendor ignores the other. Candidate modules: u-blox NEO-F10N (Digi-Key 672-NEO-F10N-00B-TR-ND is the bare LCC module and needs a carrier with an L1/L5 antenna path; the SparkFun NEO-F10N breakout is the drop-in form) or Quectel L76-K (2.7-3.4 V, internal LNA, passive patch antenna, about 25 mA tracking, roughly 0.5 mA in standby; the Waveshare L76K breakout brings out VCC/GND/TX/RX/PPS). RMC and GGA from any talker are parsed with checksum verification; `status.gps` reports presence, fix, satellites, speed and rejected sentences. Backup mode uses UBX-RXM-PMREQ and wakes on UART activity, which the firmware sends at boot; a non-u-blox module will simply ignore the sleep request and keep drawing its normal current. PPS is not used yet.
 
 Nothing in this mode has run on hardware. Bench checks before trusting a flight log: GPS sentences appear in `status`, a window logs with a plausible `t`, sleep entry and motion wake, resume after USB unplug, and that `lvl` goes false when the puck is carried around by hand.
 

@@ -2,7 +2,7 @@
 #include <cstdint>
 #include "accelscale.hpp"
 
-// Rev C accelerometer: ST IIS3DWB on SPI2 (GPIO14 SCK, 15 MOSI, 16 MISO, 17 CS), mode 3, 10 MHz.
+// ST IIS3DWB on SPI2 (pins in board.hpp: GPIO12 SCK, 11 MOSI, 14 MISO, 17 CS), mode 3, 10 MHz.
 // The sensor runs at its fixed 26.667 kHz ODR into its FIFO. INT1 is the FIFO watermark, which the
 // MCPWM capture timer timestamps exactly like the old data-ready line; each watermark block of
 // `decimation` samples is averaged into one measurement sample (boxcar decimation to 1666.7 Hz).
