@@ -107,12 +107,17 @@ away flag from the network.
 
 - LATCHED: bar extended, flap pinned. Tag read and not away -> retract bar,
   go to OPEN.
-- OPEN: bar retracted, flap swings freely. Start the 5 s settle timer only
+- OPEN: bar retracted, flap swings freely. Start the settle timer only
   when the flap sensor reads aligned *and* no tag has been read for the same
   window. Any misalignment or tag read restarts the timer. Timer expires ->
   extend bar, go to LATCHED.
 - AWAY: same as OPEN but tag reads are ignored, so the bar goes in at the
   next 5 s of settled flap and stays in until the away flag clears.
+
+The settle time is a hard minimum of 5 s. Its purpose is to outlast the
+flap's swing after a dog passes, so the bar never drives out while the flap is
+still oscillating. Do not shorten it; it may need to grow if a heavier flap
+swings longer.
 
 Rules that fall out of this:
 
