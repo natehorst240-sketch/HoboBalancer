@@ -159,9 +159,30 @@ so the hinge, brush seal and latch bar are sized to this flap, not bought.
 - A heavier flap swings longer; re-check the 5 s settle minimum on the real
   panel.
 
+Alternative core: a 3D-printed plug wrapped in the same 0.032 in aluminium.
+Estimates for a 1/2 in thick printed core:
+
+| Core | Core mass | One al face | Both faces |
+|---|---|---|---|
+| PETG, 10% infill, 2 walls | ~0.26 kg | ~0.5 kg | ~0.7 kg |
+| PETG, 15% infill, 3 walls | ~0.35 kg | ~0.6 kg | ~0.8 kg |
+
+Roughly the same weight as ply-and-foam; the mass is in the aluminium either
+way. What the printed core buys is integrated features: magnet pockets, hinge
+bosses, the latch strike and a fastener-holding edge all printed in, which
+removes the edge-insert problem. Costs and cautions:
+
+- 305 mm square needs a 300 mm+ bed, or the core prints in sections and joins.
+- A dark painted aluminium face in sun gets hot enough to soften PLA. Use
+  PETG or ASA for the core, and keep the paint light if it faces the sun.
+- 2024-T3 does not like tight bends; wrapping the edges needs the correct
+  bend radius for 0.032 in from a bend table, or a softer alloy (5052, 3003)
+  for the skin if it is only a weather face and not structural.
+- Same RFID shielding caution as above; the skin is what matters, not the core.
+
 ### Still to pin down
 
-- Foam core thickness, and whether both faces get aluminium.
+- Core: ply-and-foam or printed plug; core thickness; one or both faces aluminium.
 - Mounting: wall, exterior door, or slider insert.
 - Power source and whether it needs to work through an outage.
 
