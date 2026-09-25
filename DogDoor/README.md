@@ -80,6 +80,25 @@ MGN12 rails are stiffer and better sealed but cost more; either works.
   opening; close only after the beam has been clear for a few seconds, and
   re-open if it breaks while closing. Stall detection stays as the backstop.
 
+**C. Passive bi-directional top-hinged flap, electrically released catch at the
+bottom, RFID collar or microchip to unlock (current lean, 2026-09-25)**
+- No actuator moves the flap, so no pinch hazard, no rails, no stall tuning.
+  The electronics only decide locked or unlocked.
+- A bought flap with its own magnets and brush seal handles wind and rattle;
+  the project supplies the latch, the reader and the controller.
+- Catch: a latch bar at the bottom that blocks the flap in both directions.
+  Prefer a small motor or servo-moved latch (zero power to hold, fail state is
+  a design choice) over an electromagnet, which draws current the whole time
+  it holds and is fail-open on power loss.
+- Reader: LF RFID, 125 kHz for a collar tag or 134.2 kHz FDX-B (ISO 11784/5)
+  for the dog's implanted microchip, which removes the collar entirely. Read
+  range is a few cm to ~15 cm, so the antenna coil goes around the tunnel and
+  the dog unlocks it by putting its head to the flap. That short range is a
+  feature: it proves the dog is at the door, which BLE or UHF cannot.
+- The boop button becomes optional; the head-at-flap gesture replaces it.
+- Away lockout is trivial: latch stays engaged regardless of tag reads.
+- Cannot tell in from out with one antenna; add a second if that matters.
+
 ### Still to pin down
 
 - Flap material (sets mass and whether it needs a counterbalance).
