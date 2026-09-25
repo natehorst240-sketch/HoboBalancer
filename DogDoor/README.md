@@ -99,6 +99,35 @@ bottom, RFID collar or microchip to unlock (current lean, 2026-09-25)**
 - Away lockout is trivial: latch stays engaged regardless of tag reads.
 - Cannot tell in from out with one antenna; add a second if that matters.
 
+### Latch logic (option C)
+
+Inputs: a closed-flap sensor (magnet on the flap, reed or Hall sensor in the
+frame, aligned only when the flap hangs centred), the RFID reader, and the
+away flag from the network.
+
+- LATCHED: bar extended, flap pinned. Tag read and not away -> retract bar,
+  go to OPEN.
+- OPEN: bar retracted, flap swings freely. Start the 5 s settle timer only
+  when the flap sensor reads aligned *and* no tag has been read for the same
+  window. Any misalignment or tag read restarts the timer. Timer expires ->
+  extend bar, go to LATCHED.
+- AWAY: same as OPEN but tag reads are ignored, so the bar goes in at the
+  next 5 s of settled flap and stays in until the away flag clears.
+
+Rules that fall out of this:
+
+- Never extend the bar unless the flap sensor reads aligned; otherwise the bar
+  jams on the flap edge.
+- The settle timer must include "no tag in range". Without that, a dog that
+  stands at the door without pushing through gets pinned out after 5 s.
+- Confirm the bar reached its end (limit switch or current sense). If it did
+  not, retract and retry rather than sit half-engaged.
+- Drive the bar with a MOSFET or servo signal, not a mechanical relay; it
+  cycles many times a day.
+- Power-loss state is set by the latch mechanism: a spring-return solenoid
+  picks one state, a servo mostly stays put. Decide which; "unlocked" is the
+  safer default for a dog outside in weather.
+
 ### Still to pin down
 
 - Flap material (sets mass and whether it needs a counterbalance).
