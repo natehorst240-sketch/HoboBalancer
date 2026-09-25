@@ -133,9 +133,35 @@ Rules that fall out of this:
   picks one state, a servo mostly stays put. Decide which; "unlocked" is the
   safer default for a dog outside in weather.
 
+### Flap (decided 2026-09-25)
+
+Sandwich panel: two 1/8 in plywood skins over a foam core, exterior face
+0.032 in 2024-T3 aluminium, alodined and painted. Estimates for 12 x 12 in
+with a 1/2 in core (core thickness not yet fixed):
+
+| Part | Mass |
+|---|---|
+| 1/8 in plywood skin, each | ~0.19 kg |
+| 0.032 in 2024-T3 skin, each | ~0.21 kg |
+| 1/2 in foam core | ~0.04 kg |
+| Whole flap, one aluminium face | ~0.7 kg |
+| Whole flap, both faces | ~0.9 kg |
+
+Thickness with one aluminium face is ~0.8 in, thicker than a bought pet flap,
+so the hinge, brush seal and latch bar are sized to this flap, not bought.
+
+- Foam does not hold fasteners: put a hardwood or aluminium edge insert where
+  the hinge pins, the magnets and the latch strike go.
+- The aluminium skin sits in the plane of the tunnel and will detune and
+  shield an LF RFID coil mounted in the frame around it. Keep the antenna in a
+  non-metal bezel standing proud of the flap plane on the dog's side, and
+  test read range against the finished flap before fixing the design.
+- A heavier flap swings longer; re-check the 5 s settle minimum on the real
+  panel.
+
 ### Still to pin down
 
-- Flap material (sets mass and whether it needs a counterbalance).
+- Foam core thickness, and whether both faces get aluminium.
 - Mounting: wall, exterior door, or slider insert.
 - Power source and whether it needs to work through an outage.
 
