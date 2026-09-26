@@ -136,13 +136,13 @@ Rules that fall out of this:
 ### Flap (decided 2026-09-25)
 
 Sandwich panel: two 1/8 in plywood skins over a foam core, exterior face
-0.032 in 2024-T3 aluminium, alodined and painted. Estimates for 12 x 12 in
+0.032 in aluminium, alodined and painted (alloy: see below). Estimates for 12 x 12 in
 with a 1/2 in core (core thickness not yet fixed):
 
 | Part | Mass |
 |---|---|
 | 1/8 in plywood skin, each | ~0.19 kg |
-| 0.032 in 2024-T3 skin, each | ~0.21 kg |
+| 0.032 in aluminium skin, each | ~0.21 kg |
 | 1/2 in foam core | ~0.04 kg |
 | Whole flap, one aluminium face | ~0.7 kg |
 | Whole flap, both faces | ~0.9 kg |
@@ -175,9 +175,10 @@ removes the edge-insert problem. Costs and cautions:
 - 305 mm square needs a 300 mm+ bed, or the core prints in sections and joins.
 - A dark painted aluminium face in sun gets hot enough to soften PLA. Use
   PETG or ASA for the core, and keep the paint light if it faces the sun.
-- 2024-T3 does not like tight bends; wrapping the edges needs the correct
-  bend radius for 0.032 in from a bend table, or a softer alloy (5052, 3003)
-  for the skin if it is only a weather face and not structural.
+- Skin alloy changed to 5052 (2026-09-26) so the edges can be wrapped; 2024-T3
+  was dropped for its poor bend formability. Mass is the same within a few
+  grams. Alodine and paint apply to 5052 as before. Confirm the temper (H32 is
+  the usual sheet) and its bend radius for 0.032 in from a bend table.
 - Same RFID shielding caution as above; the skin is what matters, not the core.
 
 ### Still to pin down
