@@ -187,6 +187,18 @@ removes the edge-insert problem. Costs and cautions:
 - Mounting: wall, exterior door, or slider insert.
 - Power source and whether it needs to work through an outage.
 
+## Prior art (checked 2026-09-30)
+
+- Pawport (pawport.com): motorised panel that retrofits over an existing pet
+  door, opens to 90 or 120 degrees, collar tag with app-adjustable range and
+  1+ year battery, $699 to $849. Tag radio is not stated on their site.
+- jchirayath/PetDoor (github): ESP32 listens for a BLE beacon on the collar
+  and pulses relays across the buttons of a bought motorised coop door. About
+  $80. Author's own caveats: RSSI is a poor distance sensor, BLE beacons are
+  unauthenticated, and the firmware has no obstruction detection.
+- s60sc/ESP32_RFID_Reader (github): FDX-B 134.2 kHz pet microchip and EM4100
+  decoder for ESP32. Directly relevant to the option C reader.
+
 ## Electronics
 
 Plan to reuse the ESP32-S3 + ESP-IDF + PlatformIO stack from `BalancerCarrier/`
