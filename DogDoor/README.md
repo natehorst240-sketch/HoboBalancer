@@ -81,7 +81,7 @@ MGN12 rails are stiffer and better sealed but cost more; either works.
   re-open if it breaks while closing. Stall detection stays as the backstop.
 
 **C. Passive bi-directional top-hinged flap, electrically released catch at the
-bottom, RFID collar or microchip to unlock (current lean, 2026-09-25)**
+bottom, RFID collar or microchip to unlock (lean on 2026-09-25, superseded by D)**
 - No actuator moves the flap, so no pinch hazard, no rails, no stall tuning.
   The electronics only decide locked or unlocked.
 - A bought flap with its own magnets and brush seal handles wind and rattle;
@@ -98,6 +98,55 @@ bottom, RFID collar or microchip to unlock (current lean, 2026-09-25)**
 - The boop button becomes optional; the head-at-flap gesture replaces it.
 - Away lockout is trivial: latch stays engaged regardless of tag reads.
 - Cannot tell in from out with one antenna; add a second if that matters.
+
+**D. Motorised side-hinged panel over the tunnel, Pawport style (current lean,
+2026-09-30)**
+
+The 12 x 12 in sandwich panel hangs on a vertical hinge at one side of a
+frame mounted on the inside of the tunnel, and a motor at the hinge swings it
+inward 90 to 120 degrees. This is the mechanism the user wants to build.
+
+Torque budget for the ~0.8 kg panel (estimates):
+
+| Load | Torque at hinge |
+|---|---|
+| Inertia, open 90 deg in 1.5 s | ~0.07 Nm |
+| Gravity from a 5 deg hinge-tilt install error | ~0.1 Nm |
+| Wind 10 m/s (22 mph) on the open panel | ~1.0 Nm |
+| Wind 15 m/s (34 mph) | ~2.4 Nm |
+| Wind 20 m/s (45 mph) | ~4.2 Nm |
+
+Inertia is nothing; wind and seal friction set the motor. Inward swing keeps
+the open panel out of most wind, so 2 to 3 Nm (20 to 30 kgf.cm) at the hinge
+is the target, with the closed hold coming from magnets or the latch bar, not
+the motor.
+
+Drive layout, in order of preference:
+
+1. Bus servo coaxial with the hinge. Serial servos in the 30 to 60 kgf.cm
+   class report position, load and temperature and accept a torque limit, so
+   pinch protection is a setting: the panel stops and backs off when load
+   exceeds the limit. Add a friction slip clutch between servo and hinge so a
+   dog shoving the panel cannot strip the gearbox and the door can be pushed
+   by hand with power off.
+2. NEMA 17 stepper with a 5:1 planetary gearbox and a TMC2209 driver, using
+   StallGuard for obstruction detection. More parts, but the driver and the
+   tuning are already familiar from option A.
+3. Geared DC motor with encoder and current sensing. Cheapest motor, most
+   firmware.
+
+Sensors: absolute magnetic encoder (AS5600 class) on the hinge axis, so panel
+angle is known independently of the motor and slip clutch; IR beam-break in
+the tunnel; Hall closed-sensor as in option C. Obstruction rule: commanded
+angle and encoder angle diverge, or servo load exceeds the limit, -> stop,
+reverse a few degrees, retry after the beam clears.
+
+Frame: covers the tunnel on the inside, carries the hinge, the servo, the
+magnet or latch strike and brush seal on the three free edges. Pawport keeps
+the panel indoors for the same reason: weather and wind stay outside.
+
+Unlock trigger stays as option C: LF RFID at the tunnel, away flag from the
+network, boop button optional.
 
 ### Latch logic (option C)
 
