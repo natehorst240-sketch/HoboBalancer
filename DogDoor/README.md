@@ -135,6 +135,28 @@ Drive layout, in order of preference:
 3. Geared DC motor with encoder and current sensing. Cheapest motor, most
    firmware.
 
+Drive decided 2026-09-30: bus servo, coaxial with the hinge, with a slip
+clutch. What that fixes:
+
+- Servo class: serial bus (half-duplex TTL UART, one wire for data plus
+  power) with position, load and temperature readback and a settable torque
+  limit. Target 30 to 60 kgf.cm at the hinge. Candidates to check against
+  current datasheets, not to buy on this note: Feetech STS/SMS series,
+  Hiwonder HTD series, Dynamixel X series. Verify stall torque at the supply
+  voltage you will actually run, rated angle range (needs 120 deg plus
+  margin, most give 240 to 360), and whether load readback is real current or
+  an estimate.
+- Supply: most of these want 7.4 or 12 V nominal. Plan the door supply
+  around the servo, and give it its own rail with a bulk capacitor; a stalled
+  servo pulls several amps.
+- Interface: ESP32-S3 UART with a direction pin, or a tri-state buffer, for
+  half-duplex. The ESP-IDF UART driver handles this; no extra controller.
+- Mount: servo body fixed to the frame, output horn to the clutch input,
+  clutch output to the hinge pin. The panel's hinge load must go through a
+  real bearing on the frame, not through the servo output bearing.
+- Torque limit is the primary pinch protection, the clutch is the mechanical
+  backstop, and the hinge encoder is the truth for panel angle.
+
 Sensors: absolute magnetic encoder (AS5600 class) on the hinge axis, so panel
 angle is known independently of the motor and slip clutch; IR beam-break in
 the tunnel; Hall closed-sensor as in option C. Obstruction rule: commanded
