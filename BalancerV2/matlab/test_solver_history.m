@@ -4,7 +4,13 @@
 % 2. A1090021.HST runs 2 -> 3: the learned coefficient must match SENS 1206 / TACH 97.
 % Run from this folder: test_solver_history
 clear; clc;
-prof = fullfile('..', 'profiles');
+% MicroVib files ship in ./data next to this script; fall back to ../profiles in the repo
+here = fileparts(mfilename('fullpath')); if isempty(here), here = pwd; end
+prof = fullfile(here, 'data');
+if ~exist(fullfile(prof, 'A1090731.HST'), 'file'), prof = fullfile(here, '..', 'profiles'); end
+if ~exist(fullfile(prof, 'A1090731.HST'), 'file')
+    error('A1090731.HST not found. Keep the data folder next to this script, or run from the repo matlab folder.');
+end
 [runs, g] = mv2_read_hst(fullfile(prof, 'A1090731.HST'));
 fprintf('%-9s %-17s %6s %7s %7s  %-24s  %-24s\n', 'task', 'when', 'rpm', 'level', 'phase', 'ours', 'MicroVib');
 worst = 0;

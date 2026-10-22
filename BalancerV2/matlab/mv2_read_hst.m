@@ -3,7 +3,9 @@ function [runs, g] = mv2_read_hst(path)
 % sens, tach, adj (2x2: amount, angle), change (mag, loc), prevLevel, prevPhase.
 % Record layout per BalancerV2/profiles/decode_grp.py.
 g = mv2_read_grp(path);
-fid = fopen(path, 'rb'); b = fread(fid, [1 inf], 'uint8=>uint8'); fclose(fid);
+fid = fopen(path, 'rb');
+if fid < 0, error('mv2_read_hst:open', 'cannot open %s', path); end
+b = fread(fid, [1 inf], 'uint8=>uint8'); fclose(fid);
 runs = struct('task', {}, 'when', {}, 'avgs', {}, 'rpm', {}, 'level', {}, 'phase', {}, 'sens', {}, 'tach', {}, 'adj', {}, 'change', {}, 'prevLevel', {}, 'prevPhase', {});
 o = 1817;
 while o + 85 <= numel(b)

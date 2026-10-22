@@ -1,7 +1,9 @@
 function g = mv2_read_grp(path)
 % Read a MicroVib II group file (.grp) or the group section of a history file (.HST).
 % Returns g.name and g.tasks(k) with name, enabled, sens, tach, flags, positions (deg), unit, labels.
-fid = fopen(path, 'rb'); b = fread(fid, [1 inf], 'uint8=>uint8'); fclose(fid);
+fid = fopen(path, 'rb');
+if fid < 0, error('mv2_read_grp:open', 'cannot open %s', path); end
+b = fread(fid, [1 inf], 'uint8=>uint8'); fclose(fid);
 g.name = strtrim(char(b(1:8)));
 g.tasks = struct('name', {}, 'enabled', {}, 'sens', {}, 'tach', {}, 'flags', {}, 'positions', {}, 'unit', {}, 'labels', {});
 for i = 0:9
