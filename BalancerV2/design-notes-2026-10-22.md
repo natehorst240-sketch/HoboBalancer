@@ -129,3 +129,13 @@ Cost about $100-130 for Pi Zero 2 W, GS camera, lens and a housing. Alternative:
 two-beam V photodiode tracker (the MicroTrack principle) built from the OptHead's
 SFH 2440 transimpedance front end; cheaper parts but analog calibration is harder and it
 gives height only, no lead-lag. Not recommended for v2 over the camera.
+
+## Acquisition simulation result (matlab/sim_acquisition.m, confirmed in MATLAB 2026-10-22)
+
+0.1 IPS 1/rev with 0.6 IPS 4P on an ADXL357 model at 395 RPM: 16 revolutions give
+0.0005 IPS and 0.3 deg scatter on the magnetic pickup, 0.0006 IPS and 0.5 deg on the
+Banner photo-tach; both reach 0.0002 IPS and 0.2 deg at 64 revolutions. Resolution margin
+over the 0.02 IPS requirement is about 40x. The sensor filter adds a constant 0.6 deg of
+phase lag that calibrates out with the tach delay. Firmware default: average 32
+revolutions on the main rotor and report the count with every reading; the magnetic
+pickup is the primary main-rotor tach, the Banner the alternate and the tail-rotor tach.
