@@ -10,8 +10,19 @@ multi-regime solver and docks on the main unit to charge.
 | Role | Part | Interface | Notes |
 |---|---|---|---|
 | Tach | Banner SM312LVMHSQD | 10-30 V supply, NPN + PNP outputs, 0.3 ms response, M12 4-pin QD | Retroreflective, tape on one blade. Mating cordset MQDC-406. Pin 1 supply, pin 3 common, outputs on 2 and 4: confirm NPN pin on the label. |
-| Vert accel | DSS 1460-x from MicroVib II kit | IEPE (ICP), ~20 mV/g per DSS app note | Confirm IEPE with diode test centre pin to shell. 1460-3 datasheet not found; PCB 328M215 is the custom ICP part DSS names in the prop note. |
-| Lat accel | same | same | |
+| Vert / lat accel | PCB 357 series (charge mode, ~50 pC/g class) and Dytran 3085C (charge mode, 10 pC/g, high temp) from the MicroVib II kit | Charge output, via DSS 1498 charge amp | 1498 output is 0.4 mV/pC (label value), voltage signal, MicroVib reads it with ICP power off. PCB 357 at ~20 mV/g after the 1498 is the rotor sensor; the 3085C at ~4 mV/g is for engines, too little signal at 390 RPM. |
+
+Input mode is selectable: **IEPE** (4 mA source on, for 100 mV/g general-purpose sensors)
+or **voltage** (source off, high-impedance AC-coupled, for the 1498 output). Sensitivity
+is entered per channel as pC/g x 1498 cal factor, or mV/g directly.
+
+Roadmap: v2 uses the 1498 in the chain (calibrated, no analog design). v2.1 option: an
+on-board differential charge amp (JFET op amp, ~1 nF feedback, ~1 G feedback R for a
+<0.5 Hz corner, guarded layout) to make the unit self-contained with the charge sensors.
+Alternative at any time: two 100 mV/g IEPE sensors for the rotors.
+
+Still needed from the 1498: power source (internal battery or connector pins), output
+connector pinout and DC level, cal factor on its label, pC/g on each sensor label.
 
 Sensors stud-mount to the main unit base plate. The plate is the sensor mount, so it is
 machined aluminum, hard-mounted, no rubber, resonance above tail-rotor 1/rev.
@@ -98,7 +109,7 @@ Dock: three pogo pins, 5 V, GND, dock-detect. The head's own charger handles the
 
 ## Open items
 
-1. Diode-test the 1460 sensors and read the label for sensitivity and connector type.
+1. Read pC/g off each accelerometer label and the cal factor off the 1498; find how the 1498 is powered and its output pinout.
 2. Confirm which SM312 QD pin is NPN.
 3. Pick pack: protected 3S 18650 pack vs hobby LiPo with external BMS.
 4. Enclosure: base plate stiffness and sensor boss layout before any PCB outline.
