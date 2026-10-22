@@ -95,10 +95,10 @@ Dock: three pogo pins, 5 V, GND, dock-detect. The head's own charger handles the
 
 ## Decisions 2026-10-22
 
-- Pack: Admiral 2200 mAh 3S 35C LiPo, T (Deans) connector, no BMS in the pack. Plan:
-  charge externally with a hobby balance charger through the JST-XH lead; the main unit
-  carries a fuse, reverse protection, a cell-voltage monitor on the ESP32 ADC, and a
-  low-voltage cutoff at 9.9 V (3.3 V/cell). No onboard 3S charger. Confirm acceptable.
+- Pack, superseded later the same day: the 3S Admiral pack with external balance charging
+  was the first plan. Final: a 1S LiPo on the OMGS3's own charger and fuel gauge, USB-C
+  on the main board, the Banner's 12 V boosted from the cell, no dock charger. See
+  main-unit-pinmap.md.
 - Head: Waveshare ESP32-S3-Touch-LCD-7B (1024x600, CS8501 1S charger, 580 mA).
 - A109 rotor speeds: main 395 RPM below 40 kt (6.58 Hz, 152 ms/rev) and 385 RPM in
   forward flight (6.42 Hz, 156 ms/rev); tail 2096 RPM (34.9 Hz, 28.6 ms/rev). Averaging:
