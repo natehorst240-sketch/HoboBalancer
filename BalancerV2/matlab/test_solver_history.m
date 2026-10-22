@@ -9,9 +9,7 @@ addpath(fileparts(mfilename('fullpath')));   % so the mv2_* functions resolve fr
 here = fileparts(mfilename('fullpath')); if isempty(here), here = pwd; end
 prof = fullfile(here, 'data');
 if ~exist(fullfile(prof, 'A1090731.HST'), 'file'), prof = fullfile(here, '..', 'profiles'); end
-if ~exist(fullfile(prof, 'A1090731.HST'), 'file')
-    error('A1090731.HST not found. Keep the data folder next to this script, or run from the repo matlab folder.');
-end
+if ~exist(fullfile(prof, 'A1090731.HST'), 'file'), prof = mv2_sample_data(); end   % embedded copies
 [runs, g] = mv2_read_hst(fullfile(prof, 'A1090731.HST'));
 fprintf('%-9s %-17s %6s %7s %7s  %-24s  %-24s\n', 'task', 'when', 'rpm', 'level', 'phase', 'ours', 'MicroVib');
 worst = 0;
