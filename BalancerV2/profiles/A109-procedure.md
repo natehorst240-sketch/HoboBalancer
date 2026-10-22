@@ -131,3 +131,11 @@ rotor 353 CPM at 0.264, main rotor 2x 736 CPM at 0.094, 4x at 0.167, 8x at 0.115
 rotor 0.030. The 200 IEEE floats in the file are the line amplitudes; bin 5 = 0.2647 and
 bin 9 = 0.0943 match the listed 1x and 2x magnitudes, so the file stores displayed IN/S
 PK directly. Exact bin-to-CPM alignment (k x 75 vs (k+1) x 75) still to be pinned.
+
+## MicroBase settings relevant to the solver (mbsys.ini, read 2026-10-22, not stored: it holds a login)
+
+- History: UseLearnLimit=YES, LearnLimit=0.10 IPS. MicroBase only re-learns the coefficient
+  when the vibration change from a move exceeds 0.1 IPS. PredictMove=NO.
+- AlarmVelEng=0.20 IPS, the acceptance level. PolarAutoFS=YES, PolarMinFS=1.0.
+- Decision 2026-10-22: no track measurement in v2 at all. The solver treats the first tab
+  move as a user-entered decision and otherwise works from vibration only.
