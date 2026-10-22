@@ -4,7 +4,8 @@
 % delay, synchronous demodulation per revolution, and averaging over N revolutions.
 % Reports IPS and phase error versus N for the magnetic pickup (low jitter) and the
 % Banner photo-tach (0.3 ms repeatability). Run from this folder: sim_acquisition
-clear; clc; rng(1);
+clear; clc;
+addpath(fileparts(mfilename('fullpath')));   % so the mv2_* functions resolve from any folder rng(1);
 
 % ---- scenario ----
 rpm      = 395;              % main rotor below 40 kt (385 in forward flight)

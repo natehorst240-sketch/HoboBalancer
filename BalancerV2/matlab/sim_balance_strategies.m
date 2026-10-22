@@ -5,7 +5,8 @@
 % limit), blended learning (trust 0.5), and seed only (never learn). Also compares a
 % single-regime move against a two-regime least-squares move when ground and hover
 % respond differently. Run from this folder: sim_balance_strategies
-clear; clc; rng(2);
+clear; clc;
+addpath(fileparts(mfilename('fullpath')));   % so the mv2_* functions resolve from any folder rng(2);
 
 trials   = 300;
 maxFlights = 8;

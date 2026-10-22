@@ -4,6 +4,7 @@
 % 2. A1090021.HST runs 2 -> 3: the learned coefficient must match SENS 1206 / TACH 97.
 % Run from this folder: test_solver_history
 clear; clc;
+addpath(fileparts(mfilename('fullpath')));   % so the mv2_* functions resolve from any folder
 % MicroVib files ship in ./data next to this script; fall back to ../profiles in the repo
 here = fileparts(mfilename('fullpath')); if isempty(here), here = pwd; end
 prof = fullfile(here, 'data');
