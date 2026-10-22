@@ -9,7 +9,7 @@ multi-regime solver and docks on the main unit to charge.
 
 | Role | Part | Interface | Notes |
 |---|---|---|---|
-| Tach | Banner SM312LVMHSQD | 10-30 V supply, NPN + PNP outputs, 0.3 ms response, M12 4-pin QD | Retroreflective, tape on one blade. Mating cordset MQDC-406. Pin 1 supply, pin 3 common, outputs on 2 and 4: confirm NPN pin on the label. |
+| Tach | Banner SM312LVMHSQD | 10-30 V, <25 mA, M12 4-pin QD: pin 1 brown +, pin 3 blue -, pin 2 white NPN (used), pin 4 black PNP (open) | Retroreflective, tape on one blade. Mating cordset MQDC-406. Datasheet 69943 Rev J p.12. MHS: 0.3 ms response, 0.3 ms repeatability (0.7 deg jitter at 385 RPM, averaged out), reduced sensitivity range. Outputs off for 100 ms after power-up: ignore edges for 200 ms. Shiny blades may need the polarizing filter or the SM312LP. |
 | Vert + lat accel | ADI EVAL-ADXL357Z (ADXL357, 3-axis MEMS, 20-bit, +/-10/20/40 g, DC to ~1 kHz, SPI) | SPI + DRDY, 3.3 V | One board gives both axes. DC response: no low-frequency phase error at 390 RPM; only a fixed digital-filter group delay, calibrated out. ~80 ug/rtHz noise, ~4 ug/LSB at +/-10 g. About $50-60 at Digi-Key. |
 
 Kit charge-mode sensors (PCB 357, Dytran 3085C) and the DSS 1498 charge amp stay with the
@@ -84,8 +84,7 @@ Dock: three pogo pins, 5 V, GND, dock-detect. The head's own charger handles the
 
 ## Open items
 
-1. Confirm which SM312 QD pin is NPN from the sensor label.
-2. Pick pack: protected 3S 18650 pack with BMS vs hobby LiPo with a BMS board.
-3. Pick head: CrowPanel Advance 7 vs Waveshare ESP32-S3-Touch-LCD-7B.
-4. Main and tail rotor RPM for the aircraft.
-5. Enclosure: base plate stiffness, ADXL357 board position and axis, tach aim, before any PCB outline.
+1. Pick pack: protected 3S 18650 pack with BMS vs hobby LiPo with a BMS board.
+2. Pick head: CrowPanel Advance 7 vs Waveshare ESP32-S3-Touch-LCD-7B.
+3. Main and tail rotor RPM for the aircraft.
+4. Enclosure: base plate stiffness, ADXL357 board position and axis, tach aim, before any PCB outline.
