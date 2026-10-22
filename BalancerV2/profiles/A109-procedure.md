@@ -46,3 +46,19 @@ the aircraft's own interrupter, or photo-tach pointing up and slightly forward a
 the blade grip with the target blade forward-right. Note for v2: the sensors are inside the
 cabin and the tach is outside, so a single self-contained unit cannot carry both for the
 main rotor unless it mounts on the roof.
+
+## MicroBase balance-history row, GND LT, run 1 (screen capture 2026-10-22)
+
+RPM 384.2 | LEVEL 0.085 IN/S | PHASE 151.3 | CHG1 17.9 g at LOC1 0 | CHG2 20.4 g at LOC2 90
+| SENS 320.00 | TACH 340.0 | CH 1A | AVGS 2 | BW 10% | ORD 1 | WIND HANN | FS 1.6 | PK 0.20
+| history file A1090731.HST, 09/01/2026 13:06:40, aircraft N731HC, AW109SP.
+
+What this pins down:
+- The two per-regime numbers in the .grp are SENS (adjustment per IPS: 320 g, 8 deg tab,
+  16 g tail, 10 g DVA) and TACH (tach angular offset: 340 main, 90 shaft, 120 tail).
+- Solution magnitude = SENS x LEVEL = 320 x 0.085 = 27.2 g; the split 17.9 g at 0 and
+  20.4 g at 90 has magnitude 27.1 g. Angle from 0 toward 90 is 48.7 deg, which equals
+  PHASE + TACH + 180 = 311.3 deg measured the other way round. Working convention for the
+  solver: weight angle = phase + tach offset + 180, counted against rotation; split onto
+  the two adjacent positions. Verify on a second record before trusting the sign.
+- FS 1.6 and PK 0.20 are the display full scale and the 0.2 IPS target.
