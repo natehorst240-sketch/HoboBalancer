@@ -36,7 +36,7 @@ def decode(path):
         off += REC
     return out
 
-if __name__ == '__main__':
+if __name__ == '__main__' and len(sys.argv) == 2:
     g = decode(sys.argv[1])
     print(f"{g['name']}  id={g['id']}")
     for r in g['records']:
@@ -58,3 +58,53 @@ def decode_spc(path):
     return {'name': s(b[2:10]), 'regime': s(b[10:18]),
             'hdr16': [(hex(i), f16(b[i:i + 2])) for i in range(0x12, 0x3c, 2)],
             'bins': struct.unpack('<%df' % n, b[0x3c:0x3c + 4 * n])}
+
+
+# --- .HST history files -------------------------------------------------------
+# Layout (worked out from A1090731.HST against MicroBase balance-history rows):
+#   bytes 0..1815: the group file (same as .grp)
+#   then 86-byte run records, each: u8 task index, u8 0, u16 days since 1980-01-01,
+#   u16 time in 2-second units, marker 03 c3 1b, u8 flag, u8 0x02, f32 x0 (constant per
+#   file, unknown), f32 x1 (unknown), u8, u8, u8 avgs, u8 bw percent, u8 0, f32 rpm*64/60,
+#   f32 level (does not always match the displayed level; use mag/sens), C32 phase deg,
+#   16 bytes (previous adjustments, non-zero in A1090021.HST, not decoded),
+#   C32 sens, C32 tach, C32 chg1, C32 loc1, C32 rad1, C32 chg2, C32 loc2, C32 rad2, 2 bytes.
+#   C32 = (m2 + m1/256 + m0/65536) * 2**(exp-72) with bytes [m0 m1 m2 exp].
+#   Solution angle convention: -(phase + tach + 180) mod 360; magnitude = sens * level.
+import datetime, math
+
+def c32(w):
+    m0, m1, m2, e = w
+    return (m2 + m1 / 256 + m0 / 65536) * 2.0 ** (e - 72) if e else 0.0
+
+def decode_hst(path):
+    b = open(path, 'rb').read()
+    g = decode(path)  # group section is identical
+    tasks = [r['name'] for r in g['records']]
+    runs = []
+    import re
+    for m in re.finditer(rb'\x03\xc3\x1b', b):
+        o = m.start() - 6
+        if o < 1816: continue
+        r = b[o:o + 86]
+        day, tm = struct.unpack('<HH', r[2:6])
+        f = lambda k: struct.unpack('<f', r[k:k + 4])[0]
+        run = {'task': tasks[r[0]] if r[0] < len(tasks) else r[0],
+               'when': datetime.datetime(1980, 1, 1) + datetime.timedelta(days=day, seconds=tm * 2),
+               'avgs': r[21], 'bw_pct': r[22], 'rpm': f(24) * 60 / 64, 'level_raw': f(28),
+               'phase': c32(r[32:36]), 'sens': c32(r[52:56]), 'tach': c32(r[56:60]),
+               'adj': [(c32(r[60:64]), c32(r[64:68])), (c32(r[72:76]), c32(r[76:80]))],
+               'x0': f(11), 'x1': f(15), 'flag': r[9], 'mid': r[36:52].hex()}
+        a, bb = run['adj']
+        d = abs(a[1] - bb[1]) % 360
+        mag = math.hypot(a[0], bb[0]) if d in (90, 270) else abs(a[0] - bb[0]) if d == 180 else a[0] + bb[0]
+        run['level'] = mag / run['sens'] if run['sens'] else None
+        run['solution_angle'] = (-(run['phase'] + run['tach'] + 180)) % 360
+        runs.append(run)
+    return g, runs
+
+if __name__ == '__main__' and len(sys.argv) > 2 and sys.argv[2] == 'hst':
+    g, runs = decode_hst(sys.argv[1])
+    for r in runs:
+        print(f"{r['task']:8s} {r['when']} rpm={r['rpm']:.1f} level={r['level']} phase={r['phase']:.1f} "
+              f"sens={r['sens']:g} tach={r['tach']:g} adj={r['adj']} angle={r['solution_angle']:.1f}")

@@ -78,3 +78,25 @@ in those units and are "save for reference only" per the app note.
 
 731H1.TRK does not contain this row's numbers, so .TRK is a different record type,
 probably blade track, not the vibration result.
+
+## History file A1090731.HST, decoded (2026-09-01, N731HC)
+
+| Task | Time | RPM | Level IPS | Phase | Solution |
+|---|---|---|---|---|---|
+| GND LT | 13:06:40 | 384.2 | 0.085 | 151.3 | 17.9 g at 0, 20.4 g at 90 |
+| HOV LT | 13:09:16 | 384.1 | 0.028 | 75.9 | 7.5 g at 90, 5.1 g at 180 |
+| HOV VT | 13:09:50 | 383.8 | 0.169 | 262.6 | 0.45 at 270, 0.23 at 0 (reference only) |
+| 80KT VT | 13:13:26 | 384.2 | 0.093 | 181.5 | 0.70 deg tab at 0, 0.24 at 90 |
+| MCP VT | 13:15:32 | 384.8 | 0.144 | 190.9 | 1.14 deg tab at 0, 0.18 at 90 |
+
+All five satisfy magnitude / SENS = level and the angle convention above. This is the
+solver's first regression set. A1090021.HST (2025-08-27, eight GND LT runs) decodes the
+same way but carries non-zero bytes in the 16-byte block before SENS, presumably the
+"enter changes" adjustments, which are not decoded yet; its levels (5 to 7 IPS) look like
+a wrong sensitivity setting that day.
+
+## Decisions 2026-10-22 (continued)
+- Main unit mounts in the cabin directly under the magnetic pickup connector, above the
+  copilot seat. The tach runs on a lead from there. The ADXL357 axes are set for that
+  orientation at build time and confirmed with a 1 g check.
+- LiPo charging is external through the balance lead; no onboard 3S charger.
