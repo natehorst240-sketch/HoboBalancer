@@ -82,9 +82,19 @@ Dock: three pogo pins, 5 V, GND, dock-detect. The head's own charger handles the
 - Head: LVGL UI, regime-by-regime entry, polar chart, multi-regime least-squares solver
   with track constraint, flight log on flash or SD.
 
+## Decisions 2026-10-22
+
+- Pack: Admiral 2200 mAh 3S 35C LiPo, T (Deans) connector, no BMS in the pack. Plan:
+  charge externally with a hobby balance charger through the JST-XH lead; the main unit
+  carries a fuse, reverse protection, a cell-voltage monitor on the ESP32 ADC, and a
+  low-voltage cutoff at 9.9 V (3.3 V/cell). No onboard 3S charger. Confirm acceptable.
+- Head: Waveshare ESP32-S3-Touch-LCD-7B (1024x600, CS8501 1S charger, 580 mA).
+- A109 rotor speeds: main 395 RPM = 6.58 Hz, 151.9 ms/rev; tail 2280 RPM = 38.0 Hz,
+  26.3 ms/rev. Averaging: 64 main revs = 9.7 s, 64 tail revs = 1.7 s. 4/rev main = 26.3 Hz.
+- MicroVib records on file: 731H1.TRK (HOV VT result), PLOT0093.SPC (DVA VT spectrum,
+  200 lines). Field mapping pending the MicroVib's displayed values for the same records.
+
 ## Open items
 
-1. Pick pack: protected 3S 18650 pack with BMS vs hobby LiPo with a BMS board.
-2. Pick head: CrowPanel Advance 7 vs Waveshare ESP32-S3-Touch-LCD-7B.
-3. Main and tail rotor RPM for the aircraft.
-4. Enclosure: base plate stiffness, ADXL357 board position and axis, tach aim, before any PCB outline.
+1. Confirm external balance charging for the LiPo (vs an onboard 3S charger).
+2. Enclosure: base plate stiffness, ADXL357 board position and axis, tach aim, before any PCB outline.

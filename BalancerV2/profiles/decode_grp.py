@@ -41,3 +41,18 @@ if __name__ == '__main__':
         print(f"[{r['name']:8s}] {'on ' if r['enabled'] else 'off'} A={r['A']:g} B={r['B']:g} flags=0x{r['flags']:04x}")
         for e in r['entries']:
             print(f"    {e['label']:8s} {e['unit']:8s} {e['angle']:5.0f} deg")
+
+
+# --- .TRK and .SPC (partial) -------------------------------------------------
+# 731H1.TRK (96 bytes): "A109" + regime "HOV VT" + 0x50 bytes of fields, mixed
+# 16-bit F16 and 32-bit values; field meanings not yet mapped (need the MicroVib
+# screen values for the same record).
+# PLOT0093.SPC (860 bytes): 0x3c header ("A109", "DVA VT", F16 fields incl.
+# 0x48fa=250 and 0x41a0=1.25, read as span 250 and 1.25 per bin), then 200 IEEE
+# little-endian float32 amplitudes.
+def decode_spc(path):
+    b = open(path, 'rb').read()
+    n = (len(b) - 0x3c) // 4
+    return {'name': s(b[2:10]), 'regime': s(b[10:18]),
+            'hdr16': [(hex(i), f16(b[i:i + 2])) for i in range(0x12, 0x3c, 2)],
+            'bins': struct.unpack('<%df' % n, b[0x3c:0x3c + 4 * n])}
