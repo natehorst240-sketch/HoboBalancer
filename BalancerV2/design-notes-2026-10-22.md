@@ -34,17 +34,35 @@ Charging the pack: 12.6 V CC/CV charger IC (BQ24610 class) from a barrel jack or
 PD at 15 V, into a protected 3S pack with its own BMS. Balance lead brought out to a
 JST-XH for a hobby charger as the fallback.
 
+## Input range to match (MicroVib II spec, 20 mV/g sensor)
+
+MicroVib: user-selectable or auto range from 16 V pk-pk down to 160 mV pk-pk full scale,
+minimum measurable 0.05 mV. At 20 mV/g that is +/-400 g down to +/-4 g, floor 2.5 mg.
+
+At rotor speed the same IPS is far less signal than the spec's 100 Hz figures:
+
+| Rotor | f | 0.1 IPS | sensor out |
+|---|---|---|---|
+| main 390 RPM | 6.5 Hz | 0.011 g | 0.21 mV |
+| tail 2400 RPM | 40 Hz | 0.065 g | 1.3 mV |
+
+A 0.02 IPS main-rotor balance is 0.04 mV, below the single-sample floor. Resolution comes
+from synchronous averaging over many revolutions, not from the ADC alone.
+
 ## Front end detail
 
-- 24 V rail: boost (TPS55340 or LT8362 class), 100 mA budget.
+- 24 V rail: low-noise boost (TPS55340 or LT8362 class) with a post-filter, 100 mA budget.
 - IEPE source: 4 mA constant current per channel, LT3092 or a 2-terminal CRD. The SST507
-  (2.16 mA) from the Rev A order is in spec for short cables but at the low edge.
-- Sensor bias sits at 8-12 V DC; AC-couple with 10 uF film, 1 M bias to a mid-rail.
-- Gain x10: 20 mV/g becomes 200 mV/g. A 0.05 g 1/rev is 10 mV at the ADC; ADS131M02
-  full scale is +/-1.2 V differential, so headroom to about 6 g peak.
+  (2.16 mA) from the Rev A order is in spec for short cables but at the low edge. Source
+  noise sets the floor; use a filtered reference, not a bare boost output.
+- Sensor bias sits at 8-12 V DC; AC-couple with 10 uF film, 1 M bias to a mid-rail
+  (corner 0.016 Hz, phase error at 6.5 Hz negligible).
+- Unity buffer (OPA2320) into the ADS131M02 and use its internal PGA for ranging:
+  gain 1 = +/-60 g, gain 128 = +/-0.47 g. This reproduces the MicroVib auto-range in
+  firmware. ADC input noise at gain 128 / 4 kSPS is about 1 uV, i.e. ~50 ug.
 - Anti-alias: single RC at ~1 kHz; the ADC's own sinc filter does the rest. Sample 4 kSPS.
-- Flat phase at rotor frequencies matters more than bandwidth. Keep the AC-coupling corner
-  below 0.5 Hz so phase error at 6.5 Hz (390 RPM) is under 5 deg and calibratable.
+- Firmware averages the 1/rev vector over a selectable number of revolutions (64 revs at
+  390 RPM is 10 s and cuts noise by 8x). Report the averaging count with every reading.
 
 ## Power budget, main unit
 
