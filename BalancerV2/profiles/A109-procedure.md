@@ -62,3 +62,19 @@ What this pins down:
   solver: weight angle = phase + tach offset + 180, counted against rotation; split onto
   the two adjacent positions. Verify on a second record before trusting the sign.
 - FS 1.6 and PK 0.20 are the display full scale and the 0.2 IPS target.
+
+## MicroBase balance-history row, HOV VT, run 1 (screen capture 2026-10-22)
+
+RPM 383.8 | LEVEL 0.169 IN/S | PHASE 262.6 | CHG1 0.5 at LOC1 270 | CHG2 0.2 at LOC2 0
+| SENS 3.00 | TACH 340.0 | CH 2A | AVGS 1 | FS 1.6 | PK 0.52 | 09/01/2026 13:09:50.
+
+Convention confirmed on both rows: solution angle on the rotor = -(PHASE + TACH + 180)
+mod 360, magnitude = SENS x LEVEL, split onto the two adjacent positions.
+- GND LT: -(151.3 + 340 + 180) mod 360 = 48.7; 17.9 g at 0 and 20.4 g at 90 give 48.7. Exact.
+- HOV VT: -(262.6 + 340 + 180) mod 360 = 297.4; 0.5 at 270 and 0.2 at 0 give 291.8, within
+  the one-decimal rounding of the two components.
+HOV VT SENS is 3.00 even though the group file says NO ADJ for that task; the 0.5/0.2 are
+in those units and are "save for reference only" per the app note.
+
+731H1.TRK does not contain this row's numbers, so .TRK is a different record type,
+probably blade track, not the vibration result.
