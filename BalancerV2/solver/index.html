@@ -105,12 +105,12 @@
 
   <section class="card wide" id="auxCard" style="display:none">
     <h2>Tail rotor: blade-bolt washers first, wheel for the remainder</h2>
-    <p class="mute">Washers on the blade bolts act only along the blade line and are coarse (0.25 IPS per gram). The solver takes the in-line part of the correction with whole washers, then trims what is left with the wheel.</p>
+    <p class="mute">Washer stations sit at the blade bolt head and nut, 350 and 10 for the TARGET blade and 170 and 190 for blade 2, at 0.25 IPS per gram. Each station takes nothing or 5 to 16 g. The solver tries every station combination and picks the one that adds the least total mass while keeping the wheel within its limit.</p>
     <div class="row">
       <div><label>IPS per gram of washer</label><input type="number" id="auxIps" step="0.01"></div>
-      <div><label>Blade line angle on the wheel scale, deg</label><input type="number" id="auxAxis" step="1"></div>
-      <div><label>Grams per washer</label><input type="number" id="auxG" step="0.1"></div>
-      <div><label>Max washers per bolt</label><input type="number" id="auxMax" step="1"></div>
+      <div><label>Stations, deg, comma separated</label><input type="text" id="auxAxis" style="width:160px"></div>
+      <div><label>Min grams per station</label><input type="number" id="auxG" step="1"></div>
+      <div><label>Max grams per station</label><input type="number" id="auxMax" step="1"></div>
     </div>
     <div class="big" id="auxVec" style="margin-top:8px"></div>
     <div id="auxPos"></div>
@@ -135,7 +135,7 @@
     { name: '140KT VT', sens: 8, tach: 340, unit: 'TAB DG', positions: [0, 90, 180, 270], max: 8 },
     { name: 'MCP VT', sens: 8, tach: 340, unit: 'TAB DG', positions: [0, 90, 180, 270], max: 8 },
     { name: 'T/R BAL', sens: 16, tach: 120, unit: 'GRAMS', positions: [0, 60, 120, 180, 240, 300], max: 25,
-      aux: { name: 'Blade-bolt washers', ipsPerGram: 0.25, axis: 0, washerGrams: 1.0, maxWashers: 4 } }
+      aux: { name: 'Blade-bolt washers', ipsPerGram: 0.25, stations: [350, 10, 170, 190], gMin: 5, gMax: 16, step: 1 } }
   ] };
   const LABELS = { 0: 'TARGET', 90: 'BLD A', 180: 'BLD B', 270: 'BLD C' };
 
@@ -220,26 +220,39 @@
     if (!t.aux) { card.style.display = 'none'; return; }
     card.style.display = '';
     const a = t.aux;
-    if ($('auxIps').dataset.t !== t.name) { $('auxIps').value = a.ipsPerGram; $('auxAxis').value = a.axis; $('auxG').value = a.washerGrams; $('auxMax').value = a.maxWashers; $('auxIps').dataset.t = t.name; }
-    const ipsPerG = +$('auxIps').value || a.ipsPerGram, axis = +$('auxAxis').value || 0, wg = +$('auxG').value || 1, wmax = +$('auxMax').value || 99;
+    if ($('auxIps').dataset.t !== t.name) { $('auxIps').value = a.ipsPerGram; $('auxAxis').value = a.stations.join(', '); $('auxG').value = a.gMin; $('auxMax').value = a.gMax; $('auxIps').dataset.t = t.name; }
+    const ipsPerG = +$('auxIps').value || a.ipsPerGram;
+    const stations = $('auxAxis').value.split(',').map(x => +x.trim()).filter(x => !isNaN(x));
+    const gMin = +$('auxG').value || a.gMin, gMax = +$('auxMax').value || a.gMax, step = a.step || 1;
     const rs = runsFor(t.name);
-    if (!rs.length) { $('auxVec').textContent = 'no runs'; $('auxPos').innerHTML = ''; $('auxNote').textContent = ''; return; }
+    if (!rs.length || !stations.length) { $('auxVec').textContent = 'no runs'; $('auxPos').innerHTML = ''; $('auxNote').textContent = ''; return; }
     const last = rs[rs.length - 1];
-    const sol = M.solve([{ level: last.level, phase: last.phase, sens: c.sens, tach: c.tach }]); // wheel grams at angle
-    const ips = sol.mag / c.sens; // correction as IPS at sol.angle
-    // in-line component along the blade axis, washers on the blade whose bolt sits at that side
-    const inline = ips * Math.cos((sol.angle - axis) * Math.PI / 180);
-    let n = Math.round(Math.abs(inline) / (ipsPerG * wg)); n = Math.min(n, wmax);
-    const washerGrams = n * wg, washerAngle = inline >= 0 ? axis : M.mod360(axis + 180);
-    // remainder after the washers, back in IPS, then onto the wheel
-    const vx = ips * Math.cos(sol.angle * Math.PI / 180) - washerGrams * ipsPerG * Math.cos(washerAngle * Math.PI / 180);
-    const vy = ips * Math.sin(sol.angle * Math.PI / 180) - washerGrams * ipsPerG * Math.sin(washerAngle * Math.PI / 180);
-    const rem = Math.hypot(vx, vy), remAng = M.mod360(Math.atan2(vy, vx) * 180 / Math.PI);
-    const wheel = M.split(rem * c.sens, remAng, posObjs(t));
-    const maxPos = +$('maxPos').value || t.max, rt = +$('roundTo').value || 0;
-    $('auxVec').textContent = n ? `${n} washer${n > 1 ? 's' : ''} (${fmt(washerGrams, 1)} g) on the blade bolt at ${washerAngle} deg` : 'no washers needed';
-    $('auxPos').innerHTML = wheel.map(p => { const amt = rt ? Math.round(p.amount / rt) * rt : p.amount; const over = Math.abs(amt) > maxPos; return `<span class="pos ${over ? 'warn' : ''}">wheel ${p.angle} deg<b>${fmt(amt, 1)} g</b>${over ? 'over max ' + maxPos : ''}</span>`; }).join('') || '<span class="pos">wheel<b>no change</b></span>';
-    $('auxNote').textContent = `Correction needed ${fmt(ips, 3)} IPS at ${fmt(sol.angle, 1)} deg. Washers cover ${fmt(washerGrams * ipsPerG, 3)} IPS along the blade line; ${fmt(rem, 3)} IPS at ${fmt(remAng, 1)} deg goes on the wheel. Negative wheel grams mean remove weight from that position.`;
+    const sol = M.solve([{ level: last.level, phase: last.phase, sens: c.sens, tach: c.tach }]);
+    const ips = sol.mag / c.sens, D2R = Math.PI / 180;
+    const tx = ips * Math.cos(sol.angle * D2R), ty = ips * Math.sin(sol.angle * D2R);
+    const maxPos = +$('maxPos').value || t.max;
+    const choices = [0]; for (let g = gMin; g <= gMax + 1e-9; g += step) choices.push(g);
+    const pos = posObjs(t);
+    let best = null;
+    const amounts = new Array(stations.length).fill(0);
+    (function rec(i) {
+      if (i === stations.length) {
+        let rx = tx, ry = ty, used = 0;
+        amounts.forEach((g, k) => { if (g) { rx -= g * ipsPerG * Math.cos(stations[k] * D2R); ry -= g * ipsPerG * Math.sin(stations[k] * D2R); used++; } });
+        const rem = Math.hypot(rx, ry), ang = M.mod360(Math.atan2(ry, rx) / D2R);
+        const wheel = M.split(rem * c.sens, ang, pos);
+        const over = wheel.some(w => Math.abs(w.amount) > maxPos);
+        const washerMass = amounts.reduce((q, g) => q + g, 0);
+        const score = wheel.reduce((q, w) => q + Math.abs(w.amount), 0) + washerMass + used * 0.5 + (over ? 1000 : 0); // least added mass, wheel within limits
+        if (!best || score < best.score) best = { score, amounts: amounts.slice(), rem, ang, wheel, over };
+        return;
+      }
+      for (const g of choices) { amounts[i] = g; rec(i + 1); }
+    })(0);
+    const washers = best.amounts.map((g, k) => g ? `<span class="pos">washers at ${stations[k]} deg<b>${fmt(g, 0)} g</b></span>` : '').join('');
+    $('auxVec').textContent = best.amounts.some(g => g) ? 'Washers:' : 'No washers; wheel only';
+    $('auxPos').innerHTML = washers + best.wheel.map(w => `<span class="pos ${Math.abs(w.amount) > maxPos ? 'warn' : ''}">wheel ${posLabel(t, w.angle)}<b>${fmt(w.amount, 1)} g</b></span>`).join('');
+    $('auxNote').textContent = `Correction needed ${fmt(ips, 3)} IPS at ${fmt(sol.angle, 1)} deg. After the washers, ${fmt(best.rem, 3)} IPS at ${fmt(best.ang, 1)} deg goes on the wheel.${best.over ? ' No combination keeps the wheel under its per-position limit.' : ''} Negative wheel grams mean remove weight from that position.`;
   }
 
   function drawPolar(t) {
