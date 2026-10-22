@@ -1,6 +1,6 @@
 """Generate BalancerMain.kicad_sch: the HoboBalancer v2 main unit.
 
-Carrier architecture (FeatherS3[D] on headers) with the IIS3DWB replaced by sockets for
+Carrier architecture with an OMGS3 module soldered to pads (ESP32-S3-PICO) with the IIS3DWB replaced by sockets for
 the EVAL-ADXL357Z, the LM1815 magnetic-pickup input kept, a Banner SM312 NPN tach input,
 and 3S power. Hand assembly: SOIC/SOT-23 only, every passive 1206, through-hole for
 connectors, switch, inductors and pads. Six resistor values, four capacitor values.
@@ -58,7 +58,6 @@ HARVEST = {   # our lib_id -> source lib_id
     'Connector_Generic:Conn_01x05': 'Connector_Generic:Conn_01x05',
     'Mechanical:MountingHole': 'Mechanical:MountingHole',
     'power:GND': 'power:GND', 'power:+3V3': 'power:+3V3', 'power:PWR_FLAG': 'power:PWR_FLAG',
-    'BalancerMain:FeatherS3': 'BalancerCarrier:FeatherS3',
     'BalancerMain:LM1815MX_NOPB': 'BalancerCarrier:LM1815MX_NOPB',
 }
 libsyms = {}
@@ -75,6 +74,12 @@ for ours, src in HARVEST.items():
     s = deepcopy(_harvest[src])
     if ours != src: rename(s, ours)
     libsyms[ours] = s
+
+# OMGS3 symbol from Unexpected Maker's own library (github.com/UnexpectedMaker/esp32s3,
+# kicad/symbols/OMGS3.kicad_sym), copied into this repo under BalancerMain/vendor/.
+_omg = sx.loads((ROOT / 'vendor' / 'OMGS3.kicad_sym').read_text(encoding='utf8'))
+_omg = next(a for a in children(_omg, 'symbol') if str(a[1]) == 'OMGS3')
+libsyms['BalancerMain:OMGS3'] = rename(deepcopy(_omg), 'BalancerMain:OMGS3')
 
 
 def power_clone(name):
@@ -248,26 +253,34 @@ FP_L = 'BalancerMain:L_Radial_D9_P5'
 FP_SOT23 = 'Package_TO_SOT_SMD:SOT-23'
 FP_PADS2 = 'BalancerMain:SolderWire_1x02'
 
-# ================================================================ FeatherS3
-# ESP32-S3 GPIO -> net.  GPIO39 (LDO2 enable) is not on the headers; GPIO3 is a strapping
-# pin and GPIO8/9 are the module's own fuel-gauge I2C, so none of those carry signals.
+# ================================================================ OMGS3
+# Pad names from the OMGS3 pinout card and schematic P1 (2024-07-20): 17 GPIO on pads,
+# IO0 strapping, IO3 strapping (JTAG select, inactive unless the eFuse is burned),
+# IO8/IO9 shared with the module's MAX17048 fuel gauge I2C (10k pull-ups), IO33/34/35
+# internal (VBUS sense, RGB LED). BAT_SENSE needs ADC1: IO1..IO9 are ADC1 channels.
 GPIO = {
-    'IO1': 'MAG_TACH', 'IO35': 'OPT_TACH', 'IO5': 'ACQUIRE_BUTTON', 'IO37': 'STATUS_LED',
-    'IO12': 'ACCEL_SCK', 'IO11': 'ACCEL_MOSI', 'IO14': 'ACCEL_MISO', 'IO17': 'ACCEL_CS', 'IO18': 'ACCEL_DRDY',
-    'IO38': 'BOOST_EN', 'IO33': 'DOCK_DET', 'IO36': 'DOCK_EN', 'IO6': 'BAT_SENSE',
-    'IO10': 'GPS_UART_TX', 'IO7': 'GPS_UART_RX',
+    'IO1': 'BAT_SENSE', 'IO2': 'DOCK_DET', 'IO3': 'BOOST_EN',
+    'IO4': 'ACCEL_SCK', 'IO5': 'ACCEL_MISO', 'IO6': 'ACCEL_MOSI', 'IO7': 'ACCEL_CS', 'IO10': 'ACCEL_DRDY',
+    'IO11': 'MAG_TACH', 'IO12': 'OPT_TACH', 'IO13': 'ACQUIRE_BUTTON', 'IO14': 'DOCK_EN',
+    'IO8': 'STATUS_LED',                     # shares the fuel-gauge SDA pull-up; LED glows faintly until firmware drives it
+    'TX0': 'GPS_UART_TX', 'RX0': 'GPS_UART_RX',
+    'D-': 'USB_DM', 'D+': 'USB_DP', 'IO0': 'PROG_IO0', 'RESET': 'PROG_RST',
 }
 FX, FY = 254.0, 101.6
-fb = place('U1', 'BalancerMain:FeatherS3', 'FeatherS3[D]', FX, FY, 0, 'BalancerMain:FeatherS3')
+fb = place('U1', 'BalancerMain:OMGS3', 'OMGS3', FX, FY, 0, 'BalancerMain:OMGS3')
 m = {}
 for num, ((x, y), d, p) in fb.items():
     nam = p['name']
     if nam in GPIO: m[num] = GPIO[nam]
-    elif nam == '5V': m[num] = 'FEATHER_5V'
-    elif nam == 'GND': m[num] = 'GND'
+    elif nam == '5V': m[num] = '+5V'        # module's VBUS input: ideal diode then the 700 mA 3.3 V LDO
+    elif nam == 'GND' or num == 'EXP': m[num] = 'GND'
     elif nam == '3V3': m[num] = '+3V3'
-    else: m[num] = 'NC'          # VBAT, EN, RST, LDO2_OUT, TX, RX, IO0, IO3, IO8, IO9
+    else: m[num] = 'NC'          # BAT (no LiPo on the module), EN (3V3 LDO enable, default on), IO9
 connect(fb, m, 10.16)
+# programming header: wire a USB breakout here (D+/D-/GND), IO0 and RESET for manual bootloader entry
+j5 = place('J5', 'Connector_Generic:Conn_01x05', 'PROG GND/D-/D+/IO0/RST', 393.7, 134.62, 0,
+           'Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical')
+connect(j5, {'1': 'GND', '2': 'USB_DM', '3': 'USB_DP', '4': 'PROG_IO0', '5': 'PROG_RST'})
 
 # ================================================================ battery in, buck, boost
 # J1 battery pads -> F1 polyfuse -> D3 Schottky (reverse polarity) -> VBAT
@@ -295,8 +308,6 @@ two('C6', C, '10u 25V', 170.18, 134.62, 0, FP_C, '+5V', 'GND')
 two('R4', R, '75k', 190.5, 121.92, 0, FP_R, '+5V', 'BUCK_FB')
 two('R5', R, '10k', 190.5, 144.78, 0, FP_R, 'BUCK_FB', 'GND')
 flag(157.48, 106.68); wire((157.48, 106.68), (157.48, 111.76)); pwr('+5V', 157.48, 111.76)
-# feed the FeatherS3 through a Schottky so a USB cable cannot back-drive the buck
-two('D1', 'BalancerMain:D_Schottky', 'SS14', 213.36, 121.92, 180, 'Diode_SMD:D_SMA', 'FEATHER_5V', '+5V')
 
 # MT3608 boost, 12 V for the Banner sensor only. Vfb 0.6 V: 100k / 5.1k -> 12.4 V. L 22 uH.
 OX, OY = 76.2, 187.96
@@ -375,7 +386,7 @@ for net, fx, fy in (('GND', 436.88, 60.96), ('+3V3', 436.88, 81.28), ('BAT_IN', 
 doc = node('kicad_sch', node('version', 20260306), node('generator', 'build_main'), node('generator_version', '10.0'),
            node('uuid', SHEET), node('paper', 'A3'),
            node('title_block', node('title', 'HoboBalancer v2 main unit'), node('date', '2026-10-22'), node('rev', 'A'),
-                node('comment', 1, 'FeatherS3[D] carrier, ADXL357 sockets, LM1815 MPU input, Banner tach, 3S power')))
+                node('comment', 1, 'OMGS3 ESP32-S3 on pads, ADXL357 sockets, LM1815 MPU input, Banner tach, 3S power')))
 libs = node('lib_symbols')
 for lib in sorted(used):
     libs.append(deepcopy(libsyms[lib]))

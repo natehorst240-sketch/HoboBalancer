@@ -41,8 +41,9 @@ setup is the reference the v2 phase calibration must reproduce.
  ADXL357 -- SPI + DRDY (FIFO, 4 kHz ODR) -- ESP32-S3 -- BLE NUS -- control head
 ```
 
-This is the carrier architecture with the IIS3DWB replaced by the ADXL357, a tach input
-for the Banner sensor, and 3S power. No analog front end, no 24 V rail, no external ADC.
+This is the carrier architecture with the FeatherS3 replaced by an OMGS3 module on pads
+(decided 2026-10-22), the IIS3DWB replaced by the ADXL357, a tach input for the Banner
+sensor, and 3S power. No analog front end, no 24 V rail, no external ADC.
 
 Charging the pack: 12.6 V CC/CV charger IC (BQ24610 class) from a barrel jack or USB-C
 PD at 15 V, into a protected 3S pack with its own BMS. Balance lead brought out to a
