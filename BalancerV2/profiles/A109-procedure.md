@@ -122,3 +122,12 @@ Two things learned:
   278.7 g at 180 moved the vector from 0.789 at 24.8 to 0.933 at 36.9, which gives
   SENS 1205.6 and TACH 97.4 against the MicroVib's 1206 and 97. There is no averaging
   across runs and no use of earlier runs, which is the snapshot behaviour to improve on.
+
+## PLOT0093.SPC on screen (MicroBase, 2026-10-22)
+
+Spectrum average, 200 points, Hann window, 4 averages, units IN/S PK, x-axis 75 to
+15000 RPM (CPM), i.e. 1.25 Hz per line over 250 Hz; overall 0.5057. Peak table: main
+rotor 353 CPM at 0.264, main rotor 2x 736 CPM at 0.094, 4x at 0.167, 8x at 0.115, tail
+rotor 0.030. The 200 IEEE floats in the file are the line amplitudes; bin 5 = 0.2647 and
+bin 9 = 0.0943 match the listed 1x and 2x magnitudes, so the file stores displayed IN/S
+PK directly. Exact bin-to-CPM alignment (k x 75 vs (k+1) x 75) still to be pinned.

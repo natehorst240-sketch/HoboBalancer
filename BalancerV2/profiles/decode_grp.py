@@ -26,7 +26,7 @@ def decode(path):
     off, REC = 16, 180
     while off + REC <= len(b):
         r = b[off:off + REC]
-        n = r[19]
+        n = min(r[19], 8)  # at most 8 entries fit in a 180-byte record
         rec = {'name': s(r[0:8]), 'enabled': bool(r[8]), 'sens': f16(r[11:13]), 'tach': f16(r[15:17]),
                'flags': struct.unpack('<H', r[17:19])[0], 'entries': []}
         for i in range(n):
