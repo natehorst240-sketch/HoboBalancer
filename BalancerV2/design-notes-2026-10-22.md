@@ -42,8 +42,8 @@ JST-XH for a hobby charger as the fallback.
 
 | Rotor | f | 0.1 IPS | 0.02 IPS |
 |---|---|---|---|
-| main 390 RPM | 6.5 Hz | 0.011 g | 0.0021 g |
-| tail 2400 RPM | 40 Hz | 0.065 g | 0.013 g |
+| main 385-395 RPM | 6.4-6.6 Hz | 0.011 g | 0.0021 g |
+| tail 2096 RPM | 34.9 Hz | 0.057 g | 0.011 g |
 
 ADXL357 noise at 100 Hz bandwidth is ~0.8 mg rms, so 0.02 IPS on the main rotor needs
 synchronous averaging over tens of revolutions. Firmware averages the 1/rev vector over a
@@ -89,8 +89,9 @@ Dock: three pogo pins, 5 V, GND, dock-detect. The head's own charger handles the
   carries a fuse, reverse protection, a cell-voltage monitor on the ESP32 ADC, and a
   low-voltage cutoff at 9.9 V (3.3 V/cell). No onboard 3S charger. Confirm acceptable.
 - Head: Waveshare ESP32-S3-Touch-LCD-7B (1024x600, CS8501 1S charger, 580 mA).
-- A109 rotor speeds: main 395 RPM = 6.58 Hz, 151.9 ms/rev; tail 2280 RPM = 38.0 Hz,
-  26.3 ms/rev. Averaging: 64 main revs = 9.7 s, 64 tail revs = 1.7 s. 4/rev main = 26.3 Hz.
+- A109 rotor speeds: main 395 RPM below 40 kt (6.58 Hz, 152 ms/rev) and 385 RPM in
+  forward flight (6.42 Hz, 156 ms/rev); tail 2096 RPM (34.9 Hz, 28.6 ms/rev). Averaging:
+  64 main revs is about 10 s, 64 tail revs is 1.8 s. 4P main is 25.7 to 26.3 Hz.
 - MicroVib records on file: 731H1.TRK (HOV VT result), PLOT0093.SPC (DVA VT spectrum,
   200 lines). Field mapping pending the MicroVib's displayed values for the same records.
 

@@ -5,9 +5,11 @@
 |---|---|---|
 | AN-MV2-A109 | 385 NR (1540 CPM 4P / 4) | 2096 T/R RPM at 100% |
 | A109.mdf (MicroBase machine file) | 6.4033 Hz = 384.2 RPM | 0.34722 x output shaft 100 Hz = 34.7 Hz = 2083 RPM |
-| User, 2026-10-22 | 395 | 2280 |
-Main:tail ratio is 5.42 in the DSS files and 5.77 in the user figures, so one of the user
-figures is off. Unresolved. Output shaft 6000 RPM, tail driveshaft 5876 RPM, 4P = 25.6 Hz.
+| User, 2026-10-22 | 395 below 40 kt, 385 in forward flight | 2096 |
+Resolved: NR is scheduled by airspeed. Ground and hover regimes run at 395 (6.58 Hz),
+80KT/140KT/MCP at 385 (6.42 Hz). Tail 2096 RPM = 34.9 Hz. Output shaft 6000 RPM, tail
+driveshaft 5876 RPM, 4P = 26.3 Hz at 395 and 25.7 Hz at 385. The firmware takes RPM from
+the tach, so the schedule only matters for averaging-window and one-shot sizing.
 
 ## Main rotor regimes (group file matches)
 | Task | Ch | Condition | Collect | Correct with |
