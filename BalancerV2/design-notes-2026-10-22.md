@@ -20,6 +20,15 @@ The ADXL357 board bolts flat to the machined aluminum base plate through all its
 holes, one axis along the aircraft lateral line, SPI lead under 150 mm. The plate is
 hard-mounted to the airframe, no rubber, resonance above tail-rotor 1/rev.
 
+## Magnetic pickup tach (decided 2026-10-22)
+
+The aircraft's two-wire magnetic interrupter is the primary main-rotor tach; it pulses
+when the TARGET blade is 45 deg right-forward of the cabin. v2 carries the carrier's
+LM1815 input unchanged (two 10k 1206 series resistors, 150k/1n one-shot, 1.6M/330n
+hold) on a two-pin lead to the cannon plug. The Banner photo-tach stays as the
+alternate input and for the tail rotor. The MicroVib's TACH offset of 340 for this
+setup is the reference the v2 phase calibration must reproduce.
+
 ## Main unit block diagram
 
 ```
@@ -27,7 +36,8 @@ hard-mounted to the airframe, no rubber, resonance above tail-rotor 1/rev.
                               |              +-- 3.3 V LDO -- ESP32-S3, ADXL357
                               +-- boost 12 V -- Banner SM312 supply (~30 mA)
 
- SM312 NPN -- 10k pull-up to 3.3 V, 1k series -- ESP32 MCPWM capture (tach)
+ MPU (2-wire VR) -- 2x 10k 1206 -- LM1815 -- ESP32 MCPWM capture (main rotor tach)
+ SM312 NPN -- 10k pull-up to 3.3 V, 1k series -- ESP32 MCPWM capture (alternate / tail tach)
  ADXL357 -- SPI + DRDY (FIFO, 4 kHz ODR) -- ESP32-S3 -- BLE NUS -- control head
 ```
 
@@ -99,3 +109,23 @@ Dock: three pogo pins, 5 V, GND, dock-detect. The head's own charger handles the
 
 1. Confirm external balance charging for the LiPo (vs an onboard 3S charger).
 2. Enclosure: base plate stiffness, ADXL357 board position and axis, tach aim, before any PCB outline.
+
+## Blade track, cost-effective route (proposal 2026-10-22)
+
+Tach-triggered global-shutter camera. A Raspberry Pi Global Shutter Camera (IMX296,
+external trigger pin) on a Pi Zero 2 W, with a 6-8 mm lens, mounted on the roof or nose
+looking up along the tip path at the forward-right azimuth, the same place the MicroTrack
+sits. The main unit fires the trigger from the MPU edge with a programmed delay of
+k x period/4 so each frame catches blade k at the same azimuth. Tip height is the edge
+position in the frame; lead-lag comes free from the horizontal position. Four heights per
+revolution, averaged over N revolutions, give spread and per-blade height like the
+MicroTrack. Pixel-to-inch scale from the set track distance and lens focal length, checked
+once against the MicroTrack.
+
+Numbers: A109 tip speed about 220 m/s; a 30 us exposure blurs the tip by about 7 mm, well
+inside the 13 mm (0.5 in) track tolerance and symmetric about the edge. Daylight contrast
+against sky is enough; dusk or night needs a floodlight and reflective tip tape.
+Cost about $100-130 for Pi Zero 2 W, GS camera, lens and a housing. Alternative: a
+two-beam V photodiode tracker (the MicroTrack principle) built from the OptHead's
+SFH 2440 transimpedance front end; cheaper parts but analog calibration is harder and it
+gives height only, no lead-lag. Not recommended for v2 over the camera.
