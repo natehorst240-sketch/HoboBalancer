@@ -21,7 +21,7 @@ def s(x):
     return x.split(b'\0')[0].decode('ascii', 'replace')
 
 def decode(path):
-    b = open(path, 'rb').read()
+    b = open(path, 'rb').read()[:16 + 10 * 180]  # group section only (an .HST continues past it)
     out = {'name': s(b[:8]), 'id': struct.unpack('<I', b[12:16])[0], 'records': []}
     off, REC = 16, 180
     while off + REC <= len(b):
