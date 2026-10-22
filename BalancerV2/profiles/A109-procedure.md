@@ -100,3 +100,25 @@ a wrong sensitivity setting that day.
   copilot seat. The tach runs on a lead from there. The ADXL357 axes are set for that
   orientation at build time and confirmed with a 1 g check.
 - LiPo charging is external through the balance lead; no onboard 3S charger.
+
+## A1090021.HST decoded against the MicroVib screen (8 GND LT runs, 28 Aug 2025)
+
+| Run | VIB IPS | PHS | SENS | TACH | entered change before this run |
+|---|---|---|---|---|---|
+| 1 | 0.682 | 354 | 320 | 340 | none |
+| 2 | 0.789 | 25 | 320 | 340 | (block holds prev 0.682 at 354, change 7.9 at 0) |
+| 3 | 0.933 | 37 | 1206 | 97 | 278.7 g at 180 |
+| 4 | 0.682 | 271 | 739 | 75 | 301.8 g at 180 |
+| 5 | 0.248 | 253 | 666 | 79 | 102.8 g at 180 |
+| 6 | 0.197 | 183 | 394 | 61 | ... |
+| 7 | 0.410 | 147 | 277 | 328 | 50.9 g at 90 |
+| 8 | 0.213 | 185 | 185 | 332 | 15.7 g at 90 |
+
+Two things learned:
+- The stored level field is the displayed level times a range factor (x8 on this file,
+  x1/x2/x4 on A1090731); mag/SENS always gives the displayed value, so use that.
+- SENS and TACH are re-learned after every entered change, as a single-step replacement:
+  SENS = |W| / |V_after - V_before|, TACH from the response angle. Checked on runs 2 to 3:
+  278.7 g at 180 moved the vector from 0.789 at 24.8 to 0.933 at 36.9, which gives
+  SENS 1205.6 and TACH 97.4 against the MicroVib's 1206 and 97. There is no averaging
+  across runs and no use of earlier runs, which is the snapshot behaviour to improve on.

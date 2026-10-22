@@ -64,10 +64,11 @@ def decode_spc(path):
 # Layout (worked out from A1090731.HST against MicroBase balance-history rows):
 #   bytes 0..1815: the group file (same as .grp)
 #   then 86-byte run records, each: u8 task index, u8 0, u16 days since 1980-01-01,
-#   u16 time in 2-second units, marker 03 c3 1b, u8 flag, u8 0x02, f32 x0 (constant per
+#   u16 time in 2-second units (day count is off by one on one of two files, +/-1 day), marker 03 c3 1b, u8 flag, u8 0x02, f32 x0 (constant per
 #   file, unknown), f32 x1 (unknown), u8, u8, u8 avgs, u8 bw percent, u8 0, f32 rpm*64/60,
 #   f32 level (does not always match the displayed level; use mag/sens), C32 phase deg,
-#   16 bytes (previous adjustments, non-zero in A1090021.HST, not decoded),
+#   C32 previous level, C32 previous phase, C32 entered change magnitude, C32 change
+#   location (the 16-byte block; zero on a first run),
 #   C32 sens, C32 tach, C32 chg1, C32 loc1, C32 rad1, C32 chg2, C32 loc2, C32 rad2, 2 bytes.
 #   C32 = (m2 + m1/256 + m0/65536) * 2**(exp-72) with bytes [m0 m1 m2 exp].
 #   Solution angle convention: -(phase + tach + 180) mod 360; magnitude = sens * level.
@@ -94,7 +95,9 @@ def decode_hst(path):
                'avgs': r[21], 'bw_pct': r[22], 'rpm': f(24) * 60 / 64, 'level_raw': f(28),
                'phase': c32(r[32:36]), 'sens': c32(r[52:56]), 'tach': c32(r[56:60]),
                'adj': [(c32(r[60:64]), c32(r[64:68])), (c32(r[72:76]), c32(r[76:80]))],
-               'x0': f(11), 'x1': f(15), 'flag': r[9], 'mid': r[36:52].hex()}
+               'x0': f(11), 'x1': f(15), 'flag': r[9],
+               'prev_level': c32(r[36:40]), 'prev_phase': c32(r[40:44]),
+               'change': (c32(r[44:48]), c32(r[48:52]))}
         a, bb = run['adj']
         d = abs(a[1] - bb[1]) % 360
         mag = math.hypot(a[0], bb[0]) if d in (90, 270) else abs(a[0] - bb[0]) if d == 180 else a[0] + bb[0]
