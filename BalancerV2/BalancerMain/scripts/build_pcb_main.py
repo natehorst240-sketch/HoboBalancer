@@ -29,7 +29,7 @@ NETS = net['nets']                       # name -> [[ref, pin], ...]
 PARTS = {p[0]: (p[1], p[2]) for p in net['parts']}   # ref -> (value, footprint)
 for h in ('H1', 'H2', 'H3', 'H4'):   # pinless symbols are not in the netlist
     PARTS[h] = ('MountingHole', 'MountingHole:MountingHole_3.2mm_M3')
-POWER = {'GND', '+3V3', '+5V', '+12V', 'VBAT'}
+POWER = {'GND', '+3V3', 'VBUS', '+12V', 'VBAT'}
 pin_net = {}
 for name, members in NETS.items():
     kname = name if name in POWER else '/' + name
@@ -45,7 +45,8 @@ for s in children(sch, 'symbol'):
 
 # ---------------------------------------------------------------- harvest footprints
 templates = {}
-for f in (REPO / 'BalancerCarrier' / 'BalancerCarrier.kicad_pcb', REPO / 'BalancerREF_OptHead' / 'BalancerREF_OptHead.kicad_pcb'):
+for f in (REPO / 'BalancerCarrier' / 'BalancerCarrier.kicad_pcb', REPO / 'BalancerREF_OptHead' / 'BalancerREF_OptHead.kicad_pcb',
+          ROOT / 'vendor' / 'OMGS3_Carrier_R1.kicad_pcb'):
     doc = sx.loads(f.read_text(encoding='utf8'))
     if 'header' not in templates:
         templates['header'] = {k: one(doc, k) for k in ('layers', 'setup')}
@@ -150,34 +151,43 @@ ph5 = template('Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical'); ph
 ph5[1] = 'Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical'
 ph5[:] = [a for a in ph5 if not (tagged(a, 'pad') and str(a[1]) == '5')]
 templates['Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical'] = ph5
+# USB-C 16P from Unexpected Maker's OMGS3 carrier (vendor/OMGS3_Carrier_R1.kicad_pcb): signal pads at
+# y -3.51 are the rear, the opening is +y; they place it 2.4 mm inside the board edge.
+usb = template('Unexpected Maker:USB-C-16P-LESSPASTE-2-Fixed-Sqr-Front'); usb[:] = strip_instance(usb); usb[1] = 'BalancerMain:USB_C_16P'
+templates['BalancerMain:USB_C_16P'] = usb
+# JST PH 2-pin vertical (B2B-PH-K-S): 2.0 mm pitch, 0.7 mm pins; body 4.9 x 4.5 (constructed, check against the JST drawing)
+templates['BalancerMain:JST_PH_1x02_Vertical'] = build('BalancerMain:JST_PH_1x02_Vertical', 'through_hole',
+    [pad(1, 'thru_hole', 'rect', 0, 0, 1.3, 1.8, drill=0.75), pad(2, 'thru_hole', 'oval', 2.0, 0, 1.3, 1.8, drill=0.75)],
+    [rect(-1.95, -1.7, 3.95, 2.8, 'F.SilkS', 0.12), rect(-2.2, -1.95, 4.2, 3.05)], 'JST PH 2-pin vertical, pin 1 square')
+ph3 = template('Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical'); ph3[:] = strip_instance(ph3)
+ph3[1] = 'Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical'
+ph3[:] = [a for a in ph3 if not (tagged(a, 'pad') and str(a[1]) in ('4', '5'))]
+templates['Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical'] = ph3
 # OMGS3 footprint from Unexpected Maker's repo (vendor/OMGS3.kicad_mod): origin at the module
 # corner, body 0..25 x -10..0, pads along three edges near x 1..14, antenna past x 17.
 omg = sx.loads((ROOT / 'vendor' / 'OMGS3.kicad_mod').read_text(encoding='utf8')); omg[1] = 'BalancerMain:OMGS3'
 templates['BalancerMain:OMGS3'] = omg
 
 # ---------------------------------------------------------------- placement (mm, board origin 100,100; 76 x 64)
-X0, Y0, W, H = 100.0, 100.0, 76.0, 64.0
+X0, Y0, W, H = 100.0, 100.0, 70.0, 64.0
 P = {   # ref: (x, y, rot)
-    'U1': (X0 + 48.0, Y0 + 34.0, 0),              # OMGS3 corner origin; antenna end (x 65..73) toward the right edge, keep copper clear there
+    'U1': (X0 + 44.0, Y0 + 13.0, 0),              # OMGS3 corner origin; body 44..69 x 3..13, antenna x 61..69 at the right edge
+    'J9': (X0 + 14.0, Y0 + 2.4, 180),             # USB-C opening on the top edge, 2.4 mm inset like the UM carrier
+    'R1': (X0 + 24.0, Y0 + 6.0, 0), 'R2': (X0 + 24.0, Y0 + 10.0, 0),
+    'D1': (X0 + 33.0, Y0 + 4.0, 0), 'C2': (X0 + 33.0, Y0 + 9.0, 0),
+    'J1': (X0 + 4.0, Y0 + 18.0, 90), 'C1': (X0 + 10.0, Y0 + 18.0, 0),
+    'J5': (X0 + 44.0, Y0 + 18.0, 90),
+    'U3': (X0 + 10.0, Y0 + 28.0, 0), 'L2': (X0 + 24.0, Y0 + 30.0, 0), 'D2': (X0 + 14.0, Y0 + 36.0, 0),
+    'C7': (X0 + 22.0, Y0 + 36.0, 0), 'R6': (X0 + 4.5, Y0 + 28.0, 90), 'R7': (X0 + 4.5, Y0 + 36.0, 0), 'R8': (X0 + 8.5, Y0 + 40.0, 0),
     'J6': (X0 + 12.5, Y0 + 44.0, 0), 'J7': (X0 + 27.74, Y0 + 44.0, 0),   # ADXL357 sockets, 15.24 mm apart: VERIFY on the eval board
-    'J1': (X0 + 4.0, Y0 + 4.0, 0), 'F1': (X0 + 15.0, Y0 + 4.0, 0), 'D3': (X0 + 24.0, Y0 + 4.0, 0),
-    'C1': (X0 + 32.0, Y0 + 4.0, 0), 'C2': (X0 + 32.0, Y0 + 8.0, 0), 'J5': (X0 + 52.0, Y0 + 18.0, 90),
-    'U2': (X0 + 10.0, Y0 + 12.0, 0), 'C4': (X0 + 15.5, Y0 + 12.0, 90), 'L1': (X0 + 24.0, Y0 + 14.0, 0),
-    'C5': (X0 + 32.0, Y0 + 12.0, 0), 'C6': (X0 + 32.0, Y0 + 16.0, 0), 'R3': (X0 + 4.5, Y0 + 12.0, 90),
-    'R4': (X0 + 32.0, Y0 + 20.0, 0), 'R5': (X0 + 32.0, Y0 + 24.0, 0),
-    'U3': (X0 + 10.0, Y0 + 24.0, 0), 'L2': (X0 + 24.0, Y0 + 26.0, 0), 'D2': (X0 + 14.0, Y0 + 32.0, 0),
-    'C7': (X0 + 22.0, Y0 + 32.0, 0), 'R6': (X0 + 4.5, Y0 + 24.0, 90), 'R7': (X0 + 4.5, Y0 + 32.0, 0), 'R8': (X0 + 8.5, Y0 + 36.0, 0),
-    'R1': (X0 + 38.0, Y0 + 18.0, 0), 'R2': (X0 + 38.0, Y0 + 22.0, 0), 'C3': (X0 + 38.0, Y0 + 26.0, 0),
-    'U4': (X0 + 10.0, Y0 + 54.0, 90), 'J3': (X0 + 8.0, Y0 + 61.5, 0), 'R9': (X0 + 18.0, Y0 + 60.0, 0), 'R10': (X0 + 24.0, Y0 + 60.0, 0),
-    'R11': (X0 + 18.0, Y0 + 52.0, 0), 'C8': (X0 + 18.0, Y0 + 56.0, 0), 'R12': (X0 + 24.0, Y0 + 52.0, 0), 'C9': (X0 + 24.0, Y0 + 56.0, 0),
-    'R13': (X0 + 30.0, Y0 + 52.0, 0), 'C10': (X0 + 30.0, Y0 + 56.0, 0),
-    'J2': (X0 + 36.0, Y0 + 60.0, 0), 'R14': (X0 + 36.0, Y0 + 56.0, 0), 'R15': (X0 + 42.0, Y0 + 56.0, 0),
-    'Q1': (X0 + 52.0, Y0 + 59.0, 0), 'Q2': (X0 + 58.0, Y0 + 59.0, 0), 'R16': (X0 + 52.0, Y0 + 55.0, 0), 'R17': (X0 + 58.0, Y0 + 55.0, 0),
-    'J8': (X0 + 64.0, Y0 + 61.0, 0), 'R18': (X0 + 65.0, Y0 + 57.0, 0),
-    'SW1': (X0 + 65.0, Y0 + 8.0, 0), 'R19': (X0 + 70.0, Y0 + 15.0, 0), 'C11': (X0 + 70.0, Y0 + 19.0, 0),
-    'LED1': (X0 + 70.0, Y0 + 50.0, 0), 'R20': (X0 + 70.0, Y0 + 54.0, 0),
-    'J4': (X0 + 72.0, Y0 + 36.0, 0),
-    'H1': (X0 + 3.5, Y0 + H - 3.5, 0), 'H2': (X0 + W - 3.5, Y0 + H - 3.5, 0), 'H3': (X0 + 3.5, Y0 + 3.5 + 36, 0), 'H4': (X0 + W - 3.5, Y0 + 3.5, 0),
+    'U4': (X0 + 10.0, Y0 + 54.0, 90), 'J3': (X0 + 8.0, Y0 + 61.5, 0), 'R9': (X0 + 18.0, Y0 + 61.0, 0), 'R10': (X0 + 24.0, Y0 + 61.0, 0),
+    'R11': (X0 + 18.0, Y0 + 53.0, 0), 'C8': (X0 + 18.0, Y0 + 57.0, 0), 'R12': (X0 + 24.0, Y0 + 53.0, 0), 'C9': (X0 + 24.0, Y0 + 57.0, 0),
+    'R13': (X0 + 30.0, Y0 + 53.0, 0), 'C10': (X0 + 30.0, Y0 + 57.0, 0),
+    'J2': (X0 + 36.0, Y0 + 61.0, 0), 'R14': (X0 + 36.0, Y0 + 57.0, 0), 'R15': (X0 + 42.0, Y0 + 57.0, 0),
+    'SW1': (X0 + 50.0, Y0 + 24.0, 0), 'R19': (X0 + 62.0, Y0 + 22.0, 0), 'C11': (X0 + 62.0, Y0 + 26.0, 0),
+    'LED1': (X0 + 66.0, Y0 + 44.0, 0), 'R20': (X0 + 66.0, Y0 + 48.0, 0),
+    'J4': (X0 + 52.0, Y0 + 60.0, 90),
+    'H1': (X0 + 3.5, Y0 + H - 3.5, 0), 'H2': (X0 + W - 3.5, Y0 + H - 3.5, 0), 'H3': (X0 + 3.5, Y0 + 48.0, 0), 'H4': (X0 + 40.0, Y0 + 3.5, 0),
 }
 missing = [r for r in PARTS if r not in P]
 assert not missing, 'no placement for %s' % missing
@@ -219,9 +229,9 @@ def gr_line(x1, y1, x2, y2):
     return node('gr_line', node('start', x1, y1), node('end', x2, y2), node('stroke', node('width', 0.05), node('type', S('default'))), node('layer', 'Edge.Cuts'), node('uuid', uid()))
 doc.extend([gr_line(X0, Y0, X0 + W, Y0), gr_line(X0 + W, Y0, X0 + W, Y0 + H), gr_line(X0 + W, Y0 + H, X0, Y0 + H), gr_line(X0, Y0 + H, X0, Y0)])
 # keep-out note for the sensor board under the sockets
-doc.append(node('gr_text', 'EVAL-ADXL357Z underneath: no parts on B.Cu here', node('at', X0 + 20, Y0 + 38, 0), node('layer', 'F.Fab'),
+doc.append(node('gr_text', 'EVAL-ADXL357Z underneath: no parts on B.Cu here', node('at', X0 + 20, Y0 + 42, 0), node('layer', 'F.Fab'),
                 node('uuid', uid()), node('effects', node('font', node('size', 1, 1), node('thickness', 0.15)))))
-doc.append(node('gr_text', 'OMGS3 antenna: no copper, no ground pour', node('at', X0 + 69, Y0 + 44, 90), node('layer', 'F.Fab'),
+doc.append(node('gr_text', 'OMGS3 antenna: no copper, no ground pour', node('at', X0 + 65, Y0 + 16, 0), node('layer', 'F.Fab'),
                 node('uuid', uid()), node('effects', node('font', node('size', 1, 1), node('thickness', 0.15)))))
 doc.append(node('embedded_fonts', S('no')))
 
@@ -240,7 +250,7 @@ if not APPLY:
 (ROOT / 'BalancerMain.kicad_pcb').write_text(pretty(doc) + '\n', encoding='utf8')
 # project-local footprint library for the constructed and copied footprints
 pretty_dir = ROOT / 'BalancerMain.pretty'; pretty_dir.mkdir(exist_ok=True)
-for name in ('BalancerMain:OMGS3', 'BalancerMain:L_Radial_D9_P5', 'BalancerMain:SolderWire_1x02', 'BalancerMain:SolderWire_1x03', 'BalancerMain:Pogo_1x03'):
+for name in ('BalancerMain:OMGS3', 'BalancerMain:USB_C_16P', 'BalancerMain:JST_PH_1x02_Vertical', 'BalancerMain:L_Radial_D9_P5', 'BalancerMain:SolderWire_1x02', 'BalancerMain:SolderWire_1x03', 'BalancerMain:Pogo_1x03'):
     fp = deepcopy(templates[name]); fp[:] = strip_instance(fp); refresh_uuids(fp); fp[1] = name.split(':')[1]
     fp.insert(2, node('version', 20241229)); fp.insert(3, node('generator', 'build_pcb_main'))
     (pretty_dir / (fp[1] + '.kicad_mod')).write_text(pretty(fp) + '\n', encoding='utf8')

@@ -28,18 +28,6 @@
     "2"
    ],
    [
-    "C3",
-    "2"
-   ],
-   [
-    "C5",
-    "2"
-   ],
-   [
-    "C6",
-    "2"
-   ],
-   [
     "C7",
     "2"
    ],
@@ -76,15 +64,23 @@
     "5"
    ],
    [
-    "J8",
-    "2"
+    "J9",
+    "GND"
+   ],
+   [
+    "J9",
+    "GND2"
+   ],
+   [
+    "J9",
+    "SHLD"
    ],
    [
     "LED1",
     "1"
    ],
    [
-    "Q1",
+    "R1",
     "2"
    ],
    [
@@ -93,10 +89,6 @@
    ],
    [
     "R2",
-    "2"
-   ],
-   [
-    "R5",
     "2"
    ],
    [
@@ -120,10 +112,6 @@
     "EXP"
    ],
    [
-    "U2",
-    "1"
-   ],
-   [
     "U3",
     "2"
    ],
@@ -143,36 +131,20 @@
   "PROG_RST": [
    [
     "J5",
-    "5"
+    "3"
    ],
    [
     "U1",
     "11"
    ]
   ],
-  "+5V": [
+  "MOD_5V": [
    [
-    "C5",
+    "C2",
     "1"
    ],
    [
-    "C6",
-    "1"
-   ],
-   [
-    "L1",
-    "2"
-   ],
-   [
-    "Q2",
-    "2"
-   ],
-   [
-    "R17",
-    "1"
-   ],
-   [
-    "R4",
+    "D1",
     "1"
    ],
    [
@@ -183,7 +155,7 @@
   "PROG_IO0": [
    [
     "J5",
-    "4"
+    "2"
    ],
    [
     "U1",
@@ -192,8 +164,12 @@
   ],
   "USB_DM": [
    [
-    "J5",
-    "2"
+    "J9",
+    "A7"
+   ],
+   [
+    "J9",
+    "B7"
    ],
    [
     "U1",
@@ -202,8 +178,12 @@
   ],
   "USB_DP": [
    [
-    "J5",
-    "3"
+    "J9",
+    "A6"
+   ],
+   [
+    "J9",
+    "B6"
    ],
    [
     "U1",
@@ -240,10 +220,6 @@
     "1"
    ],
    [
-    "R18",
-    "1"
-   ],
-   [
     "R19",
     "1"
    ],
@@ -256,14 +232,26 @@
     "8"
    ]
   ],
-  "DOCK_EN": [
+  "VBAT": [
    [
-    "R16",
+    "C1",
+    "1"
+   ],
+   [
+    "J1",
+    "1"
+   ],
+   [
+    "L2",
     "1"
    ],
    [
     "U1",
-    "18"
+    "17"
+   ],
+   [
+    "U3",
+    "5"
    ]
   ],
   "ACQUIRE_BUTTON": [
@@ -348,38 +336,6 @@
     "25"
    ]
   ],
-  "BAT_SENSE": [
-   [
-    "C3",
-    "1"
-   ],
-   [
-    "R1",
-    "2"
-   ],
-   [
-    "R2",
-    "1"
-   ],
-   [
-    "U1",
-    "3"
-   ]
-  ],
-  "DOCK_DET": [
-   [
-    "J8",
-    "3"
-   ],
-   [
-    "R18",
-    "2"
-   ],
-   [
-    "U1",
-    "4"
-   ]
-  ],
   "BOOST_EN": [
    [
     "R6",
@@ -424,106 +380,38 @@
     "8"
    ]
   ],
-  "BAT_IN": [
+  "VBUS": [
    [
-    "F1",
-    "1"
-   ],
-   [
-    "J1",
-    "1"
-   ]
-  ],
-  "BAT_F": [
-   [
-    "D3",
+    "D1",
     "2"
    ],
    [
-    "F1",
-    "2"
+    "J9",
+    "VBUS1"
+   ],
+   [
+    "J9",
+    "VBUS2"
    ]
   ],
-  "VBAT": [
+  "USB_CC1": [
    [
-    "C1",
-    "1"
-   ],
-   [
-    "C2",
-    "1"
-   ],
-   [
-    "D3",
-    "1"
-   ],
-   [
-    "L2",
-    "1"
+    "J9",
+    "A5"
    ],
    [
     "R1",
     "1"
-   ],
-   [
-    "R3",
-    "1"
-   ],
-   [
-    "U2",
-    "3"
-   ],
-   [
-    "U3",
-    "5"
    ]
   ],
-  "BUCK_EN": [
+  "USB_CC2": [
    [
-    "R3",
-    "2"
+    "J9",
+    "B5"
    ],
    [
-    "U2",
-    "5"
-   ]
-  ],
-  "BUCK_FB": [
-   [
-    "R4",
-    "2"
-   ],
-   [
-    "R5",
+    "R2",
     "1"
-   ],
-   [
-    "U2",
-    "4"
-   ]
-  ],
-  "BUCK_BST": [
-   [
-    "C4",
-    "1"
-   ],
-   [
-    "U2",
-    "6"
-   ]
-  ],
-  "BUCK_SW": [
-   [
-    "C4",
-    "2"
-   ],
-   [
-    "L1",
-    "1"
-   ],
-   [
-    "U2",
-    "2"
    ]
   ],
   "BOOST_FB": [
@@ -644,40 +532,6 @@
     "1"
    ]
   ],
-  "DOCK_EN_G": [
-   [
-    "Q1",
-    "1"
-   ],
-   [
-    "R16",
-    "2"
-   ]
-  ],
-  "DOCK_PG": [
-   [
-    "Q1",
-    "3"
-   ],
-   [
-    "Q2",
-    "1"
-   ],
-   [
-    "R17",
-    "2"
-   ]
-  ],
-  "DOCK_5V": [
-   [
-    "J8",
-    "1"
-   ],
-   [
-    "Q2",
-    "3"
-   ]
-  ],
   "LED_A": [
    [
     "LED1",
@@ -711,26 +565,6 @@
    "Capacitor_SMD:C_1206_3216Metric"
   ],
   [
-   "C3",
-   "100n",
-   "Capacitor_SMD:C_1206_3216Metric"
-  ],
-  [
-   "C4",
-   "100n",
-   "Capacitor_SMD:C_1206_3216Metric"
-  ],
-  [
-   "C5",
-   "10u 25V",
-   "Capacitor_SMD:C_1206_3216Metric"
-  ],
-  [
-   "C6",
-   "10u 25V",
-   "Capacitor_SMD:C_1206_3216Metric"
-  ],
-  [
    "C7",
    "10u 25V",
    "Capacitor_SMD:C_1206_3216Metric"
@@ -746,24 +580,19 @@
    "Capacitor_SMD:C_1206_3216Metric"
   ],
   [
+   "D1",
+   "SS14",
+   "Diode_SMD:D_SMA"
+  ],
+  [
    "D2",
    "SS14",
    "Diode_SMD:D_SMA"
   ],
   [
-   "D3",
-   "SS14",
-   "Diode_SMD:D_SMA"
-  ],
-  [
-   "F1",
-   "2A polyfuse 1812",
-   "Fuse:Fuse_1812_4532Metric"
-  ],
-  [
    "J1",
-   "BATT 3S +/-",
-   "BalancerMain:SolderWire_1x02"
+   "LIPO 1S JST-PH",
+   "BalancerMain:JST_PH_1x02_Vertical"
   ],
   [
    "J2",
@@ -782,8 +611,8 @@
   ],
   [
    "J5",
-   "PROG GND/D-/D+/IO0/RST",
-   "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical"
+   "PROG GND/IO0/RST",
+   "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
   ],
   [
    "J6",
@@ -796,14 +625,9 @@
    "Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical"
   ],
   [
-   "J8",
-   "DOCK pogo 5V/GND/DET",
-   "BalancerMain:Pogo_1x03"
-  ],
-  [
-   "L1",
-   "10uH 3A",
-   "BalancerMain:L_Radial_D9_P5"
+   "J9",
+   "USB-C 16P",
+   "BalancerMain:USB_C_16P"
   ],
   [
    "L2",
@@ -816,18 +640,8 @@
    "LED_SMD:LED_0603_1608Metric"
   ],
   [
-   "Q1",
-   "AO3400A",
-   "Package_TO_SOT_SMD:SOT-23"
-  ],
-  [
-   "Q2",
-   "AO3401A",
-   "Package_TO_SOT_SMD:SOT-23"
-  ],
-  [
    "R1",
-   "100k",
+   "5.1k",
    "Resistor_SMD:R_1206_3216Metric"
   ],
   [
@@ -861,48 +675,18 @@
    "Resistor_SMD:R_1206_3216Metric"
   ],
   [
-   "R16",
-   "1k",
-   "Resistor_SMD:R_1206_3216Metric"
-  ],
-  [
-   "R17",
-   "100k",
-   "Resistor_SMD:R_1206_3216Metric"
-  ],
-  [
-   "R18",
-   "10k",
-   "Resistor_SMD:R_1206_3216Metric"
-  ],
-  [
    "R19",
    "10k",
    "Resistor_SMD:R_1206_3216Metric"
   ],
   [
    "R2",
-   "10k",
+   "5.1k",
    "Resistor_SMD:R_1206_3216Metric"
   ],
   [
    "R20",
    "1k",
-   "Resistor_SMD:R_1206_3216Metric"
-  ],
-  [
-   "R3",
-   "100k",
-   "Resistor_SMD:R_1206_3216Metric"
-  ],
-  [
-   "R4",
-   "75k",
-   "Resistor_SMD:R_1206_3216Metric"
-  ],
-  [
-   "R5",
-   "10k",
    "Resistor_SMD:R_1206_3216Metric"
   ],
   [
@@ -934,11 +718,6 @@
    "U1",
    "OMGS3",
    "BalancerMain:OMGS3"
-  ],
-  [
-   "U2",
-   "TPS54202DDCR",
-   "Package_TO_SOT_SMD:SOT-23-6"
   ],
   [
    "U3",

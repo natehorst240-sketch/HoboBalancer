@@ -1,6 +1,6 @@
 """Generate BalancerMain.kicad_sch: the HoboBalancer v2 main unit.
 
-Carrier architecture with an OMGS3 module soldered to pads (ESP32-S3-PICO) with the IIS3DWB replaced by sockets for
+OMGS3 module soldered to pads (ESP32-S3-PICO), one 1S LiPo on the module's own charger, USB-C with the IIS3DWB replaced by sockets for
 the EVAL-ADXL357Z, the LM1815 magnetic-pickup input kept, a Banner SM312 NPN tach input,
 and 3S power. Hand assembly: SOIC/SOT-23 only, every passive 1206, through-hole for
 connectors, switch, inductors and pads. Six resistor values, four capacitor values.
@@ -93,7 +93,7 @@ def power_clone(name):
     libsyms['power:' + name] = s
 
 
-for rail in ('+5V', '+12V', 'VBAT'):
+for rail in ('VBUS', '+12V', 'VBAT'):
     power_clone(rail)
 
 
@@ -132,6 +132,15 @@ custom_ic('Conn_02x03', 7.62, 5.08, [
     (1, '1', 'passive', -12.7, 2.54, 0), (3, '3', 'passive', -12.7, 0, 0), (5, '5', 'passive', -12.7, -2.54, 0),
     (2, '2', 'passive', 12.7, 2.54, 180), (4, '4', 'passive', 12.7, 0, 180), (6, '6', 'passive', 12.7, -2.54, 180)],
     'Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical', '', ref='J')
+custom_ic('USB_C_16P', 10.16, 12.7, [
+    ('VBUS1', 'VBUS', 'power_out', -15.24, 10.16, 0), ('VBUS2', 'VBUS', 'power_out', -15.24, 7.62, 0),
+    ('A5', 'CC1', 'passive', -15.24, 2.54, 0), ('B5', 'CC2', 'passive', -15.24, 0, 0),
+    ('A6', 'D+', 'bidirectional', 15.24, 5.08, 180), ('B6', 'D+', 'bidirectional', 15.24, 2.54, 180),
+    ('A7', 'D-', 'bidirectional', 15.24, -2.54, 180), ('B7', 'D-', 'bidirectional', 15.24, -5.08, 180),
+    ('GND', 'GND', 'power_in', -5.08, -17.78, 90), ('GND2', 'GND', 'power_in', 0, -17.78, 90), ('SHLD', 'SHIELD', 'passive', 5.08, -17.78, 90)],
+    'BalancerMain:USB_C_16P', '', ref='J')
+custom_ic('JST_PH_1x02', 5.08, 5.08, [(1, '1', 'passive', -10.16, 2.54, 0), (2, '2', 'passive', -10.16, -2.54, 0)],
+          'BalancerMain:JST_PH_1x02_Vertical', '', ref='J')
 custom_ic('Conn_01x03', 5.08, 5.08, [
     (1, '1', 'passive', -10.16, 2.54, 0), (2, '2', 'passive', -10.16, 0, 0), (3, '3', 'passive', -10.16, -2.54, 0)],
     'BalancerMain:SolderWire_1x03', '', ref='J')
@@ -206,7 +215,7 @@ def label(net, x, y, dx, dy):
 
 def pwr(net, x, y):
     _pwr[0] += 1
-    lib = {'GND': 'power:GND', '+3V3': 'power:+3V3', '+5V': 'power:+5V', '+12V': 'power:+12V', 'VBAT': 'power:VBAT'}[net]
+    lib = {'GND': 'power:GND', '+3V3': 'power:+3V3', 'VBUS': 'power:VBUS', '+12V': 'power:+12V', 'VBAT': 'power:VBAT'}[net]
     place('#PWR%03d' % _pwr[0], lib, net, x, y)
 
 
@@ -219,7 +228,7 @@ def nc(x, y):
     ncs.append(node('no_connect', node('at', rnd(x), rnd(y)), node('uuid', uid())))
 
 
-POWER = ('GND', '+3V3', '+5V', '+12V', 'VBAT')
+POWER = ('GND', '+3V3', 'VBUS', '+12V', 'VBAT')
 
 
 def connect(pins, mapping, stub=7.62):
@@ -259,57 +268,47 @@ FP_PADS2 = 'BalancerMain:SolderWire_1x02'
 # IO8/IO9 shared with the module's MAX17048 fuel gauge I2C (10k pull-ups), IO33/34/35
 # internal (VBUS sense, RGB LED). BAT_SENSE needs ADC1: IO1..IO9 are ADC1 channels.
 GPIO = {
-    'IO1': 'BAT_SENSE', 'IO2': 'DOCK_DET', 'IO3': 'BOOST_EN',
+    'IO3': 'BOOST_EN',
     'IO4': 'ACCEL_SCK', 'IO5': 'ACCEL_MISO', 'IO6': 'ACCEL_MOSI', 'IO7': 'ACCEL_CS', 'IO10': 'ACCEL_DRDY',
-    'IO11': 'MAG_TACH', 'IO12': 'OPT_TACH', 'IO13': 'ACQUIRE_BUTTON', 'IO14': 'DOCK_EN',
+    'IO11': 'MAG_TACH', 'IO12': 'OPT_TACH', 'IO13': 'ACQUIRE_BUTTON',
     'IO8': 'STATUS_LED',                     # shares the fuel-gauge SDA pull-up; LED glows faintly until firmware drives it
     'TX0': 'GPS_UART_TX', 'RX0': 'GPS_UART_RX',
     'D-': 'USB_DM', 'D+': 'USB_DP', 'IO0': 'PROG_IO0', 'RESET': 'PROG_RST',
 }
+# IO1, IO2, IO14 are spare on the pads (BAT_SENSE and the dock went with the 3S supply).
 FX, FY = 254.0, 101.6
 fb = place('U1', 'BalancerMain:OMGS3', 'OMGS3', FX, FY, 0, 'BalancerMain:OMGS3')
 m = {}
 for num, ((x, y), d, p) in fb.items():
     nam = p['name']
     if nam in GPIO: m[num] = GPIO[nam]
-    elif nam == '5V': m[num] = '+5V'        # module's VBUS input: ideal diode then the 700 mA 3.3 V LDO
+    elif nam == '5V': m[num] = 'MOD_5V'     # USB VBUS through D1, as on Unexpected Maker's carrier; charger and 3.3 V LDO inside
+    elif nam == 'BAT': m[num] = 'VBAT'      # the 1S cell: charged by the module, read by its fuel gauge
     elif nam == 'GND' or num == 'EXP': m[num] = 'GND'
     elif nam == '3V3': m[num] = '+3V3'
-    else: m[num] = 'NC'          # BAT (no LiPo on the module), EN (3V3 LDO enable, default on), IO9
+    else: m[num] = 'NC'          # EN (3V3 LDO enable, default on), IO9
 connect(fb, m, 10.16)
-# programming header: wire a USB breakout here (D+/D-/GND), IO0 and RESET for manual bootloader entry
-j5 = place('J5', 'Connector_Generic:Conn_01x05', 'PROG GND/D-/D+/IO0/RST', 393.7, 134.62, 0,
-           'Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical')
-connect(j5, {'1': 'GND', '2': 'USB_DM', '3': 'USB_DP', '4': 'PROG_IO0', '5': 'PROG_RST'})
+# IO0 and RESET on a 1x03 header with GND for manual bootloader entry (USB flashing normally needs neither)
+j5 = place('J5', 'BalancerMain:Conn_01x03', 'PROG GND/IO0/RST', 393.7, 134.62, 0, 'Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical')
+connect(j5, {'1': 'GND', '2': 'PROG_IO0', '3': 'PROG_RST'})
 
 # ================================================================ battery in, buck, boost
-# J1 battery pads -> F1 polyfuse -> D3 Schottky (reverse polarity) -> VBAT
-j1 = place('J1', 'Connector_Generic:Conn_01x02', 'BATT 3S +/-', 25.4, 50.8, 0, FP_PADS2)
-connect(j1, {'1': 'BAT_IN', '2': 'GND'})
-two('F1', 'BalancerMain:Polyfuse', '2A polyfuse 1812', 60.96, 48.26, 0, 'Fuse:Fuse_1812_4532Metric', 'BAT_IN', 'BAT_F')
-two('D3', 'BalancerMain:D_Schottky', 'SS14', 91.44, 48.26, 180, 'Diode_SMD:D_SMA', 'VBAT', 'BAT_F')   # K to VBAT, A to BAT_F
-flag(111.76, 40.64); wire((111.76, 40.64), (111.76, 45.72)); pwr('VBAT', 111.76, 45.72)
-two('C1', C, '10u 25V', 134.62, 60.96, 0, FP_C, 'VBAT', 'GND')
-two('C2', C, '10u 25V', 147.32, 60.96, 0, FP_C, 'VBAT', 'GND')
-# battery monitor: 100k / 10k, 12.6 V -> 1.15 V on ADC1 (GPIO6)
-two('R1', R, '100k', 165.1, 48.26, 0, FP_R, 'VBAT', 'BAT_SENSE')
-two('R2', R, '10k', 165.1, 71.12, 0, FP_R, 'BAT_SENSE', 'GND')
-two('C3', C, '100n', 177.8, 71.12, 0, FP_C, 'BAT_SENSE', 'GND')
+# J1: 1S LiPo on a JST-PH, straight to the OMGS3 BAT pad (charger and fuel gauge are on the module)
+j1 = place('J1', 'BalancerMain:JST_PH_1x02', 'LIPO 1S JST-PH', 25.4, 50.8, 0, 'BalancerMain:JST_PH_1x02_Vertical')
+connect(j1, {'1': 'VBAT', '2': 'GND'})
+flag(50.8, 40.64); wire((50.8, 40.64), (50.8, 45.72)); pwr('VBAT', 50.8, 45.72)
+two('C1', C, '10u 25V', 71.12, 60.96, 0, FP_C, 'VBAT', 'GND')
+# USB-C: VBUS -> D1 -> module 5V pad, CC1/CC2 5.1k to ground, as on Unexpected Maker's OMGS3 carrier (no TVS here)
+ju = place('J9', 'BalancerMain:USB_C_16P', 'USB-C 16P', 127.0, 121.92, 0, 'BalancerMain:USB_C_16P')
+connect(ju, {'VBUS1': 'VBUS', 'VBUS2': 'VBUS', 'A5': 'USB_CC1', 'B5': 'USB_CC2', 'A6': 'USB_DP', 'B6': 'USB_DP',
+             'A7': 'USB_DM', 'B7': 'USB_DM', 'GND': 'GND', 'GND2': 'GND', 'SHLD': 'GND'})
+two('R1', R, '5.1k', 83.82, 134.62, 0, FP_R, 'USB_CC1', 'GND')
+two('R2', R, '5.1k', 96.52, 134.62, 0, FP_R, 'USB_CC2', 'GND')
+two('D1', 'BalancerMain:D_Schottky', 'SS14', 170.18, 109.22, 180, 'Diode_SMD:D_SMA', 'MOD_5V', 'VBUS')   # K to the module
+two('C2', C, '10u 25V', 190.5, 121.92, 0, FP_C, 'MOD_5V', 'GND')
+flag(177.8, 93.98); wire((177.8, 93.98), (177.8, 99.06)); pwr('VBUS', 177.8, 99.06)
 
-# TPS54202 buck, 5 V, 2 A. Vfb 0.596 V: 75k / 10k -> 5.07 V. L 10 uH, Cout 2 x 10 uF.
-BX, BY = 76.2, 121.92
-bk = place('U2', 'BalancerMain:TPS54202DDCR', 'TPS54202DDCR', BX, BY, 0, FP_SOT236)
-connect(bk, {'3': 'VBAT', '5': 'BUCK_EN', '4': 'BUCK_FB', '6': 'BUCK_BST', '2': 'BUCK_SW', '1': 'GND'})
-two('R3', R, '100k', 40.64, 134.62, 0, FP_R, 'VBAT', 'BUCK_EN')      # EN pulled to VIN
-two('C4', C, '100n', 116.84, 111.76, 90, FP_C, 'BUCK_BST', 'BUCK_SW')   # bootstrap
-two('L1', L, '10uH 3A', 134.62, 121.92, 90, FP_L, 'BUCK_SW', '+5V')
-two('C5', C, '10u 25V', 157.48, 134.62, 0, FP_C, '+5V', 'GND')
-two('C6', C, '10u 25V', 170.18, 134.62, 0, FP_C, '+5V', 'GND')
-two('R4', R, '75k', 190.5, 121.92, 0, FP_R, '+5V', 'BUCK_FB')
-two('R5', R, '10k', 190.5, 144.78, 0, FP_R, 'BUCK_FB', 'GND')
-flag(157.48, 106.68); wire((157.48, 106.68), (157.48, 111.76)); pwr('+5V', 157.48, 111.76)
-
-# MT3608 boost, 12 V for the Banner sensor only. Vfb 0.6 V: 100k / 5.1k -> 12.4 V. L 22 uH.
+# MT3608 boost, 12 V for the Banner sensor only, from the cell. Vfb 0.6 V: 100k / 5.1k -> 12.4 V. L 22 uH.
 OX, OY = 76.2, 187.96
 bo = place('U3', 'BalancerMain:MT3608', 'MT3608', OX, OY, 0, FP_SOT236)
 connect(bo, {'5': 'VBAT', '4': 'BOOST_EN', '3': 'BOOST_FB', '1': 'BOOST_SW', '6': 'NC', '2': 'GND'})
@@ -352,18 +351,6 @@ connect(j6, {'1': '+3V3', '3': '+3V3', '5': 'GND', '2': 'NC', '4': 'NC', '6': 'A
 j7 = place('J7', 'BalancerMain:Conn_02x03', 'ADXL357 P2', 274.32, 251.46, 0, 'Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical')
 connect(j7, {'1': 'NC', '3': 'NC', '5': 'ACCEL_MISO', '2': 'ACCEL_CS', '4': 'ACCEL_SCK', '6': 'ACCEL_MOSI'})
 
-# ================================================================ dock: 5 V switch and pogo pins
-# Q1 N-FET level shifts IO36; Q2 P-FET passes +5V to the pogo pin when IO36 is high.
-q1 = place('Q1', 'Transistor_FET:AO3400A', 'AO3400A', 317.5, 309.88, 0, FP_SOT23)
-connect(q1, {'1': 'DOCK_EN_G', '2': 'GND', '3': 'DOCK_PG'})
-two('R16', R, '1k', 297.18, 309.88, 90, FP_R, 'DOCK_EN', 'DOCK_EN_G')
-two('R17', R, '100k', 317.5, 284.48, 0, FP_R, '+5V', 'DOCK_PG')
-q2 = place('Q2', 'Transistor_FET:AO3401A', 'AO3401A', 347.98, 284.48, 0, FP_SOT23)
-connect(q2, {'1': 'DOCK_PG', '2': '+5V', '3': 'DOCK_5V'})
-j8 = place('J8', 'BalancerMain:Conn_01x03', 'DOCK pogo 5V/GND/DET', 391.16, 309.88, 0, 'BalancerMain:Pogo_1x03')
-connect(j8, {'1': 'DOCK_5V', '2': 'GND', '3': 'DOCK_DET'})
-two('R18', R, '10k', 403.86, 284.48, 0, FP_R, '+3V3', 'DOCK_DET')
-
 # ================================================================ UI, GPS, holes
 sw = place('SW1', 'Switch:SW_Push', 'ACQUIRE', 254.0, 309.88, 0, 'Button_Switch_THT:SW_PUSH_6mm')
 connect(sw, {'1': 'ACQUIRE_BUTTON', '2': 'GND'})
@@ -377,7 +364,7 @@ connect(j4, {'1': '+3V3', '2': 'GND', '3': 'GPS_UART_RX', '4': 'GPS_UART_TX'})
 for i, (hx, hy) in enumerate(((381.0, 350.52), (393.7, 350.52), (406.4, 350.52), (419.1, 350.52)), 1):
     place('H%d' % i, 'Mechanical:MountingHole', 'M3', hx, hy, 0, 'MountingHole:MountingHole_3.2mm_M3')
 # PWR_FLAGs for the rails that only passives drive, and ground
-for net, fx, fy in (('GND', 436.88, 60.96), ('+3V3', 436.88, 81.28), ('BAT_IN', 436.88, 101.6)):
+for net, fx, fy in (('GND', 436.88, 60.96), ('+3V3', 436.88, 81.28)):
     flag(fx, fy); wire((fx, fy), (fx, fy + 5.08))
     if net in POWER: pwr(net, fx, fy + 5.08)
     else: label(net, fx, fy + 5.08, 0, 1)
@@ -386,7 +373,7 @@ for net, fx, fy in (('GND', 436.88, 60.96), ('+3V3', 436.88, 81.28), ('BAT_IN', 
 doc = node('kicad_sch', node('version', 20260306), node('generator', 'build_main'), node('generator_version', '10.0'),
            node('uuid', SHEET), node('paper', 'A3'),
            node('title_block', node('title', 'HoboBalancer v2 main unit'), node('date', '2026-10-22'), node('rev', 'A'),
-                node('comment', 1, 'OMGS3 ESP32-S3 on pads, ADXL357 sockets, LM1815 MPU input, Banner tach, 3S power')))
+                node('comment', 1, 'OMGS3 ESP32-S3 on pads, 1S LiPo, USB-C, ADXL357 sockets, LM1815 MPU input, Banner tach')))
 libs = node('lib_symbols')
 for lib in sorted(used):
     libs.append(deepcopy(libsyms[lib]))
