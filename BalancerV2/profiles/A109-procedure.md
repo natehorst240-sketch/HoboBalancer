@@ -139,3 +139,13 @@ PK directly. Exact bin-to-CPM alignment (k x 75 vs (k+1) x 75) still to be pinne
 - AlarmVelEng=0.20 IPS, the acceptance level. PolarAutoFS=YES, PolarMinFS=1.0.
 - Decision 2026-10-22: no track measurement in v2 at all. The solver treats the first tab
   move as a user-entered decision and otherwise works from vibration only.
+
+## Tail rotor second adjustment (user, 2026-10-22)
+
+Blade-bolt washers, 0.25 IPS per gram (four times the wheel's leverage because of the
+larger radius), same direction convention as the wheel. Stations on the wheel scale:
+TARGET blade (tape, 0 deg) bolt head 350, nut 10; blade 2 bolt head 170, nut 190
+(estimated). Each station takes nothing or 5 to 16 g. The MicroVib's T/R BAL task only
+knows the wheel; the solver searches the station combinations for least added mass with
+the wheel inside 25 g per position. Direction confirmed by the user. Still open: whether
+washers already on the bolts may be removed.
