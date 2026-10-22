@@ -103,6 +103,20 @@
     <div id="multiPos"></div>
   </section>
 
+  <section class="card wide" id="auxCard" style="display:none">
+    <h2>Tail rotor: blade-bolt washers first, wheel for the remainder</h2>
+    <p class="mute">Washers on the blade bolts act only along the blade line and are coarse (0.25 IPS per gram). The solver takes the in-line part of the correction with whole washers, then trims what is left with the wheel.</p>
+    <div class="row">
+      <div><label>IPS per gram of washer</label><input type="number" id="auxIps" step="0.01"></div>
+      <div><label>Blade line angle on the wheel scale, deg</label><input type="number" id="auxAxis" step="1"></div>
+      <div><label>Grams per washer</label><input type="number" id="auxG" step="0.1"></div>
+      <div><label>Max washers per bolt</label><input type="number" id="auxMax" step="1"></div>
+    </div>
+    <div class="big" id="auxVec" style="margin-top:8px"></div>
+    <div id="auxPos"></div>
+    <p class="mute" id="auxNote"></p>
+  </section>
+
   <section class="card wide">
     <h2>Runs for this task</h2>
     <table id="runs"></table>
@@ -120,7 +134,8 @@
     { name: '80KT VT', sens: 8, tach: 340, unit: 'TAB DG', positions: [0, 90, 180, 270], max: 8 },
     { name: '140KT VT', sens: 8, tach: 340, unit: 'TAB DG', positions: [0, 90, 180, 270], max: 8 },
     { name: 'MCP VT', sens: 8, tach: 340, unit: 'TAB DG', positions: [0, 90, 180, 270], max: 8 },
-    { name: 'T/R BAL', sens: 16, tach: 120, unit: 'GRAMS', positions: [0, 60, 120, 180, 240, 300], max: 25 }
+    { name: 'T/R BAL', sens: 16, tach: 120, unit: 'GRAMS', positions: [0, 60, 120, 180, 240, 300], max: 25,
+      aux: { name: 'Blade-bolt washers', ipsPerGram: 0.25, axis: 0, washerGrams: 1.0, maxWashers: 4 } }
   ] };
   const LABELS = { 0: 'TARGET', 90: 'BLD A', 180: 'BLD B', 270: 'BLD C' };
 
@@ -130,7 +145,8 @@
   const $ = id => document.getElementById(id);
   const task = () => state.profile.tasks.find(t => t.name === state.task) || state.profile.tasks[0];
   const coef = t => state.coef[t.name] || (state.coef[t.name] = { sens: t.sens, tach: t.tach });
-  const posObjs = t => t.positions.map(a => ({ angle: a, label: LABELS[a] || (a + ' deg') }));
+  const posLabel = (t, a) => t.positions.length === 4 && LABELS[a] ? LABELS[a] : (t.positions.length === 6 ? 'LOC' + (t.positions.indexOf(a) + 1) + ' (' + a + ')' : a + ' deg');
+  const posObjs = t => t.positions.map(a => ({ angle: a, label: posLabel(t, a) }));
   const runsFor = name => state.runs.filter(r => r.task === name).sort((a, b) => a.when - b.when);
   const fmt = (x, d = 2) => (Math.round(x * Math.pow(10, d)) / Math.pow(10, d)).toFixed(d);
 
@@ -143,7 +159,7 @@
     $('chgLoc').innerHTML = posObjs(t).map(p => `<option value="${p.angle}">${p.label} (${p.angle})</option>`).join('');
     $('sens').value = fmt(c.sens, 1); $('tach').value = fmt(c.tach, 1);
     if (!$('maxPos').value || $('maxPos').dataset.t !== t.name) { $('maxPos').value = t.max; $('maxPos').dataset.t = t.name; }
-    renderRuns(t); renderSolution(t, c); renderMulti(t); drawPolar(t);
+    renderRuns(t); renderSolution(t, c); renderMulti(t); renderAux(t, c); drawPolar(t);
   }
 
   function renderRuns(t) {
@@ -169,7 +185,7 @@
     return sp.map(p => {
       const amt = rt ? Math.round(p.amount / rt) * rt : p.amount;
       const over = Math.abs(amt) > maxPos;
-      return `<span class="pos ${over ? 'warn' : ''}">${LABELS[p.angle] || p.angle + ' deg'}<b>${fmt(amt, rt && rt < 1 ? 1 : 0)} ${unit}</b>${over ? 'over max ' + maxPos : ''}</span>`;
+      return `<span class="pos ${over ? 'warn' : ''}">${posLabel(t, p.angle)}<b>${fmt(amt, rt && rt < 1 ? 1 : 0)} ${unit}</b>${over ? 'over max ' + maxPos : ''}</span>`;
     }).join('');
   }
 
@@ -197,6 +213,33 @@
     const unit = t.unit === 'TAB DG' ? 'deg' : 'g';
     $('multiVec').textContent = sol ? `${fmt(sol.mag, 2)} ${unit} at ${fmt(sol.angle, 1)} deg` : '';
     $('multiPos').innerHTML = positionsHtml(t, sol, unit);
+  }
+
+  function renderAux(t, c) {
+    const card = $('auxCard');
+    if (!t.aux) { card.style.display = 'none'; return; }
+    card.style.display = '';
+    const a = t.aux;
+    if ($('auxIps').dataset.t !== t.name) { $('auxIps').value = a.ipsPerGram; $('auxAxis').value = a.axis; $('auxG').value = a.washerGrams; $('auxMax').value = a.maxWashers; $('auxIps').dataset.t = t.name; }
+    const ipsPerG = +$('auxIps').value || a.ipsPerGram, axis = +$('auxAxis').value || 0, wg = +$('auxG').value || 1, wmax = +$('auxMax').value || 99;
+    const rs = runsFor(t.name);
+    if (!rs.length) { $('auxVec').textContent = 'no runs'; $('auxPos').innerHTML = ''; $('auxNote').textContent = ''; return; }
+    const last = rs[rs.length - 1];
+    const sol = M.solve([{ level: last.level, phase: last.phase, sens: c.sens, tach: c.tach }]); // wheel grams at angle
+    const ips = sol.mag / c.sens; // correction as IPS at sol.angle
+    // in-line component along the blade axis, washers on the blade whose bolt sits at that side
+    const inline = ips * Math.cos((sol.angle - axis) * Math.PI / 180);
+    let n = Math.round(Math.abs(inline) / (ipsPerG * wg)); n = Math.min(n, wmax);
+    const washerGrams = n * wg, washerAngle = inline >= 0 ? axis : M.mod360(axis + 180);
+    // remainder after the washers, back in IPS, then onto the wheel
+    const vx = ips * Math.cos(sol.angle * Math.PI / 180) - washerGrams * ipsPerG * Math.cos(washerAngle * Math.PI / 180);
+    const vy = ips * Math.sin(sol.angle * Math.PI / 180) - washerGrams * ipsPerG * Math.sin(washerAngle * Math.PI / 180);
+    const rem = Math.hypot(vx, vy), remAng = M.mod360(Math.atan2(vy, vx) * 180 / Math.PI);
+    const wheel = M.split(rem * c.sens, remAng, posObjs(t));
+    const maxPos = +$('maxPos').value || t.max, rt = +$('roundTo').value || 0;
+    $('auxVec').textContent = n ? `${n} washer${n > 1 ? 's' : ''} (${fmt(washerGrams, 1)} g) on the blade bolt at ${washerAngle} deg` : 'no washers needed';
+    $('auxPos').innerHTML = wheel.map(p => { const amt = rt ? Math.round(p.amount / rt) * rt : p.amount; const over = Math.abs(amt) > maxPos; return `<span class="pos ${over ? 'warn' : ''}">wheel ${p.angle} deg<b>${fmt(amt, 1)} g</b>${over ? 'over max ' + maxPos : ''}</span>`; }).join('') || '<span class="pos">wheel<b>no change</b></span>';
+    $('auxNote').textContent = `Correction needed ${fmt(ips, 3)} IPS at ${fmt(sol.angle, 1)} deg. Washers cover ${fmt(washerGrams * ipsPerG, 3)} IPS along the blade line; ${fmt(rem, 3)} IPS at ${fmt(remAng, 1)} deg goes on the wheel. Negative wheel grams mean remove weight from that position.`;
   }
 
   function drawPolar(t) {
@@ -234,7 +277,7 @@
   };
   $('sens').onchange = () => { coef(task()).sens = +$('sens').value; save(); render(); };
   $('tach').onchange = () => { coef(task()).tach = +$('tach').value; save(); render(); };
-  ['maxPos', 'roundTo', 'target'].forEach(id => $(id).onchange = render);
+  ['maxPos', 'roundTo', 'target', 'auxIps', 'auxAxis', 'auxG', 'auxMax'].forEach(id => $(id).onchange = render);
   $('resetCoef').onclick = () => { const t = task(); state.coef[t.name] = { sens: t.sens, tach: t.tach }; save(); render(); };
   $('clear').onclick = () => { if (confirm('Delete all runs?')) { state.runs = []; state.coef = {}; save(); render(); } };
   $('export').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' })); a.download = 'hobo-solver.json'; a.click(); };
