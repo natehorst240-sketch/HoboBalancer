@@ -39,6 +39,7 @@ def xform(px, py, X, Y, rot):
     if rot == 270: return X + py, Y + px
 
 
+ok = True
 parent = {}
 def find(a):
     while parent.setdefault(a, a) != a:
@@ -68,6 +69,35 @@ for l in children(doc, 'label'):
     at = one(l, 'at'); union(('net', str(l[1])), ('pt', key(at[1], at[2])))
 ncpts = {key(one(n, 'at')[1], one(n, 'at')[2]) for n in children(doc, 'no_connect')}
 
+# geometry checks KiCad would also trip on: collinear wires overlapping (a hidden short),
+# and a pin, label or power pin landing in the middle of a wire it was not meant to join
+segs = []
+for w in children(doc, 'wire'):
+    pts = [key(p[1], p[2]) for p in children(one(w, 'pts'), 'xy')]
+    segs.append((pts[0], pts[1]))
+def inside(pt, seg):
+    (x1, y1), (x2, y2) = seg
+    if y1 == y2 == pt[1]: return min(x1, x2) < pt[0] < max(x1, x2)
+    if x1 == x2 == pt[0]: return min(y1, y2) < pt[1] < max(y1, y2)
+    return False
+for i, a in enumerate(segs):
+    for b in segs[i + 1:]:
+        if any(inside(p, b) for p in a) or any(inside(p, a) for p in b):
+            print('FAIL: overlapping wires', a, b); ok = False
+endpoints = {('pt', p) for s_ in segs for p in s_}
+for ref, num, nam, pt, typ, val, fp in pins:
+    for s_ in segs:
+        if inside(pt, s_): print('FAIL: pin %s.%s sits mid-wire on %s' % (ref, num, s_)); ok = False
+for l in children(doc, 'label'):
+    at = one(l, 'at'); pt = key(at[1], at[2])
+    for s_ in segs:
+        if inside(pt, s_): print('FAIL: label %s sits mid-wire on %s' % (l[1], s_)); ok = False
+lab_pts = {}
+for l in children(doc, 'label'):
+    at = one(l, 'at'); lab_pts.setdefault(key(at[1], at[2]), []).append(str(l[1]))
+for pt, names in lab_pts.items():
+    if len(names) > 1: print('FAIL: labels stacked at one point', pt, names); ok = False
+
 # collect nets
 groups = {}
 for ref, num, nam, pt, typ, val, fp in pins:
@@ -77,7 +107,6 @@ names = {}
 for k in list(parent):
     if k[0] == 'net': names.setdefault(find(k), set()).add(k[1])
 
-ok = True
 nets = {}
 for root, members in groups.items():
     nm = names.get(root, set())

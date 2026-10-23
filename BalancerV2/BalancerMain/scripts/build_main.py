@@ -84,13 +84,13 @@ libsyms['BalancerMain:OMGS3'] = rename(deepcopy(_omg), 'BalancerMain:OMGS3')
 
 def power_clone(name):
     """A power symbol like +3V3 but for another rail: the pin name is the net name."""
-    s = deepcopy(libsyms['power:+3V3']); rename(s, 'power:' + name)
+    s = deepcopy(libsyms['power:+3V3']); rename(s, 'BalancerMain:' + name)   # project lib, so ERC does not compare it with KiCad's power lib
     for p in children(s, 'property'):
         if p[1] == 'Value': p[2] = name
     for sub in children(s, 'symbol'):
         for pin in children(sub, 'pin'):
             one(pin, 'name')[1] = name
-    libsyms['power:' + name] = s
+    libsyms['BalancerMain:' + name] = s
 
 
 for rail in ('VBUS', '+12V', 'VBAT'):
@@ -133,7 +133,7 @@ custom_ic('Conn_02x03', 7.62, 5.08, [
     (2, '2', 'passive', 12.7, 2.54, 180), (4, '4', 'passive', 12.7, 0, 180), (6, '6', 'passive', 12.7, -2.54, 180)],
     'Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical', '', ref='J')
 custom_ic('USB_C_16P', 10.16, 12.7, [
-    ('VBUS1', 'VBUS', 'power_out', -15.24, 10.16, 0), ('VBUS2', 'VBUS', 'power_out', -15.24, 7.62, 0),
+    ('VBUS1', 'VBUS', 'passive', -15.24, 10.16, 0), ('VBUS2', 'VBUS', 'passive', -15.24, 7.62, 0),   # passive: the PWR_FLAG drives the rail
     ('A5', 'CC1', 'passive', -15.24, 2.54, 0), ('B5', 'CC2', 'passive', -15.24, 0, 0),
     ('A6', 'D+', 'bidirectional', 15.24, 5.08, 180), ('B6', 'D+', 'bidirectional', 15.24, 2.54, 180),
     ('A7', 'D-', 'bidirectional', 15.24, -2.54, 180), ('B7', 'D-', 'bidirectional', 15.24, -5.08, 180),
@@ -215,7 +215,7 @@ def label(net, x, y, dx, dy):
 
 def pwr(net, x, y):
     _pwr[0] += 1
-    lib = {'GND': 'power:GND', '+3V3': 'power:+3V3', 'VBUS': 'power:VBUS', '+12V': 'power:+12V', 'VBAT': 'power:VBAT'}[net]
+    lib = {'GND': 'power:GND', '+3V3': 'power:+3V3', 'VBUS': 'BalancerMain:VBUS', '+12V': 'BalancerMain:+12V', 'VBAT': 'BalancerMain:VBAT'}[net]
     place('#PWR%03d' % _pwr[0], lib, net, x, y)
 
 
@@ -329,7 +329,7 @@ j3 = place('J3', 'Connector_Generic:Conn_01x02', 'MPU + / -', 25.4, 246.38, 0, F
 connect(j3, {'1': 'MAG_IN', '2': 'GND'})
 # two 10k 1206 in series: the pulse withstand that takes +/-60 V peaks is a body-size property
 two('R9', R, '10k', 25.4, 271.78, 90, FP_R, 'MAG_IN', 'MAG_MID')
-two('R10', R, '10k', 43.18, 271.78, 90, FP_R, 'MAG_MID', 'VR_IN')
+two('R10', R, '10k', 25.4, 284.48, 90, FP_R, 'MAG_MID', 'VR_IN')   # stacked, so no stub touches the LM1815's
 # one shot on pin 14: 0.673 x 100k x 1n = 67 us (was 150k on the carrier; 100k keeps the value set)
 two('R11', R, '100k', 134.62, 254.0, 0, FP_R, '+3V3', 'MAG_TIMING')
 two('C8', C, '1n C0G', 134.62, 276.86, 0, FP_C, 'MAG_TIMING', 'GND')
