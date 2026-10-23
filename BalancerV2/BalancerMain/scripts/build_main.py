@@ -271,11 +271,11 @@ GPIO = {
     'IO3': 'BOOST_EN',
     'IO4': 'ACCEL_SCK', 'IO5': 'ACCEL_MISO', 'IO6': 'ACCEL_MOSI', 'IO7': 'ACCEL_CS', 'IO10': 'ACCEL_DRDY',
     'IO11': 'MAG_TACH', 'IO12': 'OPT_TACH', 'IO13': 'ACQUIRE_BUTTON',
-    'IO8': 'STATUS_LED',                     # shares the fuel-gauge SDA pull-up; LED glows faintly until firmware drives it
+    'IO14': 'STATUS_LED',
     'TX0': 'GPS_UART_TX', 'RX0': 'GPS_UART_RX',
     'D-': 'USB_DM', 'D+': 'USB_DP', 'IO0': 'PROG_IO0', 'RESET': 'PROG_RST',
 }
-# IO1, IO2, IO14 are spare on the pads (BAT_SENSE and the dock went with the 3S supply).
+# IO1, IO2, IO8 are spare on the pads (IO8 is also the fuel-gauge SDA, leave it alone).
 FX, FY = 254.0, 101.6
 fb = place('U1', 'BalancerMain:OMGS3', 'OMGS3', FX, FY, 0, 'BalancerMain:OMGS3')
 m = {}
@@ -286,7 +286,7 @@ for num, ((x, y), d, p) in fb.items():
     elif nam == 'BAT': m[num] = 'VBAT'      # the 1S cell: charged by the module, read by its fuel gauge
     elif nam == 'GND' or num == 'EXP': m[num] = 'GND'
     elif nam == '3V3': m[num] = '+3V3'
-    else: m[num] = 'NC'          # EN (3V3 LDO enable, default on), IO9
+    else: m[num] = 'NC'          # EN (3V3 LDO enable, default on), IO8/IO9 fuel-gauge I2C
 connect(fb, m, 10.16)
 # IO0 and RESET on a 1x03 header with GND for manual bootloader entry (USB flashing normally needs neither)
 j5 = place('J5', 'BalancerMain:Conn_01x03', 'PROG GND/IO0/RST', 393.7, 134.62, 0, 'Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical')

@@ -15,7 +15,7 @@
 		)
 		(fill no)
 		(layer "F.CrtYd")
-		(uuid "8dad94f8-9959-4295-9397-eb7b2c97a517")
+		(uuid "f0ebf77e-6433-4674-a77e-0f6c169e3462")
 	)
 	(fp_rect
 		(start 2.3 -1.3)
@@ -26,7 +26,7 @@
 		)
 		(fill no)
 		(layer "F.CrtYd")
-		(uuid "c02e3e05-68a4-4c06-be1e-4a80cb1fe785")
+		(uuid "eecafa5b-c941-408c-88c9-980b634d6095")
 	)
 	(fp_circle
 		(center 0 0)
@@ -37,7 +37,7 @@
 		)
 		(fill no)
 		(layer "F.Fab")
-		(uuid "39812063-9915-45a5-9ca3-9184f845cbdd")
+		(uuid "85c3af2a-0229-4ae3-ac5d-f343aa57c095")
 	)
 	(fp_circle
 		(center 3.6 0)
@@ -48,12 +48,12 @@
 		)
 		(fill no)
 		(layer "F.Fab")
-		(uuid "e465d784-a300-4dde-a7b0-14ec1160422f")
+		(uuid "cc2b9a70-acd6-4298-aa80-12117e3a1044")
 	)
 	(fp_text user "${REFERENCE}"
 		(at 1.8 0 90)
 		(layer "F.Fab")
-		(uuid "9019710a-38aa-4ea7-ae4b-6c998e343685")
+		(uuid "f59da6d3-37c7-4d3e-88e3-3dfce436e193")
 		(effects
 			(font
 				(size 0.65 0.65)
@@ -67,13 +67,13 @@
 		(size 2.2 2.2)
 		(drill 1.3)
 		(layers "*.Cu" "*.Mask")
-		(uuid "09988e2d-eceb-43b2-8d95-b3190a1c6fbb")
+		(uuid "c8e68776-fd83-45e9-966f-95c8842cf2c0")
 	)
 	(pad "2" thru_hole circle
 		(at 3.6 0)
 		(size 2.2 2.2)
 		(drill 1.3)
 		(layers "*.Cu" "*.Mask")
-		(uuid "74c8f330-fb7a-40f3-b8cf-fc5e6504db6a")
+		(uuid "067f60dc-a34b-4a4a-a3d6-7ca715b9435a")
 	)
 )

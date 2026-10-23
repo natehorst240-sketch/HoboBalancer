@@ -16,7 +16,7 @@ solder-wire pads like the carrier's J3.
 | MAG_TACH, LM1815 pin 12 out | 11 | 21 | RTC GPIO |
 | OPT_TACH, Banner NPN via 10k pull-up and 1k | 12 | 20 | |
 | ACQUIRE button | 13 | 19 | 10k pull-up, 100 nF |
-| STATUS LED | 8 | 24 | shares the module's fuel-gauge SDA 10k pull-up. With the cell now on the module the gauge matters, so this should move to spare IO14 in the next generator pass. Open |
+| STATUS LED | 14 | 18 | moved off IO8 on 2026-10-23 so the fuel-gauge I2C stays clean |
 | GPS UART TX / RX | 43 / 44 | 1 / 2 | UART0, also the boot console; 1x04 header 3V3 / GND / RX / TX, optional |
 | USB D- / D+ | | 14 / 15 | J9 USB-C, both pad pairs (A6/B6, A7/B7); CC1/CC2 5.1k to ground. Native USB flashing and USB Serial JTAG |
 | IO0, RESET | | 13 / 11 | J5 1x03 header GND / IO0 / RST for manual bootloader entry; normally not needed |
@@ -24,8 +24,8 @@ solder-wire pads like the carrier's J3.
 | BAT | | 17 | the 1S cell on J1 (JST-PH): charged by the module, read by its MAX17048 over IO8/IO9; also the boost input |
 | 3V3 out | | 16 | feeds the ADXL357, LM1815 and the pull-ups |
 | GND | | 10, EXP | |
-| EN, IO9 | | 9, 23 | open. EN defaults on; IO9 is the fuel-gauge SCL |
-| spare | 1, 2, 14 | 3, 4, 18 | free on the pads |
+| EN, IO8, IO9 | | 9, 24, 23 | open. EN defaults on; IO8/IO9 are the fuel-gauge SDA/SCL, keep them free |
+| spare | 1, 2 | 3, 4 | free on the pads |
 
 OMGS3 facts used here come from Unexpected Maker's pinout card and the P1 schematic
 (github.com/UnexpectedMaker/esp32s3, read 2026-10-22): 17 GPIO on 25 pads plus the

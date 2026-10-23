@@ -113,7 +113,7 @@ EXPECT = {
     'ACCEL_SCK': [('J7', '4'), ('U1', '6')], 'ACCEL_MOSI': [('J7', '6'), ('U1', '8')],
     'ACCEL_MISO': [('J7', '5'), ('U1', '7')], 'ACCEL_CS': [('J7', '2'), ('U1', '25')], 'ACCEL_DRDY': [('J6', '6'), ('U1', '22')],
     'ACQUIRE_BUTTON': [('SW1', '1'), ('R19', '2'), ('C11', '1'), ('U1', '19')],
-    'STATUS_LED': [('U1', '24'), ('R20', '1')], 'LED_A': [('R20', '2'), ('LED1', '2')],
+    'STATUS_LED': [('U1', '18'), ('R20', '1')], 'LED_A': [('R20', '2'), ('LED1', '2')],
     'GPS_UART_RX': [('J4', '3'), ('U1', '2')], 'GPS_UART_TX': [('J4', '4'), ('U1', '1')],
 }
 for net, members in EXPECT.items():
