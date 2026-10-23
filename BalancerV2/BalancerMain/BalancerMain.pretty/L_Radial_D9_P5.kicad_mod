@@ -1,0 +1,43 @@
+(footprint "L_Radial_D9_P5"
+	(version 20241229)
+	(generator "build_pcb_main")
+	(layer "F.Cu")
+	(descr "radial inductor 9-10 mm, 5 mm pitch")
+	(attr through_hole)
+	(fp_circle
+		(center 0 0)
+		(end 5.0 0)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.SilkS")
+		(uuid "ecfffc06-d4d6-4937-b4ac-46ce90ad97b9")
+	)
+	(fp_rect
+		(start -5.5 -5.5)
+		(end 5.5 5.5)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "a1f24c41-8423-4588-ada1-89c0a7421510")
+	)
+	(pad "1" thru_hole rect
+		(at -2.5 0)
+		(size 1.8 1.8)
+		(drill 1.0)
+		(layers "*.Cu" "*.Mask")
+		(uuid "bb07e0ff-8239-4d35-b1d2-44ec83584dbb")
+	)
+	(pad "2" thru_hole circle
+		(at 2.5 0)
+		(size 1.8 1.8)
+		(drill 1.0)
+		(layers "*.Cu" "*.Mask")
+		(uuid "8d8eace6-e7dd-4c25-8406-2639baf0a1f4")
+	)
+)

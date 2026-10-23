@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HoboBalancer Solver</title>
+<style>
+  :root { --bg:#f4f5f7; --card:#fff; --ink:#1b1f24; --mute:#5d6673; --line:#d9dde3; --acc:#0b6e4f; --warn:#b3261e; --tab:#eef1f4; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#121417; --card:#1b1f24; --ink:#e8eaed; --mute:#a0a8b3; --line:#2f353d; --acc:#5dd39e; --warn:#ff7b72; --tab:#232830; } }
+  :root[data-theme="dark"] { --bg:#121417; --card:#1b1f24; --ink:#e8eaed; --mute:#a0a8b3; --line:#2f353d; --acc:#5dd39e; --warn:#ff7b72; --tab:#232830; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { padding:12px 16px; border-bottom:1px solid var(--line); display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  header h1 { font-size:18px; margin:0; }
+  main { padding:16px; display:grid; gap:16px; grid-template-columns: 1fr; max-width:1200px; margin:0 auto; }
+  @media (min-width: 900px) { main { grid-template-columns: 1fr 1fr; } .wide { grid-column: 1 / -1; } }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px; }
+  .card h2 { font-size:15px; margin:0 0 10px; color:var(--mute); text-transform:uppercase; letter-spacing:.04em; }
+  label { display:block; font-size:13px; color:var(--mute); margin-top:8px; }
+  input, select, button { font:inherit; color:inherit; background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:6px 8px; max-width:100%; }
+  input[type=number] { width:110px; }
+  button { cursor:pointer; background:var(--acc); color:#fff; border:none; padding:8px 12px; }
+  button.ghost { background:transparent; color:var(--ink); border:1px solid var(--line); }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+  table { border-collapse:collapse; width:100%; font-size:13px; }
+  th, td { text-align:right; padding:4px 6px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th:first-child, td:first-child { text-align:left; }
+  .big { font-size:28px; font-weight:600; }
+  .warn { color:var(--warn); }
+  .mute { color:var(--mute); font-size:13px; }
+  canvas { width:100%; max-width:420px; height:auto; display:block; margin:0 auto; background:var(--card); }
+  .tabs { display:flex; gap:6px; flex-wrap:wrap; }
+  .tabs button { background:var(--tab); color:var(--ink); }
+  .tabs button.on { background:var(--acc); color:#fff; }
+  .pos { display:inline-block; min-width:120px; padding:8px 10px; margin:4px 6px 0 0; border:1px solid var(--line); border-radius:8px; }
+  .pos b { display:block; font-size:20px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>HoboBalancer Solver</h1>
+  <span class="mute" id="profName">profile: A109</span>
+  <label style="margin:0">Load .grp or .HST <input type="file" id="file" accept=".grp,.hst,.GRP,.HST"></label>
+  <button class="ghost" id="export">Export JSON</button>
+  <button class="ghost" id="clear">Clear runs</button>
+</header>
+<main>
+  <section class="card wide">
+    <h2>Task</h2>
+    <div class="tabs" id="tabs"></div>
+    <p class="mute" id="taskInfo"></p>
+  </section>
+
+  <section class="card">
+    <h2>New run</h2>
+    <div class="row">
+      <div><label>Level, IPS</label><input type="number" id="level" step="0.001" min="0"></div>
+      <div><label>Phase, deg</label><input type="number" id="phase" step="0.1" min="0" max="360"></div>
+      <div><label>RPM</label><input type="number" id="rpm" step="0.1"></div>
+    </div>
+    <div class="row">
+      <div><label>Change installed since last run: amount</label><input type="number" id="chgMag" step="0.1"></div>
+      <div><label>at position, deg</label><select id="chgLoc"></select></div>
+    </div>
+    <div class="row" style="margin-top:10px"><button id="add">Add run</button><span class="mute" id="addMsg"></span></div>
+  </section>
+
+  <section class="card">
+    <h2>Coefficient for this task</h2>
+    <div class="row">
+      <div><label>SENS, units per IPS</label><input type="number" id="sens" step="0.1"></div>
+      <div><label>TACH offset, deg</label><input type="number" id="tach" step="0.1"></div>
+      <div><label>Trust in each new measurement, 0 to 1</label><input type="number" id="trust" step="0.05" min="0" max="1" value="0.5"></div>
+      <div><label>Learn only if the move changed vibration by at least, IPS</label><input type="number" id="learnLimit" step="0.01" value="0.10"></div>
+    </div>
+    <p class="mute">MicroVib behaviour is trust 1.0 with a 0.10 IPS learn limit: every qualifying move replaces the coefficient outright. Lower trust keeps memory of earlier moves.</p>
+    <div class="row"><button class="ghost" id="resetCoef">Reset to profile seed</button></div>
+  </section>
+
+  <section class="card">
+    <h2>Solution for this task</h2>
+    <div class="big" id="solVec">no runs</div>
+    <div id="solPos"></div>
+    <div class="row">
+      <div><label>Max per position</label><input type="number" id="maxPos" step="1"></div>
+      <div><label>Round to</label><input type="number" id="roundTo" step="0.1" value="0.1"></div>
+      <div><label>Target level, IPS</label><input type="number" id="target" step="0.01" value="0.20"></div>
+    </div>
+    <p class="mute" id="solNote"></p>
+  </section>
+
+  <section class="card">
+    <h2>Polar plot</h2>
+    <canvas id="polar" width="420" height="420"></canvas>
+    <p class="mute">Vibration vectors at their phase, 360 at top, clockwise. Hollow marker: where the correction goes on the rotor. Full scale <span id="fs"></span> IPS.</p>
+  </section>
+
+  <section class="card wide">
+    <h2>Combined solution across regimes sharing this adjustment</h2>
+    <p class="mute">Weighted least squares over every regime whose latest run uses the same adjustment type. Set a weight to 0 to ignore a regime.</p>
+    <table id="multi"></table>
+    <div class="big" id="multiVec" style="margin-top:8px"></div>
+    <div id="multiPos"></div>
+  </section>
+
+  <section class="card wide" id="auxCard" style="display:none">
+    <h2>Tail rotor: blade-bolt washers first, wheel for the remainder</h2>
+    <p class="mute">Washer stations sit at the blade bolt head and nut, 350 and 10 for the TARGET blade and 170 and 190 for blade 2, at 0.25 IPS per gram. Enter what is on each bolt now; the solver may add or remove whole grams at any station and puts the remainder on the wheel, computing to zero. Limits are shown as warnings only; the technician decides.</p>
+    <div class="row" id="auxNow"></div>
+    <div class="row">
+      <div><label>IPS per gram of washer</label><input type="number" id="auxIps" step="0.01"></div>
+      <div><label>Stations, deg, comma separated</label><input type="text" id="auxAxis" style="width:160px"></div>
+      <div><label>Warn below, g (if any)</label><input type="number" id="auxG" step="1"></div>
+      <div><label>Warn above, g</label><input type="number" id="auxMax" step="1"></div>
+    </div>
+    <div class="big" id="auxVec" style="margin-top:8px"></div>
+    <div id="auxPos"></div>
+    <p class="mute" id="auxNote"></p>
+  </section>
+
+  <section class="card wide">
+    <h2>Runs for this task</h2>
+    <table id="runs"></table>
+  </section>
+</main>
+<script src="mv2.js"></script>
+<script>
+(function () {
+  const M = window.MV2;
+  // A109 profile, decoded from the MicroVib group file.
+  const A109 = { name: 'A109', tasks: [
+    { name: 'GND LT', sens: 320, tach: 340, unit: 'GRAMS', positions: [0, 90, 180, 270], max: 400 },
+    { name: 'HOV LT', sens: 320, tach: 340, unit: 'GRAMS', positions: [0, 90, 180, 270], max: 400 },
+    { name: 'HOV VT', sens: 3, tach: 340, unit: 'NO ADJ', positions: [0, 90, 180, 270], max: 8 },
+    { name: '80KT VT', sens: 8, tach: 340, unit: 'TAB DG', positions: [0, 90, 180, 270], max: 8 },
+    { name: '140KT VT', sens: 8, tach: 340, unit: 'TAB DG', positions: [0, 90, 180, 270], max: 8 },
+    { name: 'MCP VT', sens: 8, tach: 340, unit: 'TAB DG', positions: [0, 90, 180, 270], max: 8 },
+    { name: 'T/R BAL', sens: 16, tach: 120, unit: 'GRAMS', positions: [0, 60, 120, 180, 240, 300], max: 25,
+      aux: { name: 'Blade-bolt washers', ipsPerGram: 0.25, stations: [350, 10, 170, 190], gMin: 5, gMax: 16, step: 1 } }
+  ] };
+  const LABELS = { 0: 'TARGET', 90: 'BLD A', 180: 'BLD B', 270: 'BLD C' };
+
+  let state = load() || { profile: A109, coef: {}, runs: [], task: 'GND LT', weights: {} };
+  function load() { try { const s = localStorage.getItem('hobo-solver'); if (!s) return null; const o = JSON.parse(s); o.runs.forEach(r => r.when = new Date(r.when)); return o; } catch (e) { return null; } }
+  function save() { try { localStorage.setItem('hobo-solver', JSON.stringify(state)); } catch (e) {} }
+  const $ = id => document.getElementById(id);
+  const task = () => state.profile.tasks.find(t => t.name === state.task) || state.profile.tasks[0];
+  const coef = t => state.coef[t.name] || (state.coef[t.name] = { sens: t.sens, tach: t.tach });
+  const posLabel = (t, a) => t.positions.length === 4 && LABELS[a] ? LABELS[a] : (t.positions.length === 6 ? 'LOC' + (t.positions.indexOf(a) + 1) + ' (' + a + ')' : a + ' deg');
+  const posObjs = t => t.positions.map(a => ({ angle: a, label: posLabel(t, a) }));
+  const runsFor = name => state.runs.filter(r => r.task === name).sort((a, b) => a.when - b.when);
+  const fmt = (x, d = 2) => (Math.round(x * Math.pow(10, d)) / Math.pow(10, d)).toFixed(d);
+
+  function render() {
+    const t = task(), c = coef(t);
+    $('profName').textContent = 'profile: ' + state.profile.name;
+    $('tabs').innerHTML = state.profile.tasks.map(x => `<button class="${x.name === t.name ? 'on' : ''}" data-t="${x.name}">${x.name}</button>`).join('');
+    $('tabs').querySelectorAll('button').forEach(b => b.onclick = () => { state.task = b.dataset.t; save(); render(); });
+    $('taskInfo').textContent = `${t.unit}, positions ${t.positions.join(', ')} deg, seed SENS ${t.sens} per IPS, TACH ${t.tach} deg`;
+    $('chgLoc').innerHTML = posObjs(t).map(p => `<option value="${p.angle}">${p.label} (${p.angle})</option>`).join('');
+    $('sens').value = fmt(c.sens, 1); $('tach').value = fmt(c.tach, 1);
+    if (!$('maxPos').value || $('maxPos').dataset.t !== t.name) { $('maxPos').value = t.max; $('maxPos').dataset.t = t.name; }
+    renderRuns(t); renderSolution(t, c); renderMulti(t); renderAux(t, c); drawPolar(t);
+  }
+
+  function renderRuns(t) {
+    const rs = runsFor(t.name);
+    let h = '<tr><th>When</th><th>RPM</th><th>Level</th><th>Phase</th><th>Change before</th><th>SENS</th><th>TACH</th><th></th></tr>';
+    rs.forEach((r, i) => {
+      h += `<tr><td>${r.when.toLocaleString()}</td><td>${r.rpm ? fmt(r.rpm, 1) : ''}</td><td>${fmt(r.level, 3)}</td><td>${fmt(r.phase, 1)}</td><td>${r.change && r.change.mag ? fmt(r.change.mag, 1) + ' @ ' + r.change.loc : ''}</td><td>${r.sens ? fmt(r.sens, 1) : ''}</td><td>${r.tach ? fmt(r.tach, 1) : ''}</td><td><button class="ghost" data-del="${state.runs.indexOf(r)}">x</button></td></tr>`;
+    });
+    $('runs').innerHTML = h;
+    $('runs').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { state.runs.splice(+b.dataset.del, 1); save(); render(); });
+  }
+
+  function solutionFor(t, c, rs) {
+    if (!rs.length) return null;
+    const last = rs[rs.length - 1];
+    return M.solve([{ level: last.level, phase: last.phase, sens: c.sens, tach: c.tach }]);
+  }
+
+  function positionsHtml(t, sol, unit) {
+    if (!sol) return '';
+    const maxPos = +$('maxPos').value || t.max, rt = +$('roundTo').value || 0;
+    const sp = M.split(sol.mag, sol.angle, posObjs(t));
+    return sp.map(p => {
+      const amt = rt ? Math.round(p.amount / rt) * rt : p.amount;
+      const over = Math.abs(amt) > maxPos;
+      return `<span class="pos ${over ? 'warn' : ''}">${posLabel(t, p.angle)}<b>${fmt(amt, rt && rt < 1 ? 1 : 0)} ${unit}</b>${over ? 'over max ' + maxPos : ''}</span>`;
+    }).join('');
+  }
+
+  function renderSolution(t, c) {
+    const rs = runsFor(t.name);
+    const sol = solutionFor(t, c, rs);
+    if (!sol) { $('solVec').textContent = 'no runs'; $('solPos').innerHTML = ''; $('solNote').textContent = ''; return; }
+    const last = rs[rs.length - 1];
+    const unit = t.unit === 'TAB DG' ? 'deg' : t.unit === 'GRAMS' ? 'g' : t.unit;
+    $('solVec').textContent = `${fmt(sol.mag, 2)} ${unit} at ${fmt(sol.angle, 1)} deg`;
+    $('solPos').innerHTML = positionsHtml(t, sol, unit);
+    const tgt = +$('target').value || 0.2;
+    $('solNote').textContent = last.level <= tgt ? `Latest level ${fmt(last.level, 3)} IPS is at or below the ${tgt} IPS target. No move needed.` : `Latest level ${fmt(last.level, 3)} IPS at phase ${fmt(last.phase, 1)}. Predicted level after this move: ${fmt(M.predict({ level: last.level, phase: last.phase, sens: c.sens, tach: c.tach }, sol.mag, sol.angle).level, 3)} IPS.`;
+  }
+
+  function renderMulti(t) {
+    const same = state.profile.tasks.filter(x => x.unit === t.unit && x.unit !== 'NO ADJ' && runsFor(x.name).length);
+    if (same.length < 2) { $('multi').innerHTML = '<tr><td class="mute">Only one regime has runs for this adjustment type.</td></tr>'; $('multiVec').textContent = ''; $('multiPos').innerHTML = ''; return; }
+    let h = '<tr><th>Regime</th><th>Latest level</th><th>Phase</th><th>SENS</th><th>TACH</th><th>Weight</th><th>Predicted after move</th></tr>';
+    const regs = same.map(x => { const rs = runsFor(x.name), l = rs[rs.length - 1], c = coef(x); const w = state.weights[x.name] == null ? 1 : state.weights[x.name]; return { name: x.name, level: l.level, phase: l.phase, sens: c.sens, tach: c.tach, weight: w }; });
+    const sol = M.solve(regs);
+    regs.forEach(r => { const p = sol ? M.predict(r, sol.mag, sol.angle) : null; h += `<tr><td>${r.name}</td><td>${fmt(r.level, 3)}</td><td>${fmt(r.phase, 1)}</td><td>${fmt(r.sens, 1)}</td><td>${fmt(r.tach, 1)}</td><td><input type="number" step="0.1" min="0" value="${r.weight}" data-w="${r.name}" style="width:70px"></td><td>${p ? fmt(p.level, 3) : ''}</td></tr>`; });
+    $('multi').innerHTML = h;
+    $('multi').querySelectorAll('[data-w]').forEach(i => i.onchange = () => { state.weights[i.dataset.w] = +i.value; save(); render(); });
+    const unit = t.unit === 'TAB DG' ? 'deg' : 'g';
+    $('multiVec').textContent = sol ? `${fmt(sol.mag, 2)} ${unit} at ${fmt(sol.angle, 1)} deg` : '';
+    $('multiPos').innerHTML = positionsHtml(t, sol, unit);
+  }
+
+  function renderAux(t, c) {
+    const card = $('auxCard');
+    if (!t.aux) { card.style.display = 'none'; return; }
+    card.style.display = '';
+    const a = t.aux;
+    if ($('auxIps').dataset.t !== t.name) { $('auxIps').value = a.ipsPerGram; $('auxAxis').value = a.stations.join(', '); $('auxG').value = a.gMin; $('auxMax').value = a.gMax; $('auxIps').dataset.t = t.name; }
+    const ipsPerG = +$('auxIps').value || a.ipsPerGram;
+    const stations = $('auxAxis').value.split(',').map(x => +x.trim()).filter(x => !isNaN(x));
+    const gMin = +$('auxG').value || 0, gMax = +$('auxMax').value || 16;
+    state.now = state.now || {};
+    const nowKey = k => t.name + ':' + stations[k];
+    if ($('auxNow').children.length !== stations.length) {
+      $('auxNow').innerHTML = stations.map((st, k) => `<div><label>On bolt at ${st} deg now, g</label><input type="number" step="1" min="0" data-now="${k}" value="${state.now[nowKey(k)] || 0}" style="width:90px"></div>`).join('');
+      $('auxNow').querySelectorAll('[data-now]').forEach(i => i.onchange = () => { state.now[nowKey(+i.dataset.now)] = +i.value || 0; save(); render(); });
+    }
+    const now = stations.map((st, k) => state.now[nowKey(k)] || 0);
+    const rs = runsFor(t.name);
+    if (!rs.length || !stations.length) { $('auxVec').textContent = 'no runs'; $('auxPos').innerHTML = ''; $('auxNote').textContent = ''; return; }
+    const last = rs[rs.length - 1];
+    const sol = M.solve([{ level: last.level, phase: last.phase, sens: c.sens, tach: c.tach }]);
+    const ips = sol.mag / c.sens, D2R = Math.PI / 180;
+    const tx = ips * Math.cos(sol.angle * D2R), ty = ips * Math.sin(sol.angle * D2R);
+    const maxPos = +$('maxPos').value || t.max;
+    const pos = posObjs(t);
+    // search integer changes per station: remove down to zero, add up to gMax above what is there
+    const ranges = stations.map((st, k) => { const r = []; for (let d = -now[k]; d <= Math.max(0, gMax - now[k]); d++) r.push(d); return r; });
+    let best = null; const delta = new Array(stations.length).fill(0); let evals = 0;
+    (function rec(i) {
+      if (i === stations.length) {
+        evals++;
+        let rx = tx, ry = ty, mass = 0, changed = 0;
+        delta.forEach((d, k) => { if (d) { rx -= d * ipsPerG * Math.cos(stations[k] * D2R); ry -= d * ipsPerG * Math.sin(stations[k] * D2R); changed++; } mass += now[k] + d; });
+        const rem = Math.hypot(rx, ry), ang = M.mod360(Math.atan2(ry, rx) / D2R);
+        const wheel = M.split(rem * c.sens, ang, pos);
+        const wheelMass = wheel.reduce((q, w) => q + Math.abs(w.amount), 0);
+        const over = wheel.some(w => Math.abs(w.amount) > maxPos);
+        const score = wheelMass + mass + changed * 0.5 + (over ? 1000 : 0);
+        if (!best || score < best.score) best = { score, delta: delta.slice(), rem, ang, wheel, over };
+        return;
+      }
+      for (const d of ranges[i]) { delta[i] = d; rec(i + 1); }
+    })(0);
+    const washers = best.delta.map((d, k) => {
+      if (!d) return '';
+      const after = now[k] + d; const warn = (after && after < gMin) || after > gMax;
+      return `<span class="pos ${warn ? 'warn' : ''}">${d > 0 ? 'add' : 'remove'} at ${stations[k]} deg<b>${Math.abs(d)} g</b>${after} g after${warn ? ', outside ' + gMin + ' to ' + gMax : ''}</span>`;
+    }).join('');
+    $('auxVec').textContent = best.delta.some(d => d) ? 'Washers:' : 'No washer change; wheel only';
+    $('auxPos').innerHTML = washers + best.wheel.map(w => `<span class="pos ${Math.abs(w.amount) > maxPos ? 'warn' : ''}">wheel ${posLabel(t, w.angle)}<b>${fmt(w.amount, 1)} g</b></span>`).join('');
+    $('auxNote').textContent = `Correction needed ${fmt(ips, 3)} IPS at ${fmt(sol.angle, 1)} deg. After the washer change, ${fmt(best.rem, 3)} IPS at ${fmt(best.ang, 1)} deg goes on the wheel.${best.over ? ' Wheel over its per-position limit; check the warning.' : ''} Negative wheel grams mean remove weight from that position. ${evals} combinations checked.`;
+  }
+
+  function drawPolar(t) {
+    const cv = $('polar'), ctx = cv.getContext('2d'); const W = cv.width, cx = W / 2, cy = W / 2, R = W / 2 - 24;
+    const rs = runsFor(t.name); const ink = getComputedStyle(document.body).color, mute = getComputedStyle(document.body).getPropertyValue('--mute');
+    ctx.clearRect(0, 0, W, W);
+    let fs = Math.max(1, ...rs.map(r => r.level)); fs = Math.ceil(fs * 2) / 2; $('fs').textContent = fs;
+    ctx.strokeStyle = mute; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+    for (let k = 1; k <= 4; k++) { ctx.beginPath(); ctx.arc(cx, cy, R * k / 4, 0, Math.PI * 2); ctx.stroke(); }
+    for (let a = 0; a < 360; a += 30) { const p = pt(a, R); ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(p[0], p[1]); ctx.stroke(); }
+    ctx.setLineDash([]); ctx.fillStyle = ink; ctx.font = '12px system-ui'; ctx.textAlign = 'center';
+    [[0, '360'], [90, '90'], [180, '180'], [270, '270']].forEach(([a, s]) => { const p = pt(a, R + 14); ctx.fillText(s, p[0], p[1] + 4); });
+    function pt(a, r) { const th = (a - 90) * Math.PI / 180; return [cx + r * Math.cos(th), cy + r * Math.sin(th)]; }
+    rs.forEach((r, i) => { const p = pt(r.phase, R * Math.min(r.level, fs) / fs); ctx.fillStyle = i === rs.length - 1 ? getComputedStyle(document.body).getPropertyValue('--acc') : mute; ctx.beginPath(); ctx.arc(p[0], p[1], 6, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = ink; ctx.fillText(String(i + 1), p[0], p[1] - 9); if (i) { const q = pt(rs[i - 1].phase, R * Math.min(rs[i - 1].level, fs) / fs); ctx.strokeStyle = mute; ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.lineTo(p[0], p[1]); ctx.stroke(); } });
+    const sol = solutionFor(t, coef(t), rs);
+    if (sol) { const p = pt(sol.angle, R); ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--acc'); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p[0], p[1], 8, 0, Math.PI * 2); ctx.stroke(); }
+  }
+
+  // ---- events ----
+  $('add').onclick = () => {
+    const t = task(), c = coef(t);
+    const level = +$('level').value, phase = +$('phase').value;
+    if (!(level >= 0) || isNaN(phase)) { $('addMsg').textContent = 'level and phase are required'; return; }
+    const change = { mag: +$('chgMag').value || 0, loc: +$('chgLoc').value };
+    const rs = runsFor(t.name);
+    let msg = '';
+    if (change.mag && rs.length) {
+      const meas = M.learn(rs[rs.length - 1], { level, phase }, change);
+      const lim = +$('learnLimit').value || 0;
+      if (meas && meas.deltaLevel >= lim) { const nc = M.blend(c, meas, Math.min(1, Math.max(0, +$('trust').value))); state.coef[t.name] = nc; msg = `learned: measured SENS ${fmt(meas.sens, 1)} TACH ${fmt(meas.tach, 1)}, now using SENS ${fmt(nc.sens, 1)} TACH ${fmt(nc.tach, 1)}`; }
+      else if (meas) msg = `move changed vibration by only ${fmt(meas.deltaLevel, 3)} IPS, coefficient kept`;
+    }
+    state.runs.push({ task: t.name, when: new Date(), rpm: +$('rpm').value || null, level, phase, change, sens: state.coef[t.name].sens, tach: state.coef[t.name].tach });
+    $('level').value = $('phase').value = $('chgMag').value = ''; $('addMsg').textContent = msg; save(); render();
+  };
+  $('sens').onchange = () => { coef(task()).sens = +$('sens').value; save(); render(); };
+  $('tach').onchange = () => { coef(task()).tach = +$('tach').value; save(); render(); };
+  ['maxPos', 'roundTo', 'target', 'auxIps', 'auxAxis', 'auxG', 'auxMax'].forEach(id => $(id).onchange = render);
+  $('resetCoef').onclick = () => { const t = task(); state.coef[t.name] = { sens: t.sens, tach: t.tach }; save(); render(); };
+  $('clear').onclick = () => { if (confirm('Delete all runs?')) { state.runs = []; state.coef = {}; save(); render(); } };
+  $('export').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' })); a.download = 'hobo-solver.json'; a.click(); };
+  $('file').onchange = async ev => {
+    const f = ev.target.files[0]; if (!f) return;
+    const buf = new Uint8Array(await f.arrayBuffer());
+    if (buf.length === 1816) { // group file
+      const g = M.decodeGroup(buf);
+      state.profile = { name: g.name, tasks: g.tasks.filter(t => t.name && t.name !== '---').map(t => ({ name: t.name, sens: t.sens, tach: t.tach, unit: t.positions[0] ? t.positions[0].unit : '', positions: t.positions.map(p => p.angle), max: t.positions[0] && t.positions[0].unit === 'TAB DG' ? 8 : t.name === 'T/R BAL' ? 25 : 400 })) };
+      state.task = state.profile.tasks[0].name; state.coef = {};
+    } else {
+      const h = M.decodeHistory(buf);
+      h.runs.forEach(r => { state.runs.push({ task: r.task, when: r.when, rpm: r.rpm, level: r.level, phase: r.phase, change: r.change, sens: r.sens, tach: r.tach }); state.coef[r.task] = { sens: r.sens, tach: r.tach }; });
+      $('addMsg').textContent = `imported ${h.runs.length} runs from ${f.name}`;
+    }
+    ev.target.value = ''; save(); render();
+  };
+  render();
+})();
+</script>
+</body>
+</html>
