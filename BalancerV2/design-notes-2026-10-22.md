@@ -10,7 +10,7 @@ multi-regime solver and docks on the main unit to charge.
 | Role | Part | Interface | Notes |
 |---|---|---|---|
 | Tach | Banner SM312LVMHSQD | 10-30 V, <25 mA, M12 4-pin QD: pin 1 brown +, pin 3 blue -, pin 2 white NPN (used), pin 4 black PNP (open) | Retroreflective, tape on one blade. Mating cordset MQDC-406. Datasheet 69943 Rev J p.12. MHS: 0.3 ms response, 0.3 ms repeatability (0.7 deg jitter at 385 RPM, averaged out), reduced sensitivity range. Outputs off for 100 ms after power-up: ignore edges for 200 ms. Shiny blades may need the polarizing filter or the SM312LP. |
-| Vert + lat accel | ADI EVAL-ADXL357Z (ADXL357, 3-axis MEMS, 20-bit, +/-10/20/40 g, DC to ~1 kHz, SPI) | SPI + DRDY, 3.3 V | One board gives both axes. DC response: no low-frequency phase error at 390 RPM; only a fixed digital-filter group delay, calibrated out. ~80 ug/rtHz noise, ~4 ug/LSB at +/-10 g. About $50-60 at Digi-Key. |
+| Vert + lat accel | SparkFun KX134 Qwiic (SEN-17589), 3-axis MEMS, 16-bit, +/-8/16/32/64 g, I2C or SPI (chosen 2026-10-25, replacing the EVAL-ADXL357Z on cost) | I2C via Qwiic plus an INT wire, 3.3 V | One board gives both axes. The 40 g requirement rules out the cheaper 16 g parts. Noise about 130 ug/rtHz per SparkFun's listing, setting-dependent. $35.95 at SparkFun and Digi-Key. The ADXL357 board, about $53, was the first choice. |
 
 Kit charge-mode sensors (PCB 357, Dytran 3085C) and the DSS 1498 charge amp stay with the
 MicroVib for engine work. A voltage-input daughterboard for the 1498 output is a possible
@@ -93,6 +93,36 @@ Dock: three pogo pins, 5 V, GND, dock-detect. The head's own charger handles the
 - Head: LVGL UI, regime-by-regime entry, polar chart, multi-regime least-squares solver
   with track constraint, flight log on flash or SD.
 
+## Decisions 2026-10-25 (supersede the 2026-10-22 hardware choices below)
+
+- Main unit becomes a carrier for off-the-shelf modules: an ESP32-S3 Feather (FeatherS3 or
+  Adafruit 5477) on female headers, the SparkFun KX134 for vibration, an MT3608 boost module
+  for the Banner's 12 V. The LM1815 stays on the carrier. The 1S cell plugs into the Feather.
+  See main-unit-pinmap.md.
+- Range: the accelerometer must reach at least 40 g, because high-frequency content clips a
+  MEMS sensor before its digital filter. That rules out 16 g parts (ISM330DHCX, LSM6DSOX) and
+  the 32 g LSM6DSO32.
+- VR input: the Speeduino MAX9926 conditioner (github.com/speeduino/Hardware, VR Conditioner)
+  was considered and not used: it needs 5 V, its outputs pull up to 5 V, and the LM1815 is
+  already built and proven on the v1 carrier.
+- The MicroVib's own accelerometers stay with the MicroVib. Using them would need an IEPE
+  front end (24 V, about 2 mA constant current, AC coupling) and a 24-bit ADC per channel.
+
+## Accelerometer simulation, KX134 vs ADXL357 (2026-10-25)
+
+Python port of matlab/sim_acquisition.m (it reproduced the MATLAB ADXL357 result).
+Main rotor 395 RPM, 0.6 IPS of 4/rev, magnetic-pickup tach, 32 revolutions averaged,
+scatter (one standard deviation) of the 1/rev reading:
+
+| Sensor | at 0.10 IPS | at 0.02 IPS | phase at 0.02 IPS |
+|---|---|---|---|
+| ADXL357 +/-10 g, 80 ug/rtHz, 20-bit | 0.0003 IPS | 0.0003 IPS | 1.0 deg |
+| KX134 +/-64 g, 130 ug/rtHz, 16-bit | 0.0005 IPS | 0.0004 IPS | 1.6 deg |
+| KX134 at twice that noise | 0.0010 IPS | 0.0011 IPS | 2.6 deg |
+
+The KX134 resolves 0.02 IPS with margin even at +/-64 g, where one count is about 2 mg;
+its noise dithers the rounding and averaging recovers it.
+
 ## Decisions 2026-10-22
 
 - Pack, superseded later the same day: the 3S Admiral pack with external balance charging
@@ -109,7 +139,7 @@ Dock: three pogo pins, 5 V, GND, dock-detect. The head's own charger handles the
 ## Open items
 
 1. Confirm external balance charging for the LiPo (vs an onboard 3S charger).
-2. Enclosure: base plate stiffness, ADXL357 board position and axis, tach aim, before any PCB outline.
+2. Enclosure: base plate stiffness, KX134 board position and axis, tach aim.
 
 ## Blade track, cost-effective route (proposal 2026-10-22)
 

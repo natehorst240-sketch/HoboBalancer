@@ -1,9 +1,11 @@
 """Generate BalancerMain.kicad_sch: the HoboBalancer v2 main unit.
 
-OMGS3 module soldered to pads (ESP32-S3-PICO), one 1S LiPo on the module's own charger, USB-C with the IIS3DWB replaced by sockets for
-the EVAL-ADXL357Z, the LM1815 magnetic-pickup input kept, a Banner SM312 NPN tach input,
-and 3S power. Hand assembly: SOIC/SOT-23 only, every passive 1206, through-hole for
-connectors, switch, inductors and pads. Six resistor values, four capacitor values.
+A carrier for off-the-shelf boards (decided 2026-10-25): an ESP32-S3 Feather on female
+headers (Unexpected Maker FeatherS3 or Adafruit ESP32-S3 Feather; signals use Feather
+positions that are plain GPIO on both), a SparkFun KX134 Qwiic accelerometer on a cable,
+and an MT3608 boost module wired to pads. The board carries the LM1815 magnetic-pickup
+input, the Banner tach input, the switch that powers the boost module from the cell, the
+acquire button and the status LED. Hand assembly: SOIC/SOT-23 only, every passive 1206.
 
 Standard symbols are harvested from the carrier and BalancerREF schematics in this repo
 (no KiCad library is needed to run this), so the pin geometry is exactly KiCad's own.
@@ -75,11 +77,20 @@ for ours, src in HARVEST.items():
     if ours != src: rename(s, ours)
     libsyms[ours] = s
 
-# OMGS3 symbol from Unexpected Maker's own library (github.com/UnexpectedMaker/esp32s3,
-# kicad/symbols/OMGS3.kicad_sym), copied into this repo under BalancerMain/vendor/.
-_omg = sx.loads((ROOT / 'vendor' / 'OMGS3.kicad_sym').read_text(encoding='utf8'))
-_omg = next(a for a in children(_omg, 'symbol') if str(a[1]) == 'OMGS3')
-libsyms['BalancerMain:OMGS3'] = rename(deepcopy(_omg), 'BalancerMain:OMGS3')
+# Feather symbol: the carrier's FeatherS3 symbol (pin numbers = footprint pads, header
+# order checked against the FeatherS3 pinout card), with each pin renamed to its Feather
+# position so the same board takes the Adafruit ESP32-S3 Feather.
+FEATHER_POS = {'1': 'BAT', '2': 'EN', '3': 'USB', '4': 'D13', '5': 'D12', '6': 'D11', '7': 'D10', '8': 'D9',
+               '9': 'D6', '10': 'D5', '11': 'SCL', '12': 'SDA', '13': 'P16', '14': 'TX', '15': 'RX', '16': 'MI',
+               '17': 'MO', '18': 'SCK', '19': 'A5', '20': 'A4', '21': 'A3', '22': 'A2', '23': 'A1', '24': 'A0',
+               '25': 'GND', '26': 'AREF', '27': '3V', '28': 'RST'}
+_fs = rename(deepcopy(_harvest['BalancerCarrier:FeatherS3']), 'BalancerMain:Feather')
+for sub in children(_fs, 'symbol'):
+    for pin in children(sub, 'pin'):
+        one(pin, 'name')[1] = FEATHER_POS[str(one(pin, 'number')[1])]
+for pr in children(_fs, 'property'):
+    if pr[1] == 'Value': pr[2] = 'Feather ESP32-S3'
+libsyms['BalancerMain:Feather'] = _fs
 
 
 def power_clone(name):
@@ -93,7 +104,7 @@ def power_clone(name):
     libsyms['BalancerMain:' + name] = s
 
 
-for rail in ('VBUS', '+12V', 'VBAT'):
+for rail in ('+12V', 'VBAT'):
     power_clone(rail)
 
 
@@ -113,41 +124,9 @@ def custom_ic(name, w, h, plist, fp, url, ref='U'):
     s.extend([g, pp]); libsyms['BalancerMain:' + name] = s
 
 
-FP_SOT236 = 'Package_TO_SOT_SMD:SOT-23-6'
-# TPS54202DDCR, SLVSD01: 1 GND, 2 SW, 3 VIN, 4 FB, 5 EN, 6 BST
-custom_ic('TPS54202DDCR', 10.16, 10.16, [
-    (3, 'VIN', 'power_in', -15.24, 5.08, 0), (5, 'EN', 'input', -15.24, 0, 0), (4, 'FB', 'input', -15.24, -5.08, 0),
-    (6, 'BST', 'passive', 15.24, 5.08, 180), (2, 'SW', 'power_out', 15.24, 0, 180),
-    (1, 'GND', 'power_in', 0, -15.24, 90)], FP_SOT236, 'https://www.ti.com/lit/ds/symlink/tps54202.pdf')
-# MT3608 (Aerosemi / XI'AN): 1 SW, 2 GND, 3 FB, 4 EN, 5 IN, 6 NC
-custom_ic('MT3608', 10.16, 10.16, [
-    (5, 'IN', 'power_in', -15.24, 5.08, 0), (4, 'EN', 'input', -15.24, 0, 0), (3, 'FB', 'input', -15.24, -5.08, 0),
-    (1, 'SW', 'power_out', 15.24, 5.08, 180), (6, 'NC', 'no_connect', 15.24, -5.08, 180),
-    (2, 'GND', 'power_in', 0, -15.24, 90)], FP_SOT236, 'https://www.olimex.com/Products/Breadboarding/BB-PWR-3608/resources/MT3608.pdf')
-custom_ic('D_Schottky', 5.08, 2.54, [(1, 'K', 'passive', -7.62, 0, 0), (2, 'A', 'passive', 7.62, 0, 180)],
-          'Diode_SMD:D_SMA', '', ref='D')
-custom_ic('Polyfuse', 5.08, 2.54, [(1, '1', 'passive', -7.62, 0, 0), (2, '2', 'passive', 7.62, 0, 180)],
-          'Fuse:Fuse_1812_4532Metric', '', ref='F')
-custom_ic('Conn_02x03', 7.62, 5.08, [
-    (1, '1', 'passive', -12.7, 2.54, 0), (3, '3', 'passive', -12.7, 0, 0), (5, '5', 'passive', -12.7, -2.54, 0),
-    (2, '2', 'passive', 12.7, 2.54, 180), (4, '4', 'passive', 12.7, 0, 180), (6, '6', 'passive', 12.7, -2.54, 180)],
-    'Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical', '', ref='J')
-custom_ic('USB_C_16P', 10.16, 12.7, [
-    ('VBUS1', 'VBUS', 'passive', -15.24, 10.16, 0), ('VBUS2', 'VBUS', 'passive', -15.24, 7.62, 0),   # passive: the PWR_FLAG drives the rail
-    ('A5', 'CC1', 'passive', -15.24, 2.54, 0), ('B5', 'CC2', 'passive', -15.24, 0, 0),
-    ('A6', 'D+', 'bidirectional', 15.24, 5.08, 180), ('B6', 'D+', 'bidirectional', 15.24, 2.54, 180),
-    ('A7', 'D-', 'bidirectional', 15.24, -2.54, 180), ('B7', 'D-', 'bidirectional', 15.24, -5.08, 180),
-    ('GND', 'GND', 'power_in', -5.08, -17.78, 90), ('GND2', 'GND', 'power_in', 0, -17.78, 90), ('SHLD', 'SHIELD', 'passive', 5.08, -17.78, 90)],
-    'BalancerMain:USB_C_16P', '', ref='J')
-custom_ic('JST_PH_1x02', 5.08, 5.08, [(1, '1', 'passive', -10.16, 2.54, 0), (2, '2', 'passive', -10.16, -2.54, 0)],
-          'BalancerMain:JST_PH_1x02_Vertical', '', ref='J')
 custom_ic('Conn_01x03', 5.08, 5.08, [
     (1, '1', 'passive', -10.16, 2.54, 0), (2, '2', 'passive', -10.16, 0, 0), (3, '3', 'passive', -10.16, -2.54, 0)],
     'BalancerMain:SolderWire_1x03', '', ref='J')
-custom_ic('Conn_01x04', 5.08, 6.35, [
-    (1, '1', 'passive', -10.16, 3.81, 0), (2, '2', 'passive', -10.16, 1.27, 0),
-    (3, '3', 'passive', -10.16, -1.27, 0), (4, '4', 'passive', -10.16, -3.81, 0)],
-    'Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical', '', ref='J')
 
 
 def lib_pins(lib):
@@ -215,7 +194,7 @@ def label(net, x, y, dx, dy):
 
 def pwr(net, x, y):
     _pwr[0] += 1
-    lib = {'GND': 'power:GND', '+3V3': 'power:+3V3', 'VBUS': 'BalancerMain:VBUS', '+12V': 'BalancerMain:+12V', 'VBAT': 'BalancerMain:VBAT'}[net]
+    lib = {'GND': 'power:GND', '+3V3': 'power:+3V3', '+12V': 'BalancerMain:+12V', 'VBAT': 'BalancerMain:VBAT'}[net]
     place('#PWR%03d' % _pwr[0], lib, net, x, y)
 
 
@@ -228,7 +207,7 @@ def nc(x, y):
     ncs.append(node('no_connect', node('at', rnd(x), rnd(y)), node('uuid', uid())))
 
 
-POWER = ('GND', '+3V3', 'VBUS', '+12V', 'VBAT')
+POWER = ('GND', '+3V3', '+12V', 'VBAT')
 
 
 def connect(pins, mapping, stub=7.62):
@@ -258,67 +237,54 @@ def two(ref, lib, value, x, y, rot, fp, n1, n2, stub=5.08):
 
 R, C, L = 'Device:R', 'Device:C', 'Device:L'
 FP_R, FP_C = 'Resistor_SMD:R_1206_3216Metric', 'Capacitor_SMD:C_1206_3216Metric'
-FP_L = 'BalancerMain:L_Radial_D9_P5'
 FP_SOT23 = 'Package_TO_SOT_SMD:SOT-23'
 FP_PADS2 = 'BalancerMain:SolderWire_1x02'
 
-# ================================================================ OMGS3
-# Pad names from the OMGS3 pinout card and schematic P1 (2024-07-20): 17 GPIO on pads,
-# IO0 strapping, IO3 strapping (JTAG select, inactive unless the eFuse is burned),
-# IO8/IO9 shared with the module's MAX17048 fuel gauge I2C (10k pull-ups), IO33/34/35
-# internal (VBUS sense, RGB LED). BAT_SENSE needs ADC1: IO1..IO9 are ADC1 channels.
-GPIO = {
-    'IO3': 'BOOST_EN',
-    'IO4': 'ACCEL_SCK', 'IO5': 'ACCEL_MISO', 'IO6': 'ACCEL_MOSI', 'IO7': 'ACCEL_CS', 'IO10': 'ACCEL_DRDY',
-    'IO11': 'MAG_TACH', 'IO12': 'OPT_TACH', 'IO13': 'ACQUIRE_BUTTON',
-    'IO14': 'STATUS_LED',
-    'TX0': 'GPS_UART_TX', 'RX0': 'GPS_UART_RX',
-    'D-': 'USB_DM', 'D+': 'USB_DP', 'IO0': 'PROG_IO0', 'RESET': 'PROG_RST',
-}
-# IO1, IO2, IO8 are spare on the pads (IO8 is also the fuel-gauge SDA, leave it alone).
+# ================================================================ Feather
+# Signals by Feather position. GPIO on the two boards (FeatherS3 pinout card; Adafruit
+# arduino-esp32 variant adafruit_feather_esp32s3):
+#   A0 MAG_TACH   FeatherS3 IO17, Adafruit GPIO18   (RTC GPIO on both: can wake the chip)
+#   A1 OPT_TACH   IO18 / GPIO17                     A2 ACQUIRE_BUTTON IO14 / GPIO16 (RTC)
+#   A3 STATUS_LED IO12 / GPIO15                     A4 BOOST_EN       IO6  / GPIO14
+#   A5 ACCEL_INT  IO5  / GPIO8                      SDA/SCL           IO8/IO9 / GPIO3/GPIO4
+# AREF (FeatherS3 IO0, a strapping pin) and the 16th pin (FeatherS3 LDO2 output) stay open.
+GPIO = {'A0': 'MAG_TACH', 'A1': 'OPT_TACH', 'A2': 'ACQUIRE_BUTTON', 'A3': 'STATUS_LED', 'A4': 'BOOST_EN',
+        'A5': 'ACCEL_INT', 'SDA': 'ACCEL_SDA', 'SCL': 'ACCEL_SCL'}
 FX, FY = 254.0, 101.6
-fb = place('U1', 'BalancerMain:OMGS3', 'OMGS3', FX, FY, 0, 'BalancerMain:OMGS3')
+fb = place('U1', 'BalancerMain:Feather', 'Feather ESP32-S3', FX, FY, 0, 'BalancerMain:Feather_Socket')
 m = {}
 for num, ((x, y), d, p) in fb.items():
     nam = p['name']
     if nam in GPIO: m[num] = GPIO[nam]
-    elif nam == '5V': m[num] = 'MOD_5V'     # USB VBUS through D1, as on Unexpected Maker's carrier; charger and 3.3 V LDO inside
-    elif nam == 'BAT': m[num] = 'VBAT'      # the 1S cell: charged by the module, read by its fuel gauge
-    elif nam == 'GND' or num == 'EXP': m[num] = 'GND'
-    elif nam == '3V3': m[num] = '+3V3'
-    else: m[num] = 'NC'          # EN (3V3 LDO enable, default on), IO8/IO9 fuel-gauge I2C
+    elif nam == 'BAT': m[num] = 'VBAT'
+    elif nam == 'GND': m[num] = 'GND'
+    elif nam == '3V': m[num] = '+3V3'
+    else: m[num] = 'NC'
 connect(fb, m, 10.16)
-# IO0 and RESET on a 1x03 header with GND for manual bootloader entry (USB flashing normally needs neither)
-j5 = place('J5', 'BalancerMain:Conn_01x03', 'PROG GND/IO0/RST', 393.7, 134.62, 0, 'Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical')
-connect(j5, {'1': 'GND', '2': 'PROG_IO0', '3': 'PROG_RST'})
 
-# ================================================================ battery in, buck, boost
-# J1: 1S LiPo on a JST-PH, straight to the OMGS3 BAT pad (charger and fuel gauge are on the module)
-j1 = place('J1', 'BalancerMain:JST_PH_1x02', 'LIPO 1S JST-PH', 25.4, 50.8, 0, 'BalancerMain:JST_PH_1x02_Vertical')
-connect(j1, {'1': 'VBAT', '2': 'GND'})
-flag(50.8, 40.64); wire((50.8, 40.64), (50.8, 45.72)); pwr('VBAT', 50.8, 45.72)
-two('C1', C, '10u 25V', 71.12, 60.96, 0, FP_C, 'VBAT', 'GND')
-# USB-C: VBUS -> D1 -> module 5V pad, CC1/CC2 5.1k to ground, as on Unexpected Maker's OMGS3 carrier (no TVS here)
-ju = place('J9', 'BalancerMain:USB_C_16P', 'USB-C 16P', 127.0, 121.92, 0, 'BalancerMain:USB_C_16P')
-connect(ju, {'VBUS1': 'VBUS', 'VBUS2': 'VBUS', 'A5': 'USB_CC1', 'B5': 'USB_CC2', 'A6': 'USB_DP', 'B6': 'USB_DP',
-             'A7': 'USB_DM', 'B7': 'USB_DM', 'GND': 'GND', 'GND2': 'GND', 'SHLD': 'GND'})
-two('R1', R, '5.1k', 83.82, 134.62, 0, FP_R, 'USB_CC1', 'GND')
-two('R2', R, '5.1k', 96.52, 134.62, 0, FP_R, 'USB_CC2', 'GND')
-two('D1', 'BalancerMain:D_Schottky', 'SS14', 170.18, 109.22, 180, 'Diode_SMD:D_SMA', 'MOD_5V', 'VBUS')   # K to the module
-two('C2', C, '10u 25V', 190.5, 121.92, 0, FP_C, 'MOD_5V', 'GND')
-flag(177.8, 93.98); wire((177.8, 93.98), (177.8, 99.06)); pwr('VBUS', 177.8, 99.06)
+# ================================================================ KX134 header
+# SparkFun KX134 Qwiic: either the Qwiic cable to the Feather's STEMMA QT plus one wire to
+# INT here, or all five wires here. Same I2C bus either way.
+j4 = place('J4', 'Connector_Generic:Conn_01x05', 'KX134 3V3/GND/SDA/SCL/INT', 393.7, 101.6, 0,
+           'Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical')
+connect(j4, {'1': '+3V3', '2': 'GND', '3': 'ACCEL_SDA', '4': 'ACCEL_SCL', '5': 'ACCEL_INT'})
 
-# MT3608 boost, 12 V for the Banner sensor only, from the cell. Vfb 0.6 V: 100k / 5.1k -> 12.4 V. L 22 uH.
-OX, OY = 76.2, 187.96
-bo = place('U3', 'BalancerMain:MT3608', 'MT3608', OX, OY, 0, FP_SOT236)
-connect(bo, {'5': 'VBAT', '4': 'BOOST_EN', '3': 'BOOST_FB', '1': 'BOOST_SW', '6': 'NC', '2': 'GND'})
-two('R6', R, '100k', 40.64, 200.66, 0, FP_R, 'BOOST_EN', 'GND')       # off until firmware raises IO38
-two('L2', L, '22uH 1A', 116.84, 177.8, 90, FP_L, 'VBAT', 'BOOST_SW')
-two('D2', 'BalancerMain:D_Schottky', 'SS14', 142.24, 177.8, 180, 'Diode_SMD:D_SMA', '+12V', 'BOOST_SW')  # K to +12V
-two('C7', C, '10u 25V', 157.48, 200.66, 0, FP_C, '+12V', 'GND')
-two('R7', R, '100k', 177.8, 187.96, 0, FP_R, '+12V', 'BOOST_FB')
-two('R8', R, '5.1k', 177.8, 210.82, 0, FP_R, 'BOOST_FB', 'GND')
-flag(157.48, 172.72); wire((157.48, 172.72), (157.48, 177.8)); pwr('+12V', 157.48, 177.8)
+# ================================================================ boost module power switch
+# The MT3608 module has no enable pin, so the board switches its input: Q2 P-FET high side
+# from the cell, Q1 N-FET pulls Q2's gate down when the GPIO is high. R18 holds it off at boot.
+q1 = place('Q1', 'Transistor_FET:AO3400A', 'AO3400A', 76.2, 160.02, 0, FP_SOT23)
+connect(q1, {'1': 'BOOST_G', '2': 'GND', '3': 'BOOST_PG'})
+two('R16', R, '1k', 50.8, 160.02, 90, FP_R, 'BOOST_EN', 'BOOST_G')
+two('R18', R, '100k', 50.8, 182.88, 0, FP_R, 'BOOST_G', 'GND')
+two('R17', R, '100k', 101.6, 139.7, 0, FP_R, 'VBAT', 'BOOST_PG')
+q2 = place('Q2', 'Transistor_FET:AO3401A', 'AO3401A', 129.54, 139.7, 0, FP_SOT23)
+connect(q2, {'1': 'BOOST_PG', '2': 'VBAT', '3': 'BOOST_VIN'})
+j5 = place('J5', 'Connector_Generic:Conn_01x02', 'BOOST IN+ / IN-', 170.18, 139.7, 0, FP_PADS2)
+connect(j5, {'1': 'BOOST_VIN', '2': 'GND'})
+j6 = place('J6', 'Connector_Generic:Conn_01x02', 'BOOST OUT+ / OUT- (set 12 V)', 170.18, 177.8, 0, FP_PADS2)
+connect(j6, {'1': '+12V', '2': 'GND'})
+flag(203.2, 129.54); wire((203.2, 129.54), (203.2, 134.62)); pwr('VBAT', 203.2, 134.62)
+flag(203.2, 167.64); wire((203.2, 167.64), (203.2, 172.72)); pwr('+12V', 203.2, 172.72)
 
 # ================================================================ magnetic pickup, LM1815 (carrier block)
 MX, MY = 76.2, 266.7
@@ -345,13 +311,7 @@ connect(j2, {'1': '+12V', '2': 'GND', '3': 'OPT_RAW'})
 two('R14', R, '10k', 63.5, 309.88, 0, FP_R, '+3V3', 'OPT_RAW')
 two('R15', R, '1k', 81.28, 322.58, 90, FP_R, 'OPT_RAW', 'OPT_TACH')
 
-# ================================================================ ADXL357 eval board sockets (UG-1119 fig 5, 6)
-j6 = place('J6', 'BalancerMain:Conn_02x03', 'ADXL357 P1', 274.32, 220.98, 0, 'Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical')
-connect(j6, {'1': '+3V3', '3': '+3V3', '5': 'GND', '2': 'NC', '4': 'NC', '6': 'ACCEL_DRDY'})
-j7 = place('J7', 'BalancerMain:Conn_02x03', 'ADXL357 P2', 274.32, 251.46, 0, 'Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical')
-connect(j7, {'1': 'NC', '3': 'NC', '5': 'ACCEL_MISO', '2': 'ACCEL_CS', '4': 'ACCEL_SCK', '6': 'ACCEL_MOSI'})
-
-# ================================================================ UI, GPS, holes
+# ================================================================ UI, holes
 sw = place('SW1', 'Switch:SW_Push', 'ACQUIRE', 254.0, 309.88, 0, 'Button_Switch_THT:SW_PUSH_6mm')
 connect(sw, {'1': 'ACQUIRE_BUTTON', '2': 'GND'})
 two('R19', R, '10k', 228.6, 284.48, 0, FP_R, '+3V3', 'ACQUIRE_BUTTON')
@@ -359,8 +319,6 @@ two('C11', C, '100n', 241.3, 330.2, 0, FP_C, 'ACQUIRE_BUTTON', 'GND')
 two('R20', R, '1k', 353.06, 342.9, 90, FP_R, 'STATUS_LED', 'LED_A')
 led = place('LED1', 'Device:LED', 'STATUS GREEN', 373.38, 342.9, 0, 'LED_SMD:LED_0603_1608Metric')
 connect(led, {'1': 'GND', '2': 'LED_A'}, 5.08)
-j4 = place('J4', 'BalancerMain:Conn_01x04', 'GPS 3V3/GND/RX/TX', 393.7, 101.6, 0, 'Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical')
-connect(j4, {'1': '+3V3', '2': 'GND', '3': 'GPS_UART_RX', '4': 'GPS_UART_TX'})
 for i, (hx, hy) in enumerate(((381.0, 350.52), (393.7, 350.52), (406.4, 350.52), (419.1, 350.52)), 1):
     place('H%d' % i, 'Mechanical:MountingHole', 'M3', hx, hy, 0, 'MountingHole:MountingHole_3.2mm_M3')
 # PWR_FLAGs for the rails that only passives drive, and ground
@@ -372,8 +330,8 @@ for net, fx, fy in (('GND', 436.88, 60.96), ('+3V3', 436.88, 81.28)):
 # ---------------------------------------------------------------- emit
 doc = node('kicad_sch', node('version', 20260306), node('generator', 'build_main'), node('generator_version', '10.0'),
            node('uuid', SHEET), node('paper', 'A3'),
-           node('title_block', node('title', 'HoboBalancer v2 main unit'), node('date', '2026-10-22'), node('rev', 'A'),
-                node('comment', 1, 'OMGS3 ESP32-S3 on pads, 1S LiPo, USB-C, ADXL357 sockets, LM1815 MPU input, Banner tach')))
+           node('title_block', node('title', 'HoboBalancer v2 main unit'), node('date', '2026-10-25'), node('rev', 'B'),
+                node('comment', 1, 'Carrier: ESP32-S3 Feather, KX134 header, MT3608 module pads, LM1815 MPU input, Banner tach')))
 libs = node('lib_symbols')
 for lib in sorted(used):
     libs.append(deepcopy(libsyms[lib]))
@@ -394,7 +352,7 @@ def pretty(x, depth=0):
 (ROOT / 'BalancerMain.kicad_sch').write_text(pretty(doc) + '\n', encoding='utf8')
 lib = node('kicad_symbol_lib', node('version', 20241209), node('generator', 'build_main'))
 for name, s in libsyms.items():
-    if name.startswith('BalancerMain:'):
+    if name.startswith('BalancerMain:') and name in used:
         c = deepcopy(s); c[1] = name.split(':')[1]; lib.append(c)
 (ROOT / 'BalancerMain.kicad_sym').write_text(pretty(lib) + '\n', encoding='utf8')
 (ROOT / 'sym-lib-table').write_text('(sym_lib_table (version 7) (lib (name "BalancerMain")(type "KiCad")(uri "${KIPRJMOD}/BalancerMain.kicad_sym")(options "")(descr "Generated main-unit symbols")))\n', encoding='utf8')

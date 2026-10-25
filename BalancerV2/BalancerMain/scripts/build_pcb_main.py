@@ -1,12 +1,12 @@
 """Generate BalancerMain.kicad_pcb from the verified schematic netlist.
 
+The carrier for an ESP32-S3 Feather on female headers, with the LM1815 magnetic-pickup
+input, the Banner input, the boost-module power switch, a KX134 header, button and LED.
 Footprint geometry is harvested from the carrier and optical-head boards in this repo
-(KiCad's own R_1206, SOIC-14, SOT-23, headers, switch, solder pads, FeatherS3) and the
-few footprints those boards lack are built here: C_1206 (R_1206 pads), SOT-23-6 (from the
-SOT-23-5 pattern), 2x3 socket, radial inductor, 1812 polyfuse, SMA diode, 3-pad solder
-strip, pogo pins, M3 hole. Every part is placed with its nets and the outline drawn;
-routing is left to KiCad. Run verify_main.py first (it writes BalancerMain.net.json).
-Pass --apply to write.
+(KiCad's own R_1206, SOIC-14, SOT-23, headers, switch, solder pads, LED, and the Feather
+footprint the carrier used); C_1206, the 3-pad solder strip and the M3 hole are built
+here. Every part is placed with its nets and the outline drawn; routing is left to KiCad.
+Run verify_main.py first (it writes BalancerMain.net.json). Pass --apply to write.
 """
 import sys, json, uuid
 from copy import deepcopy
@@ -29,7 +29,7 @@ NETS = net['nets']                       # name -> [[ref, pin], ...]
 PARTS = {p[0]: (p[1], p[2]) for p in net['parts']}   # ref -> (value, footprint)
 for h in ('H1', 'H2', 'H3', 'H4'):   # pinless symbols are not in the netlist
     PARTS[h] = ('MountingHole', 'MountingHole:MountingHole_3.2mm_M3')
-POWER = {'GND', '+3V3', 'VBUS', '+12V', 'VBAT'}
+POWER = {'GND', '+3V3', '+12V', 'VBAT'}
 pin_net = {}
 for name, members in NETS.items():
     kname = name if name in POWER else '/' + name
@@ -45,8 +45,7 @@ for s in children(sch, 'symbol'):
 
 # ---------------------------------------------------------------- harvest footprints
 templates = {}
-for f in (REPO / 'BalancerCarrier' / 'BalancerCarrier.kicad_pcb', REPO / 'BalancerREF_OptHead' / 'BalancerREF_OptHead.kicad_pcb',
-          ROOT / 'vendor' / 'OMGS3_Carrier_R1.kicad_pcb'):
+for f in (REPO / 'BalancerCarrier' / 'BalancerCarrier.kicad_pcb', REPO / 'BalancerREF_OptHead' / 'BalancerREF_OptHead.kicad_pcb'):
     doc = sx.loads(f.read_text(encoding='utf8'))
     if 'header' not in templates:
         templates['header'] = {k: one(doc, k) for k in ('layers', 'setup')}
@@ -107,30 +106,6 @@ def build(name, attr, pads, extras, descr=''):
 c1206 = template('Resistor_SMD:R_1206_3216Metric'); c1206[1] = 'Capacitor_SMD:C_1206_3216Metric'
 c1206[:] = strip_instance(c1206)
 templates['Capacitor_SMD:C_1206_3216Metric'] = c1206
-# SOT-23-6 from the SOT-23-5 pattern
-s5 = template('Package_TO_SOT_SMD:SOT-23-5'); s5[:] = strip_instance(s5)
-s5[1] = 'Package_TO_SOT_SMD:SOT-23-6'
-s5[:] = [a for a in s5 if not tagged(a, 'pad')]
-s5.extend([pad(1, 'smd', 'roundrect', -1.1375, -0.95, 1.325, 0.6, rot=270), pad(2, 'smd', 'roundrect', -1.1375, 0, 1.325, 0.6, rot=270),
-           pad(3, 'smd', 'roundrect', -1.1375, 0.95, 1.325, 0.6, rot=270), pad(4, 'smd', 'roundrect', 1.1375, 0.95, 1.325, 0.6, rot=270),
-           pad(5, 'smd', 'roundrect', 1.1375, 0, 1.325, 0.6, rot=270), pad(6, 'smd', 'roundrect', 1.1375, -0.95, 1.325, 0.6, rot=270)])
-templates['Package_TO_SOT_SMD:SOT-23-6'] = s5
-# 2x3 socket, 2.54 mm, pin 1 top-left; odd pins left column (matches the symbol and UG-1119)
-templates['Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical'] = build(
-    'Connector_PinSocket_2.54mm:PinSocket_2x03_P2.54mm_Vertical', 'through_hole',
-    [pad(n, 'thru_hole', 'rect' if n == 1 else 'circle', (n - 1) % 2 * 2.54, (n - 1) // 2 * 2.54, 1.7, 1.7, drill=1.0) for n in range(1, 7)],
-    [rect(-1.27, -1.27, 3.81, 6.35, 'F.SilkS', 0.12), rect(-1.77, -1.77, 4.31, 6.85)], '2x3 socket for the EVAL-ADXL357Z headers')
-# radial inductor, 9-10 mm body, 5 mm pitch (Bourns RLB0914 / Murata 1400 series)
-templates['BalancerMain:L_Radial_D9_P5'] = build('BalancerMain:L_Radial_D9_P5', 'through_hole',
-    [pad(1, 'thru_hole', 'rect', -2.5, 0, 1.8, 1.8, drill=1.0), pad(2, 'thru_hole', 'circle', 2.5, 0, 1.8, 1.8, drill=1.0)],
-    [node('fp_circle', node('center', 0, 0), node('end', 5.0, 0), node('stroke', node('width', 0.12), node('type', S('solid'))), node('fill', S('no')), node('layer', 'F.SilkS'), node('uuid', uid())),
-     rect(-5.5, -5.5, 5.5, 5.5)], 'radial inductor 9-10 mm, 5 mm pitch')
-templates['Fuse:Fuse_1812_4532Metric'] = build('Fuse:Fuse_1812_4532Metric', 'smd',
-    [pad(1, 'smd', 'roundrect', -2.05, 0, 1.4, 3.4), pad(2, 'smd', 'roundrect', 2.05, 0, 1.4, 3.4)],
-    [line(-1.0, -1.85, 1.0, -1.85), line(-1.0, 1.85, 1.0, 1.85), rect(-3.0, -1.95, 3.0, 1.95)], '1812 polyfuse')
-templates['Diode_SMD:D_SMA'] = build('Diode_SMD:D_SMA', 'smd',
-    [pad(1, 'smd', 'roundrect', -2.0, 0, 2.5, 1.8), pad(2, 'smd', 'roundrect', 2.0, 0, 2.5, 1.8)],
-    [line(-3.5, -1.55, 1.5, -1.55), line(-3.5, 1.55, 1.5, 1.55), line(-3.5, -1.55, -3.5, 1.55), rect(-3.5, -1.65, 3.5, 1.65)], 'SMA (DO-214AC); pin 1 cathode, marked by the bar')
 sw2 = template('Connector_Wire:SolderWire-0.1sqmm_1x02_P3.6mm_D0.4mm_OD1mm'); sw2[:] = strip_instance(sw2)
 sw2[1] = 'BalancerMain:SolderWire_1x02'
 sw2[:] = [a for a in sw2 if not tagged(a, 'pad')]
@@ -139,55 +114,37 @@ templates['BalancerMain:SolderWire_1x02'] = sw2
 templates['BalancerMain:SolderWire_1x03'] = build('BalancerMain:SolderWire_1x03', 'through_hole',
     [pad(1, 'thru_hole', 'rect', 0, 0, 2.2, 2.2, drill=1.3), pad(2, 'thru_hole', 'circle', 3.6, 0, 2.2, 2.2, drill=1.3), pad(3, 'thru_hole', 'circle', 7.2, 0, 2.2, 2.2, drill=1.3)],
     [rect(-1.8, -1.8, 9.0, 1.8)], 'three solder-wire pads, 3.6 mm pitch')
-templates['BalancerMain:Pogo_1x03'] = build('BalancerMain:Pogo_1x03', 'through_hole',
-    [pad(n, 'thru_hole', 'rect' if n == 1 else 'circle', (n - 1) * 2.54, 0, 2.3, 2.3, drill=1.5) for n in (1, 2, 3)],
-    [rect(-1.8, -1.8, 6.9, 1.8)], 'three through-hole pogo pins, 2.54 mm pitch, 1.5 mm shank')
 h2 = template('MountingHole:MountingHole_2.2mm_M2'); h2[:] = strip_instance(h2); h2[1] = 'MountingHole:MountingHole_3.2mm_M3'
 h2[:] = [a for a in h2 if not (tagged(a, 'pad') or tagged(a, 'fp_circle'))]
 h2.append(node('pad', '', S('np_thru_hole'), S('circle'), node('at', 0, 0), node('size', 3.2, 3.2), node('drill', 3.2), node('layers', '*.Cu', '*.Mask'), node('uuid', uid())))
 h2.append(node('fp_circle', node('center', 0, 0), node('end', 3.2, 0), node('stroke', node('width', 0.05), node('type', S('solid'))), node('fill', S('no')), node('layer', 'F.CrtYd'), node('uuid', uid())))
 templates['MountingHole:MountingHole_3.2mm_M3'] = h2
-ph5 = template('Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical'); ph5[:] = strip_instance(ph5)
-ph5[1] = 'Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical'
-ph5[:] = [a for a in ph5 if not (tagged(a, 'pad') and str(a[1]) == '5')]
-templates['Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical'] = ph5
-# USB-C 16P from Unexpected Maker's OMGS3 carrier (vendor/OMGS3_Carrier_R1.kicad_pcb): signal pads at
-# y -3.51 are the rear, the opening is +y; they place it 2.4 mm inside the board edge.
-usb = template('Unexpected Maker:USB-C-16P-LESSPASTE-2-Fixed-Sqr-Front'); usb[:] = strip_instance(usb); usb[1] = 'BalancerMain:USB_C_16P'
-templates['BalancerMain:USB_C_16P'] = usb
-# JST PH 2-pin vertical (B2B-PH-K-S): 2.0 mm pitch, 0.7 mm pins; body 4.9 x 4.5 (constructed, check against the JST drawing)
-templates['BalancerMain:JST_PH_1x02_Vertical'] = build('BalancerMain:JST_PH_1x02_Vertical', 'through_hole',
-    [pad(1, 'thru_hole', 'rect', 0, 0, 1.3, 1.8, drill=0.75), pad(2, 'thru_hole', 'oval', 2.0, 0, 1.3, 1.8, drill=0.75)],
-    [rect(-1.95, -1.7, 3.95, 2.8, 'F.SilkS', 0.12), rect(-2.2, -1.95, 4.2, 3.05)], 'JST PH 2-pin vertical, pin 1 square')
-ph3 = template('Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical'); ph3[:] = strip_instance(ph3)
-ph3[1] = 'Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical'
-ph3[:] = [a for a in ph3 if not (tagged(a, 'pad') and str(a[1]) in ('4', '5'))]
-templates['Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical'] = ph3
-# OMGS3 footprint from Unexpected Maker's repo (vendor/OMGS3.kicad_mod): origin at the module
-# corner, body 0..25 x -10..0, pads along three edges near x 1..14, antenna past x 17.
-omg = sx.loads((ROOT / 'vendor' / 'OMGS3.kicad_mod').read_text(encoding='utf8')); omg[1] = 'BalancerMain:OMGS3'
-templates['BalancerMain:OMGS3'] = omg
+# Feather on female headers: the FeatherS3 footprint the v1 carrier used. Pads 1-12 are the
+# 12-pin header (BAT..SDA), 13-28 the 16-pin header; body outline on F.Fab, USB end at -y.
+fs = template('BalancerCarrier:FeatherS3'); fs[:] = strip_instance(fs); fs[1] = 'BalancerMain:Feather_Socket'
+templates['BalancerMain:Feather_Socket'] = fs
 
-# ---------------------------------------------------------------- placement (mm, board origin 100,100; 76 x 64)
-X0, Y0, W, H = 100.0, 100.0, 70.0, 64.0
+# ---------------------------------------------------------------- placement (mm, board origin 100,100)
+X0, Y0, W, H = 100.0, 100.0, 64.0, 54.0
+FXc, FYc = X0 + W - 12.5, Y0 + 25.0     # Feather body x -11.6..+11.3, y -24.3..+26.5 about this point; USB at the top edge
 P = {   # ref: (x, y, rot)
-    'U1': (X0 + 44.0, Y0 + 13.0, 0),              # OMGS3 corner origin; body 44..69 x 3..13, antenna x 61..69 at the right edge
-    'J9': (X0 + 14.0, Y0 + 2.4, 180),             # USB-C opening on the top edge, 2.4 mm inset like the UM carrier
-    'R1': (X0 + 24.0, Y0 + 6.0, 0), 'R2': (X0 + 24.0, Y0 + 10.0, 0),
-    'D1': (X0 + 33.0, Y0 + 4.0, 0), 'C2': (X0 + 33.0, Y0 + 9.0, 0),
-    'J1': (X0 + 4.0, Y0 + 18.0, 90), 'C1': (X0 + 10.0, Y0 + 18.0, 0),
-    'J5': (X0 + 44.0, Y0 + 18.0, 90),
-    'U3': (X0 + 10.0, Y0 + 28.0, 0), 'L2': (X0 + 24.0, Y0 + 30.0, 0), 'D2': (X0 + 14.0, Y0 + 36.0, 0),
-    'C7': (X0 + 22.0, Y0 + 36.0, 0), 'R6': (X0 + 4.5, Y0 + 28.0, 90), 'R7': (X0 + 4.5, Y0 + 36.0, 0), 'R8': (X0 + 8.5, Y0 + 40.0, 0),
-    'J6': (X0 + 12.5, Y0 + 44.0, 0), 'J7': (X0 + 27.74, Y0 + 44.0, 0),   # ADXL357 sockets, 15.24 mm apart: VERIFY on the eval board
-    'U4': (X0 + 10.0, Y0 + 54.0, 90), 'J3': (X0 + 8.0, Y0 + 61.5, 0), 'R9': (X0 + 18.0, Y0 + 61.0, 0), 'R10': (X0 + 24.0, Y0 + 61.0, 0),
-    'R11': (X0 + 18.0, Y0 + 53.0, 0), 'C8': (X0 + 18.0, Y0 + 57.0, 0), 'R12': (X0 + 24.0, Y0 + 53.0, 0), 'C9': (X0 + 24.0, Y0 + 57.0, 0),
-    'R13': (X0 + 30.0, Y0 + 53.0, 0), 'C10': (X0 + 30.0, Y0 + 57.0, 0),
-    'J2': (X0 + 36.0, Y0 + 61.0, 0), 'R14': (X0 + 36.0, Y0 + 57.0, 0), 'R15': (X0 + 42.0, Y0 + 57.0, 0),
-    'SW1': (X0 + 50.0, Y0 + 24.0, 0), 'R19': (X0 + 62.0, Y0 + 22.0, 0), 'C11': (X0 + 62.0, Y0 + 26.0, 0),
-    'LED1': (X0 + 66.0, Y0 + 44.0, 0), 'R20': (X0 + 66.0, Y0 + 48.0, 0),
-    'J4': (X0 + 52.0, Y0 + 60.0, 90),
-    'H1': (X0 + 3.5, Y0 + H - 3.5, 0), 'H2': (X0 + W - 3.5, Y0 + H - 3.5, 0), 'H3': (X0 + 3.5, Y0 + 48.0, 0), 'H4': (X0 + 40.0, Y0 + 3.5, 0),
+    'U1': (FXc, FYc, 0),
+    'H1': (X0 + 3.5, Y0 + 3.5, 0), 'H2': (X0 + 3.5, Y0 + H - 3.5, 0), 'H3': (X0 + 36.5, Y0 + 3.5, 0), 'H4': (X0 + 36.5, Y0 + H - 3.5, 0),
+    # top edge: wire pads for the Banner and the boost module
+    'J2': (X0 + 8.5, Y0 + 3.5, 0), 'J6': (X0 + 19.5, Y0 + 3.5, 0), 'J5': (X0 + 27.5, Y0 + 3.5, 0),
+    'R14': (X0 + 10.0, Y0 + 8.5, 0), 'R15': (X0 + 10.0, Y0 + 12.0, 0),
+    'Q2': (X0 + 22.0, Y0 + 9.0, 0), 'R17': (X0 + 28.0, Y0 + 9.0, 0),
+    'Q1': (X0 + 22.0, Y0 + 14.0, 0), 'R16': (X0 + 28.0, Y0 + 14.0, 0), 'R18': (X0 + 33.5, Y0 + 14.0, 90),
+    # button, LED
+    'SW1': (X0 + 4.0, Y0 + 18.5, 0), 'R19': (X0 + 16.0, Y0 + 19.0, 0), 'C11': (X0 + 16.0, Y0 + 22.5, 0),
+    'LED1': (X0 + 24.0, Y0 + 20.0, 0), 'R20': (X0 + 30.0, Y0 + 20.0, 0),
+    # KX134 header
+    'J4': (X0 + 25.0, Y0 + 27.0, 90),
+    # LM1815 and the magnetic pickup pads at the bottom edge
+    'U4': (X0 + 10.0, Y0 + 37.0, 90),
+    'R11': (X0 + 19.0, Y0 + 33.0, 0), 'C8': (X0 + 19.0, Y0 + 36.5, 0), 'R12': (X0 + 25.0, Y0 + 33.0, 0), 'C9': (X0 + 25.0, Y0 + 36.5, 0),
+    'R13': (X0 + 31.0, Y0 + 33.0, 0), 'C10': (X0 + 31.0, Y0 + 36.5, 0),
+    'J3': (X0 + 9.0, Y0 + 50.5, 0), 'R9': (X0 + 19.0, Y0 + 44.0, 0), 'R10': (X0 + 25.0, Y0 + 44.0, 0),
 }
 missing = [r for r in PARTS if r not in P]
 assert not missing, 'no placement for %s' % missing
@@ -228,10 +185,7 @@ doc.extend(footprints)
 def gr_line(x1, y1, x2, y2):
     return node('gr_line', node('start', x1, y1), node('end', x2, y2), node('stroke', node('width', 0.05), node('type', S('default'))), node('layer', 'Edge.Cuts'), node('uuid', uid()))
 doc.extend([gr_line(X0, Y0, X0 + W, Y0), gr_line(X0 + W, Y0, X0 + W, Y0 + H), gr_line(X0 + W, Y0 + H, X0, Y0 + H), gr_line(X0, Y0 + H, X0, Y0)])
-# keep-out note for the sensor board under the sockets
-doc.append(node('gr_text', 'EVAL-ADXL357Z underneath: no parts on B.Cu here', node('at', X0 + 20, Y0 + 42, 0), node('layer', 'F.Fab'),
-                node('uuid', uid()), node('effects', node('font', node('size', 1, 1), node('thickness', 0.15)))))
-doc.append(node('gr_text', 'OMGS3 antenna: no copper, no ground pour', node('at', X0 + 65, Y0 + 16, 0), node('layer', 'F.Fab'),
+doc.append(node('gr_text', 'Feather on female headers', node('at', FXc, FYc, 90), node('layer', 'F.Fab'),
                 node('uuid', uid()), node('effects', node('font', node('size', 1, 1), node('thickness', 0.15)))))
 doc.append(node('embedded_fonts', S('no')))
 
@@ -250,7 +204,7 @@ if not APPLY:
 (ROOT / 'BalancerMain.kicad_pcb').write_text(pretty(doc) + '\n', encoding='utf8')
 # project-local footprint library for the constructed and copied footprints
 pretty_dir = ROOT / 'BalancerMain.pretty'; pretty_dir.mkdir(exist_ok=True)
-for name in ('BalancerMain:OMGS3', 'BalancerMain:USB_C_16P', 'BalancerMain:JST_PH_1x02_Vertical', 'BalancerMain:L_Radial_D9_P5', 'BalancerMain:SolderWire_1x02', 'BalancerMain:SolderWire_1x03', 'BalancerMain:Pogo_1x03'):
+for name in ('BalancerMain:Feather_Socket', 'BalancerMain:SolderWire_1x02', 'BalancerMain:SolderWire_1x03'):
     fp = deepcopy(templates[name]); fp[:] = strip_instance(fp); refresh_uuids(fp); fp[1] = name.split(':')[1]
     fp.insert(2, node('version', 20241229)); fp.insert(3, node('generator', 'build_pcb_main'))
     (pretty_dir / (fp[1] + '.kicad_mod')).write_text(pretty(fp) + '\n', encoding='utf8')
