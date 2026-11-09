@@ -15,7 +15,7 @@ The FeatherS3[D] owns power, so the carrier has no charger pins:
 - **USB present** is the module's VBUS divider on GPIO34 (`status.input_present`).
 - **GPS power** is the module's LDO2 (NCP167, 700 mA) on GPIO39. It is off at reset, so the GPS is dead until firmware raises it; it is fed from VBUS, which ORs USB and battery, so it runs on battery.
 
-`tests/check_pinmap.py` checks `board.hpp` against the carrier schematic's netlist, and the module-internal pins against their documented values.
+`tests/check_pinmap.py` checks `board.hpp` against the carrier as manufactured (`../manufactured/as-built-pads.csv`, extracted from the fab Gerbers; the exported `BalancerCarrier.net` is stale against the PCB and is no longer used), including the far end of each signal (IIS3DWB, LM1815, one-shot, J4, J5, button, LED), and the module-internal pins against their documented values.
 
 ## Carrier hardware
 

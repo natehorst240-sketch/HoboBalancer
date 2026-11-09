@@ -1,0 +1,4 @@
+as-built-pads.csv: pad -> net of the board as manufactured, extracted with
+BalancerCarrier/scripts/gerber_pads.py from the Gerber X2 attributes in the fab package
+BalancerCarrier-manufacturing.zip (KiCad 10.0.6, Gerbers dated 2026-09-24), sha256 7bbe593e5c21a51921adfa7e157f245b4b53eb2cacee14493d0d3a8040ae3dbb.
+Checked 2026-11-09: identical pad for pad to BalancerCarrier.kicad_pcb in this repository.

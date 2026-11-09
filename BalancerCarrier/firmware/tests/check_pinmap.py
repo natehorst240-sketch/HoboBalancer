@@ -1,10 +1,17 @@
-"""Check BalancerCarrier firmware GPIO assignments against the KiCad schematic.
+"""Check BalancerCarrier firmware GPIO assignments against the board as manufactured.
 
 Run: python BalancerCarrier/firmware/tests/check_pinmap.py
 
 Differences from BalancerREF's version, both deliberate:
 
-  Source of truth. BalancerREF's test reads review/IC-pin-audit.csv and says so in its
+  Source of truth (changed 2026-11-09). This now reads manufactured/as-built-pads.csv: the
+  pad -> net table extracted from the Gerber X2 attributes of the package actually sent to
+  the fab (scripts/gerber_pads.py, provenance in manufactured/SOURCE.txt). The exported
+  BalancerCarrier.net had gone stale against the PCB (GPIO7 and all of J4 unconnected,
+  J5.5 on GND), so this test failed on a netlist that was never built. The board that exists
+  is the reference; a later board revision gets a new as-built table.
+
+  Earlier source, kept for the record: BalancerREF's test reads review/IC-pin-audit.csv and says so in its
   own docstring: "this test is only as current as the last run of that". A generated
   CSV that nobody re-runs is not a guard. This reads BalancerCarrier.net, exported
   straight from the schematic, and REFUSES TO PASS if the .kicad_sch is newer - so
@@ -21,8 +28,7 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]          # BalancerCarrier/
-SCH = ROOT / 'BalancerCarrier.kicad_sch'
-NET = ROOT / 'BalancerCarrier.net'
+ASBUILT = ROOT / 'manufactured/as-built-pads.csv'
 HPP = ROOT / 'firmware/src/board.hpp'
 
 # ESP32-S3 facts, from the datasheet and CONFIG_SOC_RTCIO_PIN_COUNT
@@ -48,6 +54,19 @@ EXPECTED = {
     'accelCs':   ('ACCEL_CS', set()),
 }
 
+# The far end of each signal on the built board: (ref, pin) that must sit on the same net.
+# U5 IIS3DWB LGA-14: 1 SDO, 4 INT1, 12 CS, 13 SPC, 14 SDI. U2 LM1815 pin 12 reference pulse
+# (open collector). U4 '1G123 pin 5 Q. J4 per audit_pins.py: 3 = GPS TX -> MCU RX,
+# 4 = GPS RX <- MCU TX, 5 = PPS. J5 pin 3 = emitter command to the optical head.
+FAR_END = {
+    'ACCEL_DRDY': [('U5', '4')], 'ACCEL_SCK': [('U5', '13')], 'ACCEL_MOSI': [('U5', '14')],
+    'ACCEL_MISO': [('U5', '1')], 'ACCEL_CS': [('U5', '12')],
+    'MAG_TACH': [('U2', '12')], 'OPT_TACH': [('U4', '5')], 'OPT_LED_EN': [('J5', '3')],
+    'ACQUIRE_BUTTON': [('SW1', '1')], 'STATUS_LED': [('R15', '1')],
+    'GPS_UART_RX': [('J4', '3')], 'GPS_UART_TX': [('J4', '4')], 'GPS_PPS': [('J4', '5')],
+    'GPS_3V3': [('J4', '1')],    # LDO2_OUT, switched by the module-internal ldo2 pin
+}
+
 # Fixed by the FeatherS3[D] itself, so they are in no carrier netlist and cannot be
 # checked against the schematic. Values from unexpectedmaker/esp32s3 - the MicroPython
 # helper gives LDO2 = const(39) and VBUS_SENSE = const(34); the I2C pins are the
@@ -61,27 +80,21 @@ def fail(msg):
     sys.exit(1)
 
 
-if not NET.exists():
-    fail(f'{NET.name} is missing. Export it with:\n'
-         f'  kicad-cli sch export netlist --format kicadsexpr -o {NET.name} {SCH.name}')
-if SCH.stat().st_mtime > NET.stat().st_mtime:
-    fail(f'{SCH.name} is newer than {NET.name}; the netlist is stale. Re-export it with:\n'
-         f'  kicad-cli sch export netlist --format kicadsexpr -o {NET.name} {SCH.name}')
+if not ASBUILT.exists():
+    fail(f'{ASBUILT} is missing; regenerate it with scripts/gerber_pads.py from the fab package')
 
-# ---- what the schematic says: U1 GPIO number -> net name --------------------
-text = NET.read_text(encoding='utf8')
-nets = re.findall(r'\(net\b.*?\(name "([^"]*)"\)(.*?)(?=\n\t\t\(net\b|\n\t\)\n)', text, re.S)
-if not nets:
-    fail('could not parse any nets out of the netlist')
+# ---- what was built: U1 GPIO number -> net name, and every (ref, pin) -> net ----------
+pad_net = {}
 sch_gpio = {}
-for name, body in nets:
-    for ref, pin, fn in re.findall(
-            r'\(ref "([^"]+)"\)\s*\(pin "([^"]+)"\)\s*\(pinfunction "([^"]+)"\)', body):
-        if ref != 'U1':
-            continue
-        m = re.match(r'IO(\d+)(?:_\d+)?$', fn)
-        if m:
-            sch_gpio[int(m.group(1))] = name.lstrip('/')
+for line in ASBUILT.read_text(encoding='utf8').splitlines()[1:]:
+    ref, pin, fn, net = line.split(',', 3)
+    net = net.lstrip('/')
+    pad_net[(ref, pin)] = net
+    m = re.match(r'IO(\d+)_\d+$', fn)
+    if ref == 'U1' and m:
+        sch_gpio[int(m.group(1))] = net
+if not sch_gpio:
+    fail('could not read any U1 GPIO pads from the as-built table')
 
 # ---- what firmware says: name -> GPIO number -------------------------------
 decls = ';'.join(re.findall(r'^\s*constexpr\s+int\s+([^;]*);', HPP.read_text(encoding='utf8'), re.M))
@@ -97,11 +110,11 @@ for name, (signal, needs) in EXPECTED.items():
     g = pins[name]
     actual = sch_gpio.get(g)
     if actual is None:
-        problems.append(f'{name}=GPIO{g}: the schematic has no U1 pin for that GPIO')
+        problems.append(f'{name}=GPIO{g}: the built board has no U1 pad for that GPIO')
     elif actual.startswith('unconnected-'):
-        problems.append(f'{name}=GPIO{g}: that pin is a no-connect in the schematic')
+        problems.append(f'{name}=GPIO{g}: that pad is unconnected on the built board')
     elif actual != signal:
-        problems.append(f'{name}=GPIO{g}: schematic has {actual!r}, expected {signal!r}')
+        problems.append(f'{name}=GPIO{g}: built board has {actual!r}, expected {signal!r}')
     if g in RESERVED:
         problems.append(f'{name}=GPIO{g}: reserved - {RESERVED[g]}')
     if g in (MODULE_INTERNAL['i2cSda'], MODULE_INTERNAL['i2cScl']):
@@ -117,6 +130,14 @@ for name, want in MODULE_INTERNAL.items():
     elif pins[name] != want:
         problems.append(f'{name}=GPIO{pins[name]}: the FeatherS3[D] fixes this at GPIO{want}')
 
+for signal, ends in FAR_END.items():
+    for ref, pin in ends:
+        got = pad_net.get((ref, pin))
+        if got != signal:
+            problems.append(f'{signal}: {ref} pin {pin} is on {got!r} on the built board')
+if pad_net.get(('U1', '13')) != 'GPS_3V3':
+    problems.append('GPS_3V3: U1 pad 13 (LDO2_OUT) does not feed it on the built board')
+
 # the silent-gap case: a pin added to board.hpp but never checked here
 uncovered = sorted(set(pins) - set(EXPECTED) - set(MODULE_INTERNAL))
 if uncovered:
@@ -129,7 +150,8 @@ if problems:
     sys.exit(1)
 
 wake = [f'{n}=GPIO{pins[n]}' for n, (_, c) in EXPECTED.items() if 'rtc' in c]
-print(f'PASS: {len(EXPECTED)} header signals match the schematic netlist, '
+print(f'PASS: {len(EXPECTED)} header signals match the as-built board, '
       f'{len(MODULE_INTERNAL)} module-internal pins match the FeatherS3[D]; '
       f'all {len(pins)} board.hpp pins covered.')
+print(f'      {sum(len(v) for v in FAR_END.values())} far-end pads (IIS3DWB, LM1815, one-shot, J4, J5, button, LED) on the right nets')
 print(f'      EXT1 wake sources all on RTC GPIO: {", ".join(wake)}')
