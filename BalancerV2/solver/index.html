@@ -161,22 +161,27 @@
   function migrate(o) {
     if (o.version === 3) return o;
     // Version 2 keyed coefficients aircraft|profileRev|task and shared them across sensor
-    // calibrations; version 3 adds the calibration. Each v2 coefficient goes to the calibration
-    // of the runs it was used with (every run records the coefficient in effect). With no runs
-    // it was a seed or typed in, so it goes to the calibration active when the state was saved.
-    // Runs under more than one calibration mean it may have been learned under one sensor and
-    // reused or blended under another: it is held back, not guessed, and the profile seed applies.
+    // calibrations; version 3 adds the calibration. A v2 coefficient is assigned to a calibration
+    // only when that is proven: every run of the task was under that one calibration, and the
+    // coefficient still equals the SENS/TACH the latest run recorded as in effect, so it has not
+    // been changed since (a later edit could have happened under any calibration). Anything else
+    // is held back in coefHeldBack and the profile seed applies; a coefficient with no runs that
+    // equals the seed carries no information and is dropped.
     if (o.version === 2) {
       const coef = {}, held = o.coefHeldBack || {};
+      const same = (a, b) => Math.abs(a - b) < 1e-9;
       Object.keys(o.coef || {}).forEach(k => {
-        const p = k.split('|'), aircraft = p[0], rev = p[1], taskName = p.slice(2).join('|');
-        const cals = new Set((o.runs || []).filter(r => r.aircraft === aircraft && r.profileRev === rev && r.task === taskName).map(r => r.calibration || ''));
-        if (cals.size > 1) { held[k] = Object.assign({ calibrations: [...cals] }, o.coef[k]); return; }
-        const cal = cals.size ? [...cals][0] : (o.calibration || '');
-        coef[[aircraft, rev, cal, taskName].join('|')] = o.coef[k];
+        const p = k.split('|'), aircraft = p[0], rev = p[1], taskName = p.slice(2).join('|'), c = o.coef[k];
+        const rs = (o.runs || []).filter(r => r.aircraft === aircraft && r.profileRev === rev && r.task === taskName).sort((x, y) => new Date(x.when) - new Date(y.when));
+        const cals = new Set(rs.map(r => r.calibration || ''));
+        const last = rs[rs.length - 1];
+        const seed = ((o.profile && o.profile.tasks) || []).find(t => t.name === taskName);
+        if (cals.size === 1 && last && same(last.sens, c.sens) && same(last.tach, c.tach)) coef[[aircraft, rev, [...cals][0], taskName].join('|')] = c;
+        else if (!rs.length && seed && same(seed.sens, c.sens) && same(seed.tach, c.tach)) return;
+        else held[k] = Object.assign({ calibrations: [...cals], reason: cals.size > 1 ? 'runs under several calibrations' : rs.length ? 'changed after its last run' : 'no runs' }, c);
       });
       const n = Object.keys(held).length - Object.keys(o.coefHeldBack || {}).length;
-      if (n) loadNote = `${n} coefficient(s) from the previous version were used under more than one sensor calibration and are held back (kept in the saved state as coefHeldBack); the profile seed applies until they are re-learned or entered.`;
+      if (n) loadNote = `${n} coefficient(s) from the previous version cannot be tied to one sensor calibration and are held back (kept in the saved state as coefHeldBack); the profile seed applies until they are re-learned or entered.`;
       return Object.assign(o, { version: 3, coef, coefHeldBack: held });
     }
     const prof = o.profile && o.profile.name === 'A109' && !o.profile.rev ? A109 : Object.assign({ rev: 'legacy-' + (o.profile ? o.profile.name : 'none') }, o.profile || A109);
@@ -394,10 +399,14 @@
     }
     const run = { task: t.name, aircraft: state.aircraft, session: state.session, profileRev: state.profile.rev, calibration: state.calibration || '',
       when: new Date(), rpm: +$('rpm').value || null, level, phase, change: { moves }, verified: true, source: 'manual' };
-    const rs = usable(t.name);
+    // Learn only against the run immediately before this one for the task, whatever calibration
+    // it was under and whether or not it passed its checks: the change entered now is the change
+    // since that run. If that run is not compatible (other calibration, unverified, RPM) nothing
+    // is learned. Taking the last compatible run instead would skip the adjustments made in between.
+    const all = runsFor(t.name);
     let msg = '';
-    if (moves.length && rs.length) {
-      const prev = rs[rs.length - 1];
+    if (moves.length && all.length) {
+      const prev = all[all.length - 1];
       const why = M.compatible(prev, run, { rpmTolerance: (+$('rpmTol').value || 2) / 100 });
       const meas = why.length ? null : M.learn(prev, run, run.change);
       const lim = +$('learnLimit').value || 0;
