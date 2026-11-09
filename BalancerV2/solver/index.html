@@ -147,19 +147,29 @@
   ] };
   const LABELS = { 0: 'TARGET', 90: 'BLD A', 180: 'BLD B', 270: 'BLD C' };
   const today = () => new Date().toISOString().slice(0, 10);
+  // Per-position changes typed but not yet added as a run, per task. Kept outside the DOM so a
+  // re-render (any setting change) cannot blank them; cleared only when a run is added.
+  const pendingChg = {};
 
   let state = load() || fresh();
-  function fresh() { return { version: 2, profile: A109, aircraft: '', session: today(), calibration: '', coef: {}, installed: {}, runs: [], task: 'GND LT', weights: {}, now: {} }; }
+  function fresh() { return { version: 3, profile: A109, aircraft: '', session: today(), calibration: '', coef: {}, installed: {}, runs: [], task: 'GND LT', weights: {}, now: {} }; }
   // Version 1 kept runs and coefficients by task name alone. Keep them, under an explicit
   // 'unassigned' aircraft and 'legacy' session, so nothing silently merges with a real job.
   function migrate(o) {
-    if (o.version === 2) return o;
+    if (o.version === 3) return o;
+    // Version 2 keyed coefficients aircraft|profileRev|task; version 3 adds the sensor
+    // calibration, so v2 coefficients move under the blank calibration they were learned with.
+    if (o.version === 2) {
+      const coef = {};
+      Object.keys(o.coef || {}).forEach(k => { const p = k.split('|'); coef[[p[0], p[1], '', p.slice(2).join('|')].join('|')] = o.coef[k]; });
+      return Object.assign(o, { version: 3, coef });
+    }
     const prof = o.profile && o.profile.name === 'A109' && !o.profile.rev ? A109 : Object.assign({ rev: 'legacy-' + (o.profile ? o.profile.name : 'none') }, o.profile || A109);
     prof.tasks.forEach(t => { if (t.plane === undefined) t.plane = ''; });
     const n = fresh(); n.profile = prof; n.aircraft = 'unassigned'; n.session = 'legacy'; n.task = o.task || prof.tasks[0].name;
     (o.runs || []).forEach(r => n.runs.push(Object.assign({}, r, { aircraft: 'unassigned', session: 'legacy', profileRev: prof.rev, calibration: '', verified: true,
       change: r.change && r.change.mag ? { moves: [{ amount: r.change.mag, angle: r.change.loc }] } : { moves: [] } })));
-    Object.keys(o.coef || {}).forEach(k => { n.coef[['unassigned', prof.rev, k].join('|')] = o.coef[k]; });
+    Object.keys(o.coef || {}).forEach(k => { n.coef[['unassigned', prof.rev, '', k].join('|')] = o.coef[k]; });
     n.now = o.now || {};
     return n;
   }
@@ -169,7 +179,9 @@
   const task = () => state.profile.tasks.find(t => t.name === state.task) || state.profile.tasks[0];
   const signedUnit = t => t.unit === 'TAB DG';            // tabs bend either way; weights can only be removed if installed
   const unitOf = t => t.unit === 'TAB DG' ? 'deg' : t.unit === 'GRAMS' ? 'g' : t.unit;
-  const coefKey = t => [state.aircraft, state.profile.rev, t.name].join('|');
+  // A coefficient is only valid for the sensor calibration it was learned with: a new calibration
+  // starts from the profile seed instead of silently reusing another sensor's SENS and TACH.
+  const coefKey = t => [state.aircraft, state.profile.rev, state.calibration || '', t.name].join('|');
   const coef = t => state.coef[coefKey(t)] || (state.coef[coefKey(t)] = { sens: t.sens, tach: t.tach });
   // Installed hardware belongs to the aircraft and the correction plane, so every task on that plane sees it.
   const instKey = (t, a) => [state.aircraft, state.profile.rev, t.plane || ('task:' + t.name), a].join('|');
@@ -196,8 +208,10 @@
     $('tabs').querySelectorAll('button').forEach(b => b.onclick = () => { state.task = b.dataset.t; save(); render(); });
     $('taskInfo').textContent = `${t.unit}, positions ${t.positions.join(', ')} deg, seed SENS ${t.sens} per IPS, TACH ${t.tach} deg`;
     $('plane').value = t.plane || '';
-    $('coefKey').textContent = `aircraft "${state.aircraft || '(none)'}", profile ${state.profile.rev}, task ${t.name}`;
-    $('chgRow').innerHTML = t.positions.map(a => `<div><label>${esc(posLabel(t, a))}, ${unitOf(t)}</label><input type="number" step="0.1" data-chg="${a}" style="width:90px"></div>`).join('');
+    $('coefKey').textContent = `aircraft "${state.aircraft || '(none)'}", profile ${state.profile.rev}, calibration "${state.calibration || '(none)'}", task ${t.name}`;
+    const pend = pendingChg[t.name] || (pendingChg[t.name] = {});
+    $('chgRow').innerHTML = t.positions.map(a => `<div><label>${esc(posLabel(t, a))}, ${unitOf(t)}</label><input type="number" step="0.1" data-chg="${a}" value="${pend[a] == null ? '' : esc(pend[a])}" style="width:90px"></div>`).join('');
+    $('chgRow').querySelectorAll('[data-chg]').forEach(i => i.oninput = () => { pend[i.dataset.chg] = i.value; });
     const showInst = !signedUnit(t) && t.unit !== 'NO ADJ';
     $('instLabel').style.display = showInst ? '' : 'none';
     $('instRow').innerHTML = showInst ? t.positions.map(a => `<div><label>${esc(posLabel(t, a))}, ${unitOf(t)}</label><input type="number" step="0.1" min="0" data-inst="${a}" value="${installed(t, a)}" style="width:90px"></div>`).join('') : '';
@@ -379,6 +393,7 @@
     if (!signedUnit(t)) moves.forEach(m => { state.installed[instKey(t, m.angle)] = Math.max(0, installed(t, m.angle) + m.amount); });
     run.sens = coef(t).sens; run.tach = coef(t).tach;
     state.runs.push(run);
+    pendingChg[t.name] = {};
     $('level').value = $('phase').value = ''; $('addMsg').textContent = msg; save(); render();
   };
   // Re-render only on a real change: rebuilding the tabs under a pending click would swallow it.
@@ -410,12 +425,12 @@
         if (!r.verified) return;
         ok++;
         // Seed a coefficient only where this aircraft has none yet for that profile revision and task.
-        const key = [state.aircraft, h.group.rev, r.task].join('|');
+        const key = [state.aircraft, h.group.rev, 'MicroVib', r.task].join('|');
         if (!state.coef[key]) { state.coef[key] = { sens: r.sens, tach: r.tach }; seeded++; }
       });
       if (h.group.rev === state.profile.rev) state.session = session;
       $('addMsg').textContent = `${f.name}: ${h.runs.length} runs, ${ok} passed checks, ${h.runs.length - ok} kept out of solving and learning. ` +
-        (h.group.rev === state.profile.rev ? `Showing session "${session}". ${seeded} coefficients seeded where none existed.` :
+        (h.group.rev === state.profile.rev ? `Showing session "${session}". ${seeded} coefficients seeded under sensor calibration "MicroVib" where none existed.` :
           `Recorded under group revision ${h.group.rev}, not the loaded profile ${state.profile.rev}; load that group to work with these runs.`);
     }
     ev.target.value = ''; save(); render();
