@@ -42,11 +42,15 @@ pin headers into the vias. Both are 2x3, not 1x6.
 | P1 pin | Signal | Main unit | P2 pin | Signal | Main unit |
 |---|---|---|---|---|---|
 | 1 | VDD (VSUPPLY) | 3.3 V | 1 | V1P8ANA | open |
-| 2 | INT1 | open | 2 | CS/SCL | GPIO 17 |
+| 2 | INT1 | open | 2 | CS/SCL | GPIO 7 (pad 25) |
 | 3 | VDDIO | 3.3 V | 3 | V1P8DIG | open |
-| 4 | INT2 | open | 4 | SCLK/VSSIO | GPIO 12 |
-| 5 | VSS/VSSIO | GND | 5 | MISO/ASEL | GPIO 14 |
-| 6 | DRDY | GPIO 18 | 6 | MOSI/SDA | GPIO 11 |
+| 4 | INT2 | open | 4 | SCLK/VSSIO | GPIO 4 (pad 6) |
+| 5 | VSS/VSSIO | GND | 5 | MISO/ASEL | GPIO 5 (pad 7) |
+| 6 | DRDY | GPIO 10 (pad 22) | 6 | MOSI/SDA | GPIO 6 (pad 8) |
+
+GPIO column corrected 2026-11-09 from the BalancerMain netlist (`BalancerMain.net.json`: J6.6 to
+U1 pad 22, J7.2/4/5/6 to pads 25/6/7/8) through the pad-to-GPIO table above. It previously listed
+the carrier's GPIOs (17/12/14/11/18), which do not match this board.
 
 Odd pins are the left column, even the right, pin 1 at top-left in the figures. The
 board's STBY 3-position jumper must be shunted to the side that keeps the part active;

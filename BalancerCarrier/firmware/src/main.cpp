@@ -42,8 +42,18 @@ double ticksPerSample=0; // capture ticks per 26.7 kHz accelerometer sample
 uint32_t captureHz;
 puck::Config configs[2];int profile=0;
 const char *profileName() {return profile?"TR-VERT":"MR-VERT";}
-struct SettingsV1 {uint32_t magic=0x42524631,version=1;int profile=0;puck::Config config[2];};
-struct Settings {uint32_t magic=0x42524631,version=2;int profile=0;puck::Config config[2];bool flight=false;};
+// puck::Config as stored by settings versions 1 and 2 (firmware before the speed band). Field
+// order must not change: these blobs are already in NVS on fielded units.
+struct ConfigV2 {int axis=2,sign=1,phaseDirection=1;bool axisConfirmed=false;double gain=1,phaseOffsetDeg=0,durationS=12,minRpm=120,maxRpm=6000;};
+struct SettingsV1 {uint32_t magic=0x42524631,version=1;int profile=0;ConfigV2 config[2];};
+struct SettingsV2 {uint32_t magic=0x42524631,version=2;int profile=0;ConfigV2 config[2];bool flight=false;};
+struct Settings {uint32_t magic=0x42524631,version=3;int profile=0;puck::Config config[2];bool flight=false;};
+// An old band was never confirmed, so it migrates unconfirmed: the user must set it explicitly.
+puck::Config fromV2(const ConfigV2 &o) {
+    puck::Config c;c.axis=o.axis;c.sign=o.sign;c.phaseDirection=o.phaseDirection;c.axisConfirmed=o.axisConfirmed;
+    c.gain=o.gain;c.phaseOffsetDeg=o.phaseOffsetDeg;c.durationS=o.durationS;c.minRpm=o.minRpm;c.maxRpm=o.maxRpm;
+    c.speedBandConfirmed=false;return c;
+}
 // Flight mode: autonomous continuous acquisition, GPS-tagged log, BLE off, sleep on no tach.
 bool flightMode=false,usbPaused=false;
 constexpr int64_t noTachSleepUs=180*1000000LL; // idle rotor for 3 minutes -> deep sleep
@@ -83,6 +93,7 @@ void configJson(cJSON *j,const puck::Config &c) {
     num(j,"phase_direction",c.phaseDirection);num(j,"phase_offset_deg",c.phaseOffsetDeg);
     num(j,"duration_s",c.durationS);num(j,"min_rpm",c.minRpm);num(j,"max_rpm",c.maxRpm);
     cJSON_AddBoolToObject(j,"axis_confirmed",c.axisConfirmed);
+    cJSON_AddBoolToObject(j,"speed_band_confirmed",c.speedBandConfirmed);
 }
 bool saveSettings() {
     Settings s;s.profile=profile;s.config[0]=configs[0];s.config[1]=configs[1];s.flight=flightMode;
@@ -91,10 +102,20 @@ bool saveSettings() {
 }
 void loadSettings() {
     nvs_handle_t h; if(nvs_open("puck",NVS_READONLY,&h)!=ESP_OK)return;
-    Settings s;size_t n=sizeof(s);const auto e=nvs_get_blob(h,"settings",&s,&n);nvs_close(h);
-    if(e!=ESP_OK || s.magic!=0x42524631)return;
-    if(n==sizeof(SettingsV1) && s.version==1)s.flight=false;          // upgrade from 0.2.0 settings
-    else if(n!=sizeof(Settings) || s.version!=2)return;
+    alignas(8) uint8_t blob[sizeof(Settings)>sizeof(SettingsV2)?sizeof(Settings):sizeof(SettingsV2)]{};
+    size_t n=sizeof(blob);const auto e=nvs_get_blob(h,"settings",blob,&n);nvs_close(h);
+    if(e!=ESP_OK || n<8)return;
+    uint32_t head[2];std::memcpy(head,blob,sizeof(head)); // magic, version: common prefix of every layout
+    if(head[0]!=0x42524631)return;
+    Settings s;
+    if(n==sizeof(SettingsV1) && head[1]==1) {        // upgrade from 0.2.0 settings
+        SettingsV1 o;std::memcpy(&o,blob,sizeof(o));
+        s.profile=o.profile;s.config[0]=fromV2(o.config[0]);s.config[1]=fromV2(o.config[1]);s.flight=false;
+    } else if(n==sizeof(SettingsV2) && head[1]==2) { // upgrade from settings before the speed band
+        SettingsV2 o;std::memcpy(&o,blob,sizeof(o));
+        s.profile=o.profile;s.config[0]=fromV2(o.config[0]);s.config[1]=fromV2(o.config[1]);s.flight=o.flight;
+    } else if(n==sizeof(Settings) && head[1]==3) std::memcpy(&s,blob,sizeof(s));
+    else return;
     if((s.profile==0||s.profile==1) && puck::validConfig(s.config[0]) && puck::validConfig(s.config[1])) {
         configs[0]=s.config[0];configs[1]=s.config[1];profile=s.profile;flightMode=s.flight;
     }
@@ -132,18 +153,24 @@ void setupCapture() {
     }
     ESP_ERROR_CHECK(mcpwm_capture_timer_enable(timer));ESP_ERROR_CHECK(mcpwm_capture_timer_start(timer));
 }
+static_assert((accel::groupDelayRaw+accel::decimation)/accel::odrHz<puck::maxSampleLagS,
+              "Measurement must tolerate the FIR delay plus one block");
 void sensorTask(void *) {
     Capture c;
     for(;;) {
         if(xQueueReceive(captureQueue,&c,portMAX_DELAY)!=pdTRUE)continue;
         Event e{};e.tick=c.tick;e.wall=c.wall;e.kind=c.kind;
         if(c.kind==Drdy) {
-            accel::Block b;unsigned n=0;
-            if(!sensorOk || !accel::readBlock(b,n)) {++ioErrors;continue;}
+            accel::Block b;unsigned n=0;bool primed=false;
+            if(!sensorOk || !accel::readBlock(b,n,primed)) {++ioErrors;continue;}
             // A block read landing after the next watermark is stale. Never silently accept it.
             if(esp_timer_get_time()-c.wall>500) {++timingErrors;continue;}
-            // The watermark marks the last sample of the block; the block mean sits (N-1)/2 samples earlier.
-            e.tick=c.tick-uint32_t(ticksPerSample*(accel::decimation-1)/2.0+0.5);
+            // FIR still refilling after start or a failed block: nothing to deliver yet. A run in
+            // progress sees the missing samples as a SampleGap, which is the correct outcome.
+            if(!primed) continue;
+            // The watermark marks the last raw sample of the block; the FIR output it produced is
+            // a linear-phase filter centred groupDelayRaw raw periods earlier.
+            e.tick=c.tick-uint32_t(ticksPerSample*accel::groupDelayRaw+0.5);
             for(int a=0;a<3;a++) {e.g[a]=b.g[a];liveG[a]=b.g[a];}
             e.clipped=b.clipped;
             liveSampleMs=uint32_t(esp_timer_get_time()/1000);
@@ -181,7 +208,7 @@ void status() {
     cJSON_AddStringToObject(j,"profile",profileName());cJSON_AddBoolToObject(j,"acquiring",running);cJSON_AddBoolToObject(j,"continuous",continuous);num(j,"sequence",sequence);
     cJSON_AddBoolToObject(j,"sensor_ok",sensorOk);cJSON_AddBoolToObject(j,"reference_only",true);
     cJSON_AddBoolToObject(j,"ble_connected",ble_connected());num(j,"sample_rate_hz",accel::sampleRateHz);
-    num(j,"full_scale_g",accel::fullScaleG);num(j,"lpf_nominal_hz",accel::odrHz/accel::lpfDivider);num(j,"decimation",accel::decimation);
+    num(j,"full_scale_g",accel::fullScaleG);num(j,"lpf_nominal_hz",accel::odrHz/accel::lpfDivider);num(j,"decimation",accel::decimation);num(j,"fir_taps",accel::firTaps);
     cJSON_AddStringToObject(j,"sensor","IIS3DWB SPI");num(j,"capture_hz",captureHz);
     num(j,"battery_v",supplyVolts());num(j,"output_drops",outputLost);
     cJSON_AddBoolToObject(j,"input_present",inputPresent());cJSON_AddBoolToObject(j,"charging",charging());
@@ -217,6 +244,8 @@ void resultJson(const puck::Result &r) {
     if(r.flags&puck::Clipping)cJSON_AddStringToObject(j,"message","overrange on selected axis; check mounting and repeat");
     num(j,"flags",r.flags);num(j,"rpm",r.rpm);num(j,"rpm_cv",r.rpmCv);
     num(j,"revolutions",r.revolutions);num(j,"samples",r.samples);num(j,"rejected_tach_edges",r.rejectedEdges);
+    num(j,"extra_tach_edges",r.extraEdges);
+    if(r.flags&puck::ExtraTachPulses)cJSON_AddStringToObject(j,"message","more than one tach pulse per revolution; fix the tach mark or the speed band");
     num(j,"raw_vector_scatter_ips_peak",r.vectorScatter);num(j,"raw_amplitude_scatter_ips_peak",r.amplitudeScatter);
     num(j,"per_rev_phase_scatter_deg",r.phaseScatterDeg);
     auto *axes=cJSON_AddArrayToObject(j,"raw_axes");const char *names[]={"X","Y","Z"};
@@ -366,7 +395,12 @@ void command(const char *text) {
             readNumber(j,"duration_s",c.durationS) && readNumber(j,"min_rpm",c.minRpm) && readNumber(j,"max_rpm",c.maxRpm);
         if((sign!=1 && sign!=-1)||(direction!=1 && direction!=-1))ok=false;
         c.sign=sign==1?1:-1;c.phaseDirection=direction==1?1:-1;
-        if(!ok || !puck::validConfig(c))response("error","invalid config; see documented bounds");
+        // Supplying either speed limit sets this profile's expected band explicitly, like axis.
+        const bool bandGiven=cJSON_GetObjectItemCaseSensitive(j,"min_rpm")||cJSON_GetObjectItemCaseSensitive(j,"max_rpm");
+        if(bandGiven)c.speedBandConfirmed=true;
+        if(ok && bandGiven && !(c.maxRpm<2*c.minRpm))
+            response("error","speed band must be narrower than 2:1 (max_rpm < 2 x min_rpm) so a doubled tach rate is rejected");
+        else if(!ok || !puck::validConfig(c))response("error","invalid config; see documented bounds");
         else {
             auto old=configs[profile];configs[profile]=c;
             if(!saveSettings()){configs[profile]=old;response("error","NVS save failed; config unchanged");}

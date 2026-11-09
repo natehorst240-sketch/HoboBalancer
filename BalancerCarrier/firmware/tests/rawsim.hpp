@@ -1,14 +1,17 @@
 #pragma once
 // Synthetic IIS3DWB source for host testing. Generates int16 samples at the full 26.667 kHz ODR,
-// saturating at the ADC rail, and pushes them through the firmware's own decodeBlock and
+// saturating at the ADC rail, and pushes them through the firmware's own anti-alias Decimator and
 // Measurement in the same order the firmware delivers them: each tach edge at its capture time,
-// each 16-sample block at its watermark, timestamped at the block mean. Shared by the unit
+// each 16-sample block at its watermark, timestamped groupDelayRaw raw periods earlier. Shared by the unit
 // tests and tools/sim.cpp so what the simulator shows is what the tests assert.
 #include "accelscale.hpp"
 #include "measurement.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+
+static_assert((accel::groupDelayRaw + accel::decimation) / 26666.67 < puck::maxSampleLagS,
+              "Measurement must tolerate the FIR delay plus one block");
 
 namespace rawsim {
 struct Scenario {
@@ -26,6 +29,9 @@ struct Scenario {
     int tachDropEvery = 0;                        // lose every Nth tach edge
     int tachGlitchEvery = 0;                      // extra edge 50 us after every Nth edge
     double gapAtS = -1, gapMs = 0;                // drop blocks (missed watermarks) for gapMs
+    double toneHz = 0, toneG = 0;                 // extra sine on the measured axis (e.g. gear mesh), g peak
+    int firstEdgeRaw = 0;                         // raw sample index of the first tach edge (sweeps it across a block)
+    int pulsesPerRev = 1;                         // tach edges per true revolution, evenly spaced
     uint32_t seed = 12345;
 };
 
@@ -47,17 +53,24 @@ inline puck::Result run(const puck::Config &c, const Scenario &o, puck::Measurem
     Source rnd(o.seed);
     const unsigned total = unsigned(o.durationS * odr);
     const double wanderRate = 2 * pi / 25;  // modulation cycles per revolution
-    double theta = 0; unsigned edge = 0, k = 0; bool tachSeen = false;
+    // The board samples continuously, so its FIR is full long before a run starts. Run a whole
+    // number of blocks of warm-up first, with no tach yet, so block alignment is unchanged.
+    const unsigned warm = accel::firBlocks * 16;
+    double theta = -2 * pi * o.rpm / 60 / odr * (o.firstEdgeRaw + warm);  // first edge where theta crosses 0
+    const double edgeStep = 2 * pi / std::max(1, o.pulsesPerRev);
+    unsigned edge = 0, k = 0; bool tachSeen = false;
     int16_t block[16][3];
-    for (unsigned i = 0; i < total; i++) {
-        const double t = i / odr;
+    static accel::Decimator fir;  // ~2.6 KB of state; keep it off the stack
+    fir.reset();
+    for (unsigned i = 0; i < total + warm; i++) {
+        const double t = (double(i) - warm) / odr;  // run time; negative during warm-up
         const double hz = o.rpm / 60 * (1 + o.rpmDriftPct / 100 * t / o.durationS);
         const double omega = 2 * pi * hz;
         const double previous = theta - omega / odr;  // angle of the previous raw sample
         const double tick = i * tickPerRaw;
-        if (i == 0 || std::floor(theta / (2 * pi)) > std::floor(previous / (2 * pi))) {
-            // Interpolate the once-per-rev crossing between raw samples.
-            const double frac = i == 0 ? 1 : (std::floor(theta / (2 * pi)) * 2 * pi - previous) / (theta - previous);
+        if (i >= warm && std::floor(theta / edgeStep) > std::floor(previous / edgeStep)) {
+            // Interpolate the tach crossing between raw samples.
+            const double frac = (std::floor(theta / edgeStep) * edgeStep - previous) / (theta - previous);
             const double edgeTick = tick - (1 - frac) * tickPerRaw + o.tachJitterUs * 80 * rnd.gauss();
             ++edge;
             if (!(o.tachDropEvery && edge % o.tachDropEvery == 0)) {
@@ -72,10 +85,11 @@ inline puck::Result run(const puck::Config &c, const Scenario &o, puck::Measurem
         const double scale = 1 + o.ampWanderPct / 100 * std::sin(th / 2 / pi * wanderRate);
         const double amp = o.ips / puck::metresToInches * omega / puck::gravity * scale;  // velocity -> accel peak, g
         const double vib = -amp * std::sin(th - o.phaseDeg * pi / 180 + wander) +
-                           o.h2G * std::cos(2 * th) + o.h3G * std::sin(3 * th + 1);
+                           o.h2G * std::cos(2 * th) + o.h3G * std::sin(3 * th + 1) +
+                           o.toneG * std::sin(2 * pi * o.toneHz * t);
         double g[3] = {0.25 * std::cos(2 * th) + 0.05, 0.1 * std::sin(3 * th), 0.02 * std::cos(th)};
         g[o.axis] = o.gravityG + vib;
-        if (o.spikeG != 0 && o.spikes > 0 && (i + total / (2 * o.spikes)) % (total / o.spikes) == 0)
+        if (o.spikeG != 0 && o.spikes > 0 && i >= warm && (i - warm + total / (2 * o.spikes)) % (total / o.spikes) == 0)
             g[o.spikeAxis] += o.spikeG;
         for (int ax = 0; ax < 3; ax++) {
             const double counts = std::round((g[ax] + noiseG * rnd.gauss()) / (accel::mgPerLsb * 0.001));
@@ -83,10 +97,12 @@ inline puck::Result run(const puck::Config &c, const Scenario &o, puck::Measurem
         }
         if (++k == 16) {
             k = 0;
-            if (o.gapAtS >= 0 && t >= o.gapAtS && t < o.gapAtS + o.gapMs / 1000) continue;
-            accel::Block b; accel::decodeBlock(block, 16, b);
-            // Same timestamping as main.cpp: the watermark sample's tick minus 7.5 raw periods.
-            puck::Sample s{uint32_t(uint64_t(tick - 7.5 * tickPerRaw + .5)), {b.g[0], b.g[1], b.g[2]}, b.clipped};
+            // A missed watermark resets the FIR exactly as a failed readBlock does on the board.
+            if (o.gapAtS >= 0 && t >= o.gapAtS && t < o.gapAtS + o.gapMs / 1000) { fir.reset(); continue; }
+            accel::Block b;
+            if (!fir.push(block, 16, b)) continue;  // refilling: the board delivers nothing either
+            // Same timestamping as main.cpp: the watermark sample's tick minus the FIR delay.
+            puck::Sample s{uint32_t(uint64_t(tick - accel::groupDelayRaw * tickPerRaw + .5)), {b.g[0], b.g[1], b.g[2]}, b.clipped};
             m.sample(s);
         }
     }
