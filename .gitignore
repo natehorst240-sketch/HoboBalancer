@@ -40,3 +40,5 @@ BalancerCarrier/firmware/build-review.log
 # the source of truth and are tracked, this is not.
 sdkconfig.balancerref
 sdkconfig.balancercarrier
+sdkconfig.balancerdisplay
+BalancerDisplay/firmware/build/
