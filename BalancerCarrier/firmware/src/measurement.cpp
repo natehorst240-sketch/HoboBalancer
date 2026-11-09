@@ -10,14 +10,16 @@ bool validConfig(const Config &c) {
         std::isfinite(c.phaseOffsetDeg) && std::abs(c.phaseOffsetDeg)<=360 &&
         std::isfinite(c.durationS) && c.durationS>=6 && c.durationS<=30 &&
         std::isfinite(c.minRpm) && std::isfinite(c.maxRpm) &&
-        c.minRpm>=120 && c.maxRpm<=6000 && c.maxRpm>c.minRpm;
+        c.minRpm>=120 && c.maxRpm<=6000 && c.maxRpm>c.minRpm &&
+        (!c.speedBandConfirmed || c.maxRpm<2*c.minRpm);
 }
 double wrapDegrees(double x) { x=std::fmod(x,360); return x<0?x+360:x; }
 void Measurement::begin(const Config &c,uint32_t hz) {
-    config_=c; hz_=hz; count_=revs_=totalSamples_=rejected_=flags_=0; clipped_=0;
+    config_=c; hz_=hz; count_=revs_=totalSamples_=rejected_=extra_=flags_=0; clipped_=0;
     haveTach_=haveSample_=pending_=false; lastPeriod_=pendingTach_=0; sumPeriod_=sumPeriod2_=0;
     for(int a=0;a<3;a++) sumC_[a]=sumS_[a]=sumCC_[a]=sumSS_[a]=sumCS_[a]=sumDc_[a]=0;
     if(!c.axisConfirmed) flags_|=AxisUnconfirmed;
+    if(!c.speedBandConfirmed) flags_|=SpeedBandUnconfirmed;
 }
 void Measurement::sample(const Sample &s) {
     if(haveSample_) {
@@ -31,7 +33,12 @@ void Measurement::sample(const Sample &s) {
     clipped_|=s.clipped&7;
     if(s.clipped&(1u<<config_.axis)) flags_|=Clipping;
     if(!haveTach_) return;
-    if(int32_t(s.tick-previousTach_)<0) { flags_|=TimingError; return; }
+    if(int32_t(s.tick-previousTach_)<0) {
+        // Delivered after the anchor edge but timestamped before it (filter and block delay):
+        // normally the samples preceding the very first edge. Discard, do not fault.
+        if(double(uint32_t(previousTach_-s.tick))<=maxSampleLagS*hz_) return;
+        flags_|=TimingError; return;
+    }
     if(uint32_t(s.tick-previousTach_)>hz_) { count_=0; pending_=false; return; }
     if(count_==maxCycleSamples) { flags_|=SampleGap; return; }
     samples_[count_++]=s;
@@ -40,8 +47,8 @@ void Measurement::sample(const Sample &s) {
 double Measurement::tachTimeoutSeconds() const {
     return std::max(0.03,lastPeriod_?2.0*lastPeriod_/hz_:120.0/config_.minRpm);
 }
-// Each block's timestamp is its mean, 7.5 raw periods before the watermark that delivers it,
-// so a tach edge in the second half of a block is seen before samples that precede it. An
+// Each sample's timestamp is the FIR's centre, groupDelayRaw (80) raw periods before the
+// watermark that delivers it, so a tach edge in that window is seen before samples that precede it. An
 // accepted edge therefore stays pending, and its revolution is fitted only once the first
 // sample at or after the edge arrives, when every sample of that revolution is in.
 bool Measurement::tach(uint32_t tick) {
@@ -49,7 +56,13 @@ bool Measurement::tach(uint32_t tick) {
     const uint32_t anchor=pending_?pendingTach_:previousTach_;
     const uint32_t period=tick-anchor;
     const double rpm=period?60.0*hz_/period:1e20;
-    if(rpm>config_.maxRpm) { ++rejected_; return false; } // do not replace good anchor
+    if(rpm>config_.maxRpm) { // do not replace good anchor
+        ++rejected_;
+        // Contact bounce lands microseconds after the real edge. An edge a tenth or more of the
+        // shortest allowed revolution after the anchor is a second tach mark on the shaft.
+        if(period>0.1*60.0*hz_/config_.maxRpm) ++extra_;
+        return false;
+    }
     if(pending_) closeCycle(); // two edges with no sample between: fit with what arrived
     if(rpm<config_.minRpm) {
         flags_|=NoTach; ++rejected_; previousTach_=tick; count_=0; return false;
@@ -118,7 +131,10 @@ void Measurement::fitCycle(uint32_t end,uint32_t period) {
     (void)end;
 }
 Result Measurement::finish(bool tachRecent) const {
-    Result r; r.flags=flags_;r.revolutions=revs_;r.samples=totalSamples_;r.rejectedEdges=rejected_;
+    Result r; r.flags=flags_;r.revolutions=revs_;r.samples=totalSamples_;r.rejectedEdges=rejected_;r.extraEdges=extra_;
+    // Recurring extra pulses mean more than one tach mark per revolution: which one anchors each
+    // run is arbitrary, so phase has no fixed shaft reference. Hard fault.
+    if(revs_ && extra_*4>=revs_) r.flags|=ExtraTachPulses;
     if(!tachRecent || !haveTach_) r.flags|=NoTach;
     if(revs_<8) r.flags|=TooFewRevs;
     if(!revs_) return r;
@@ -156,10 +172,10 @@ Result Measurement::finish(bool tachRecent) const {
     if(r.vectorScatter>limit) r.flags|=VibrationUnstable;
     if(std::sqrt(across)>limit) r.flags|=PhaseUnstable;
     if(raw<0.005 || raw<2*r.vectorScatter/std::sqrt(double(revs_))) r.flags|=WeakSignal;
-    const uint32_t hard=NoTach|TooFewRevs|SampleGap|Clipping|IoError|QueueOverflow|TimingError|Cancelled;
+    const uint32_t hard=NoTach|TooFewRevs|SampleGap|Clipping|IoError|QueueOverflow|TimingError|Cancelled|ExtraTachPulses;
     r.valid=!(r.flags&hard);
-    r.directionValid=r.valid && !(r.flags&(RpmUnstable|PhaseUnstable|AxisUnconfirmed|WeakSignal));
-    r.stable=r.valid && !(r.flags&(RpmUnstable|VibrationUnstable|PhaseUnstable|AxisUnconfirmed));
+    r.directionValid=r.valid && !(r.flags&(RpmUnstable|PhaseUnstable|AxisUnconfirmed|SpeedBandUnconfirmed|WeakSignal));
+    r.stable=r.valid && !(r.flags&(RpmUnstable|VibrationUnstable|PhaseUnstable|AxisUnconfirmed|SpeedBandUnconfirmed));
     r.phaseValid=r.stable && r.directionValid;
     r.quality=r.phaseValid?Quality::StableVector:r.directionValid?Quality::DirectionOnly:Quality::Unreliable;
     return r;

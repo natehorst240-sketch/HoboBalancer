@@ -8,12 +8,17 @@ constexpr double gravity = 9.80665;
 constexpr double metresToInches = 39.37007874015748;
 constexpr double sampleRate = 26666.67 / 16;  // IIS3DWB ODR decimated by 16 = 1666.7 Hz
 constexpr unsigned maxCycleSamples = 1100;
-constexpr int fitHarmonics = 4;  // per-revolution model: DC + 1..4/rev; needs >8 samples/rev
+constexpr int fitHarmonics = 4;
+// Samples reach Measurement up to this long after their own timestamp: the anti-alias FIR's
+// delay (accelscale.hpp, 3.0 ms) plus one block. A sample that old or newer, timestamped before
+// the current anchor edge, belongs to no revolution being fitted and is dropped; anything older
+// is a TimingError. Must stay well under the shortest revolution (10 ms at 6000 RPM).
+constexpr double maxSampleLagS = 0.005;  // per-revolution model: DC + 1..4/rev; needs >8 samples/rev
 enum Fault : uint32_t {
     NoTach=1, TooFewRevs=2, SampleGap=4, Clipping=8, IoError=16,
     QueueOverflow=32, RpmUnstable=64, VibrationUnstable=128,
     WeakSignal=256, AxisUnconfirmed=512, TimingError=1024, Cancelled=2048,
-    PhaseUnstable=4096
+    PhaseUnstable=4096, SpeedBandUnconfirmed=8192, ExtraTachPulses=16384
 };
 // StableVector: amplitude and phase both repeat; fit for calibration and acceptance.
 // DirectionOnly: phase repeats but amplitude wanders; usable for a rough correction only.
@@ -22,12 +27,18 @@ struct Config {
     int axis=2, sign=1, phaseDirection=1;
     bool axisConfirmed=false;
     double gain=1, phaseOffsetDeg=0, durationS=12, minRpm=120, maxRpm=6000;
+    // The expected shaft speed band for this profile, set explicitly like the axis. Confirmed
+    // only when narrower than 2:1 (maxRpm < 2 x minRpm), so a tach that gives two pulses per
+    // revolution cannot pass as a shaft turning twice as fast and turn 2/rev into "1/rev".
+    // Until then no result is stable or carries a direction (SpeedBandUnconfirmed).
+    bool speedBandConfirmed=false;
 };
 bool validConfig(const Config &c);
 double wrapDegrees(double x);
 struct Sample { uint32_t tick; float g[3]; uint8_t clipped=0; }; // clipped: bit per axis, judged on raw samples
 struct Result {
     uint32_t flags=0, revolutions=0, samples=0, rejectedEdges=0;
+    uint32_t extraEdges=0; // too-fast edges well inside a revolution, i.e. not contact bounce
     uint8_t clippedAxes=0; // any axis; only the selected axis sets the Clipping fault
     // Per-revolution scatter of the selected axis, split along (amplitude) and across (phase)
     // the mean vector. Repeatability only: not a calibrated error bound.
@@ -51,7 +62,7 @@ private:
     void closeCycle();
     Config config_{};
     Sample samples_[maxCycleSamples]{};
-    unsigned count_=0, revs_=0, totalSamples_=0, rejected_=0;
+    unsigned count_=0, revs_=0, totalSamples_=0, rejected_=0, extra_=0;
     uint32_t hz_=0, previousTach_=0, previousSample_=0, lastPeriod_=0, flags_=0;
     uint8_t clipped_=0;
     uint32_t pendingTach_=0;

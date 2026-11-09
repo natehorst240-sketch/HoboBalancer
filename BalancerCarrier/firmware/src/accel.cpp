@@ -37,6 +37,7 @@ void delayMs(uint32_t ms) { vTaskDelay(pdMS_TO_TICKS(ms ? ms : 1)); }
 constexpr iis3dwb_fs_xl_t fullScaleReg = IIS3DWB_16g;
 static_assert(accel::fullScaleG == 16 && accel::mgPerLsb == 0.488, "register and scale factor must agree");
 int16_t rawBlock[maxDrain][3];
+accel::Decimator decimator;  // ~2.6 KB, static
 }  // namespace
 
 namespace accel {
@@ -76,6 +77,7 @@ bool setup() {
 bool start() {
     if (!ready) return false;
     // Flush anything batched while idle so the first watermark is a clean block.
+    decimator.reset();
     if (iis3dwb_fifo_mode_set(&ctx, IIS3DWB_BYPASS_MODE) || iis3dwb_fifo_mode_set(&ctx, IIS3DWB_STREAM_MODE)) return false;
     if (iis3dwb_xl_data_rate_set(&ctx, IIS3DWB_XL_ODR_26k7Hz)) return false;
     iis3dwb_odr_xl_t odr;
@@ -88,23 +90,25 @@ void powerDown() {
     iis3dwb_fifo_mode_set(&ctx, IIS3DWB_BYPASS_MODE);
 }
 
-bool readBlock(Block &block, unsigned &entries) {
-    entries = 0;
+bool readBlock(Block &block, unsigned &entries, bool &primed) {
+    entries = 0; primed = false;
     if (!ready) return false;
+    // Any failure breaks the FIR's contiguous history, so it starts refilling.
+    auto fail = [] { decimator.reset(); return false; };
     uint16_t level = 0;
-    if (iis3dwb_fifo_data_level_get(&ctx, &level)) return false;
+    if (iis3dwb_fifo_data_level_get(&ctx, &level)) return fail();
     entries = level;
-    if (level < decimation) return false;
+    if (level < decimation) return fail();
     const unsigned n = level > maxDrain ? maxDrain : level;
-    if (iis3dwb_fifo_out_multi_raw_get(&ctx, fifoBuffer, uint16_t(n))) return false;
+    if (iis3dwb_fifo_out_multi_raw_get(&ctx, fifoBuffer, uint16_t(n))) return fail();
     // One block per interrupt: any other count means an interrupt was missed or the FIFO ran ahead.
-    if (n != decimation) return false;
+    if (n != decimation) return fail();
     for (unsigned i = 0; i < n; ++i) {
-        if ((fifoBuffer[i].tag >> 3) != IIS3DWB_XL_TAG) return false;
+        if ((fifoBuffer[i].tag >> 3) != IIS3DWB_XL_TAG) return fail();
         for (int a = 0; a < 3; ++a)
             rawBlock[i][a] = int16_t(uint16_t(fifoBuffer[i].data[2 * a]) | (uint16_t(fifoBuffer[i].data[2 * a + 1]) << 8));
     }
-    decodeBlock(rawBlock, n, block);
+    primed = decimator.push(rawBlock, n, block);
     return true;
 }
 

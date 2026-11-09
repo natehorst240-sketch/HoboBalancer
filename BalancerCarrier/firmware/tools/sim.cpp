@@ -1,4 +1,4 @@
-// Host vibration simulator: runs a synthetic scenario through the firmware's own decodeBlock and
+// Host vibration simulator: runs a synthetic scenario through the firmware's own anti-alias Decimator and
 // Measurement code (tests/rawsim.hpp) and prints what the instrument would report.
 //
 //   tools/sim.sh                         run every preset, one line each, with the expected outcome
@@ -10,6 +10,7 @@
 #include "rawsim.hpp"
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
 #include <cstring>
 #include <string>
 
@@ -35,6 +36,11 @@ const Preset presets[] = {
     {"weak", "unreliable", "ips=0.002", "below the 0.005 IPS floor"},
     {"noisy-mr", "stable_vector", "rpm=300 ips=0.08 noise=10", "10x datasheet noise at the lowest case"},
     {"unconfirmed", "unreliable", "confirmed=0", "mounting axis not confirmed"},
+    {"band-unset", "unreliable", "band=0", "expected speed band not set for the profile"},
+    {"double-pulse", "unreliable", "rpm=1200 pulses=2", "two tach marks per revolution: must fail, not read 2400 RPM"},
+    {"alias-tone", "unreliable", "ips=0 tone_hz=1706.667 tone_g=1", "1 g tone aliasing onto 1/rev, no real 1/rev"},
+    {"alias-tone-1rev", "stable_vector", "tone_hz=1706.667 tone_g=1", "the same tone over a real 0.3 IPS 1/rev"},
+    {"first-edge-late", "stable_vector", "first_edge=12", "first tach edge late in a FIFO block"},
 };
 
 const char *qualityName(Quality q) {
@@ -42,13 +48,15 @@ const char *qualityName(Quality q) {
 }
 std::string flagNames(uint32_t f) {
     static const char *names[] = {"no_tach", "few_revs", "sample_gap", "clipping", "io", "queue", "rpm_unstable",
-                                  "vib_unstable", "weak", "axis_unconfirmed", "timing", "cancelled", "phase_unstable"};
+                                  "vib_unstable", "weak", "axis_unconfirmed", "timing", "cancelled", "phase_unstable",
+                                  "band_unconfirmed", "extra_tach_pulses"};
     std::string s;
-    for (int b = 0; b < 13; b++)
+    for (int b = 0; b < 15; b++)
         if (f & (1u << b)) { if (!s.empty()) s += ','; s += names[b]; }
     return s.empty() ? "-" : s;
 }
 
+bool bandSet = false;  // min_rpm, max_rpm or band given explicitly
 bool apply(const char *kv, rawsim::Scenario &o, Config &c) {
     const char *eq = std::strchr(kv, '=');
     if (!eq) return false;
@@ -61,17 +69,24 @@ bool apply(const char *kv, rawsim::Scenario &o, Config &c) {
         {"gravity", &o.gravityG}, {"h2", &o.h2G}, {"h3", &o.h3G}, {"noise", &o.noiseScale},
         {"spike", &o.spikeG}, {"phase_wander", &o.phaseWanderDeg}, {"amp_wander", &o.ampWanderPct},
         {"rpm_drift", &o.rpmDriftPct}, {"tach_jitter", &o.tachJitterUs}, {"gap_at", &o.gapAtS},
-        {"gap_ms", &o.gapMs}, {"gain", &c.gain}, {"phase_offset", &c.phaseOffsetDeg},
+        {"gap_ms", &o.gapMs}, {"tone_hz", &o.toneHz}, {"tone_g", &o.toneG}, {"gain", &c.gain}, {"phase_offset", &c.phaseOffsetDeg},
         {"min_rpm", &c.minRpm}, {"max_rpm", &c.maxRpm}};
-    for (auto &d : doubles) if (k == d.key) { *d.field = v; return true; }
+    for (auto &d : doubles) if (k == d.key) {
+        *d.field = v;
+        if (k == "min_rpm" || k == "max_rpm") { c.speedBandConfirmed = true; bandSet = true; }
+        return true;
+    }
     if (k == "axis") { o.axis = c.axis = int(v); return true; }
     if (k == "spike_axis") { o.spikeAxis = int(v); return true; }
     if (k == "spikes") { o.spikes = int(v); return true; }
     if (k == "tach_drop") { o.tachDropEvery = int(v); return true; }
     if (k == "tach_glitch") { o.tachGlitchEvery = int(v); return true; }
+    if (k == "first_edge") { o.firstEdgeRaw = int(v); return true; }
+    if (k == "pulses") { o.pulsesPerRev = int(v); return true; }
     if (k == "seed") { o.seed = uint32_t(v); return true; }
     if (k == "sign") { c.sign = int(v); return true; }
     if (k == "confirmed") { c.axisConfirmed = v != 0; return true; }
+    if (k == "band") { c.speedBandConfirmed = v != 0; bandSet = true; return true; }
     std::fprintf(stderr, "unknown setting %s (tools/sim.sh list)\n", k.c_str());
     std::exit(2);
 }
@@ -86,7 +101,13 @@ void applyAll(const char *settings, rawsim::Scenario &o, Config &c) {
         p = q + 1;
     }
 }
-Config baseConfig() { Config c; c.axisConfirmed = true; c.durationS = 12; return c; }
+Config baseConfig() { bandSet = false; Config c; c.axisConfirmed = true; c.durationS = 12; return c; }
+// Unless the settings gave a band, use the one a profile for this scenario would set: around the
+// scenario's nominal RPM, narrower than 2:1.
+void defaultBand(const rawsim::Scenario &o, Config &c) {
+    if (bandSet) return;
+    c.minRpm = std::max(120.0, o.rpm * 0.8); c.maxRpm = std::min(6000.0, o.rpm * 1.25); c.speedBandConfirmed = true;
+}
 
 Result simulate(const Config &c, const rawsim::Scenario &o) {
     static Measurement m;  // ~13 KB of sample buffer; keep it off the stack
@@ -99,8 +120,8 @@ void printJson(const char *name, const Config &c, const rawsim::Scenario &o, con
     std::printf(" \"quality\":\"%s\",\"valid\":%s,\"stable\":%s,\"phase_valid\":%s,\"direction_valid\":%s,\n",
                 qualityName(r.quality), r.valid ? "true" : "false", r.stable ? "true" : "false",
                 r.phaseValid ? "true" : "false", r.directionValid ? "true" : "false");
-    std::printf(" \"flags\":%u,\"flag_names\":\"%s\",\"rpm\":%.3f,\"rpm_cv\":%.5f,\"revolutions\":%u,\"rejected_tach_edges\":%u,\n",
-                r.flags, flagNames(r.flags).c_str(), r.rpm, r.rpmCv, r.revolutions, r.rejectedEdges);
+    std::printf(" \"flags\":%u,\"flag_names\":\"%s\",\"rpm\":%.3f,\"rpm_cv\":%.5f,\"revolutions\":%u,\"rejected_tach_edges\":%u,\"extra_tach_edges\":%u,\n",
+                r.flags, flagNames(r.flags).c_str(), r.rpm, r.rpmCv, r.revolutions, r.rejectedEdges, r.extraEdges);
     std::printf(" \"adjusted_ips_peak\":%.5f,\"adjusted_velocity_phase_deg\":", r.peak);
     if (r.directionValid) std::printf("%.2f", r.phase); else std::printf("null");
     std::printf(",\"raw_vector_scatter_ips_peak\":%.5f,\"raw_amplitude_scatter_ips_peak\":%.5f,\"per_rev_phase_scatter_deg\":%.2f,\n",
@@ -118,6 +139,7 @@ int runAll() {
     for (const auto &p : presets) {
         rawsim::Scenario o; Config c = baseConfig();
         applyAll(p.settings, o, c);
+        defaultBand(o, c);
         const Result r = simulate(c, o);
         const bool ok = !std::strcmp(p.expect, qualityName(r.quality));
         failures += !ok;
@@ -137,7 +159,9 @@ int main(int argc, char **argv) {
         for (const auto &p : presets) std::printf("%-16s %-15s %-28s %s\n", p.name, p.expect, p.settings, p.why);
         std::printf("\nsettings: rpm ips phase duration axis gravity h2 h3 noise spike spike_axis spikes phase_wander\n"
                     "          amp_wander rpm_drift tach_jitter tach_drop tach_glitch gap_at gap_ms seed\n"
-                    "          gain sign phase_offset min_rpm max_rpm confirmed\n");
+                    "          tone_hz tone_g first_edge pulses\n"
+                    "          gain sign phase_offset min_rpm max_rpm confirmed band\n"
+                    "default speed band: 0.8 to 1.25 x rpm, confirmed, unless min_rpm, max_rpm or band is given\n");
         return 0;
     }
     rawsim::Scenario o; Config c = baseConfig();
@@ -147,6 +171,7 @@ int main(int argc, char **argv) {
         if (!std::strcmp(argv[1], p.name)) { applyAll(p.settings, o, c); name = p.name; first = 2; }
     for (int i = first; i < argc; i++)
         if (!apply(argv[i], o, c)) { std::fprintf(stderr, "unknown preset %s (tools/sim.sh list)\n", argv[i]); return 2; }
+    defaultBand(o, c);
     if (!validConfig(c)) { std::fprintf(stderr, "configuration rejected by validConfig()\n"); return 2; }
     printJson(name, c, o, simulate(c, o));
     return 0;
