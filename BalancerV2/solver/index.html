@@ -149,7 +149,10 @@
   const today = () => new Date().toISOString().slice(0, 10);
   // Per-position changes typed but not yet added as a run, per task. Kept outside the DOM so a
   // re-render (any setting change) cannot blank them; cleared only when a run is added.
+  // Keyed by aircraft, profile revision, session and task: a change typed for one aircraft must
+  // never be recorded against another aircraft's inventory.
   const pendingChg = {};
+  let loadNote = '';
 
   let state = load() || fresh();
   function fresh() { return { version: 3, profile: A109, aircraft: '', session: today(), calibration: '', coef: {}, installed: {}, runs: [], task: 'GND LT', weights: {}, now: {} }; }
@@ -157,12 +160,24 @@
   // 'unassigned' aircraft and 'legacy' session, so nothing silently merges with a real job.
   function migrate(o) {
     if (o.version === 3) return o;
-    // Version 2 keyed coefficients aircraft|profileRev|task; version 3 adds the sensor
-    // calibration, so v2 coefficients move under the blank calibration they were learned with.
+    // Version 2 keyed coefficients aircraft|profileRev|task and shared them across sensor
+    // calibrations; version 3 adds the calibration. Each v2 coefficient goes to the calibration
+    // of the runs it was used with (every run records the coefficient in effect). With no runs
+    // it was a seed or typed in, so it goes to the calibration active when the state was saved.
+    // Runs under more than one calibration mean it may have been learned under one sensor and
+    // reused or blended under another: it is held back, not guessed, and the profile seed applies.
     if (o.version === 2) {
-      const coef = {};
-      Object.keys(o.coef || {}).forEach(k => { const p = k.split('|'); coef[[p[0], p[1], '', p.slice(2).join('|')].join('|')] = o.coef[k]; });
-      return Object.assign(o, { version: 3, coef });
+      const coef = {}, held = o.coefHeldBack || {};
+      Object.keys(o.coef || {}).forEach(k => {
+        const p = k.split('|'), aircraft = p[0], rev = p[1], taskName = p.slice(2).join('|');
+        const cals = new Set((o.runs || []).filter(r => r.aircraft === aircraft && r.profileRev === rev && r.task === taskName).map(r => r.calibration || ''));
+        if (cals.size > 1) { held[k] = Object.assign({ calibrations: [...cals] }, o.coef[k]); return; }
+        const cal = cals.size ? [...cals][0] : (o.calibration || '');
+        coef[[aircraft, rev, cal, taskName].join('|')] = o.coef[k];
+      });
+      const n = Object.keys(held).length - Object.keys(o.coefHeldBack || {}).length;
+      if (n) loadNote = `${n} coefficient(s) from the previous version were used under more than one sensor calibration and are held back (kept in the saved state as coefHeldBack); the profile seed applies until they are re-learned or entered.`;
+      return Object.assign(o, { version: 3, coef, coefHeldBack: held });
     }
     const prof = o.profile && o.profile.name === 'A109' && !o.profile.rev ? A109 : Object.assign({ rev: 'legacy-' + (o.profile ? o.profile.name : 'none') }, o.profile || A109);
     prof.tasks.forEach(t => { if (t.plane === undefined) t.plane = ''; });
@@ -189,7 +204,12 @@
   const posLabel = (t, a) => t.positions.length === 4 && LABELS[a] ? LABELS[a] : (t.positions.length === 6 ? 'LOC' + (t.positions.indexOf(a) + 1) + ' (' + a + ')' : a + ' deg');
   const mine = r => r.aircraft === state.aircraft && r.session === state.session && r.profileRev === state.profile.rev;
   const runsFor = name => state.runs.filter(r => r.task === name && mine(r)).sort((a, b) => a.when - b.when);
-  const usable = name => runsFor(name).filter(r => r.verified !== false && r.level != null);
+  // A run feeds solutions and learning only under the sensor calibration it was measured with;
+  // the coefficient is per calibration too, so mixing them would pair one sensor's run with
+  // another sensor's SENS and TACH.
+  const sameCal = r => (r.calibration || '') === (state.calibration || '');
+  const usable = name => runsFor(name).filter(r => r.verified !== false && r.level != null && sameCal(r));
+  const pendKey = t => [state.aircraft, state.profile.rev, state.session, t.name].join('|');
   const fmt = (x, d = 2) => (Math.round(x * Math.pow(10, d)) / Math.pow(10, d)).toFixed(d);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
@@ -209,7 +229,7 @@
     $('taskInfo').textContent = `${t.unit}, positions ${t.positions.join(', ')} deg, seed SENS ${t.sens} per IPS, TACH ${t.tach} deg`;
     $('plane').value = t.plane || '';
     $('coefKey').textContent = `aircraft "${state.aircraft || '(none)'}", profile ${state.profile.rev}, calibration "${state.calibration || '(none)'}", task ${t.name}`;
-    const pend = pendingChg[t.name] || (pendingChg[t.name] = {});
+    const pend = pendingChg[pendKey(t)] || (pendingChg[pendKey(t)] = {});
     $('chgRow').innerHTML = t.positions.map(a => `<div><label>${esc(posLabel(t, a))}, ${unitOf(t)}</label><input type="number" step="0.1" data-chg="${a}" value="${pend[a] == null ? '' : esc(pend[a])}" style="width:90px"></div>`).join('');
     $('chgRow').querySelectorAll('[data-chg]').forEach(i => i.oninput = () => { pend[i.dataset.chg] = i.value; });
     const showInst = !signedUnit(t) && t.unit !== 'NO ADJ';
@@ -230,7 +250,7 @@
     let h = '<tr><th>When</th><th>RPM</th><th>Level</th><th>Phase</th><th>Change before</th><th>SENS</th><th>TACH</th><th>Status</th><th></th></tr>';
     rs.forEach(r => {
       const bad = r.verified === false;
-      h += `<tr${bad ? ' class="warn"' : ''}><td>${r.when.toLocaleString()}</td><td>${r.rpm ? fmt(r.rpm, 1) : ''}</td><td>${r.level != null ? fmt(r.level, 3) : '-'}</td><td>${bad ? '-' : fmt(r.phase, 1)}</td><td>${changeText(r.change)}</td><td>${r.sens ? fmt(r.sens, 1) : ''}</td><td>${r.tach ? fmt(r.tach, 1) : ''}</td><td>${bad ? 'not used: ' + esc((r.problems || []).join('; ')) : r.source === 'import' ? 'imported, checked' : ''}</td><td><button class="ghost" data-del="${state.runs.indexOf(r)}">x</button></td></tr>`;
+      h += `<tr${bad ? ' class="warn"' : ''}><td>${r.when.toLocaleString()}</td><td>${r.rpm ? fmt(r.rpm, 1) : ''}</td><td>${r.level != null ? fmt(r.level, 3) : '-'}</td><td>${bad ? '-' : fmt(r.phase, 1)}</td><td>${changeText(r.change)}</td><td>${r.sens ? fmt(r.sens, 1) : ''}</td><td>${r.tach ? fmt(r.tach, 1) : ''}</td><td>${bad ? 'not used: ' + esc((r.problems || []).join('; ')) : !sameCal(r) ? `not used: other sensor calibration "${esc(r.calibration || '(none)')}"` : r.source === 'import' ? 'imported, checked' : ''}</td><td><button class="ghost" data-del="${state.runs.indexOf(r)}">x</button></td></tr>`;
     });
     $('runs').innerHTML = h;
     $('runs').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { state.runs.splice(+b.dataset.del, 1); save(); render(); });
@@ -393,7 +413,7 @@
     if (!signedUnit(t)) moves.forEach(m => { state.installed[instKey(t, m.angle)] = Math.max(0, installed(t, m.angle) + m.amount); });
     run.sens = coef(t).sens; run.tach = coef(t).tach;
     state.runs.push(run);
-    pendingChg[t.name] = {};
+    pendingChg[pendKey(t)] = {};
     $('level').value = $('phase').value = ''; $('addMsg').textContent = msg; save(); render();
   };
   // Re-render only on a real change: rebuilding the tabs under a pending click would swallow it.
@@ -436,6 +456,7 @@
     ev.target.value = ''; save(); render();
   };
   render();
+  if (loadNote) { $('addMsg').textContent = loadNote; save(); }
 })();
 </script>
 </body>
