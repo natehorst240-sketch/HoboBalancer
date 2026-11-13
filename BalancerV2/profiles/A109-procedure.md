@@ -149,3 +149,45 @@ TARGET blade (tape, 0 deg) bolt head 350, nut 10; blade 2 bolt head 170, nut 190
 knows the wheel; the solver searches the station combinations for least added mass with
 the wheel inside 25 g per position. Direction confirmed by the user. Still open: whether
 washers already on the bolts may be removed.
+
+## Confirmed against DSS's own public material (2026-11-13)
+
+Read from dssmicro.com; everything below was previously inferred from the two history files.
+
+- **Learning formulas.** The DSS Balance Worksheet (download/Balwksht.pdf) prints
+  `Ws = M/Vm` and `To = -(Vd+L)`: weight sensitivity is weight magnitude over vibration
+  change magnitude, and tach offset is minus the sum of the vibration-change angle and the
+  weight location. `mv2.js` `M.learn` computes exactly this. Its columns (RPM, VIB-IN/S,
+  VIB-PHS, WHT-1/LOC-1, WHT-2/LOC-2, SENS, TACH) are the .HST record field order.
+- **Units.** Vibration level is peak velocity in inches per second
+  (faqs/faq_mv2_balance_readings.htm). Default prop factors: 80 g/IPS, tach offset 90 deg
+  for the recommended 90 deg accelerometer-to-photo-tach installation
+  (faqs/faq_mv2_balance_solutions.htm). The factors are a seed; learning replaces them after
+  run 2, which is how the solver treats the profile values.
+- **Phase definition.** DSS: "the rotation angle between the heavy spot of the rotor pushing
+  the accelerometer in its positive direction, and the tach signal." That is an
+  acceleration-peak reference. The carrier's `adjusted_velocity_phase_deg` is the positive
+  velocity peak, 90 deg away; its `signed_acceleration_phase_deg` is the comparable quantity.
+  Which of the two, and in which angular direction (DSS protractor: BLUE side for apparent
+  CCW rotation, RED for CW, 0/360 on the adjustment location nearest the phase reference),
+  must be fixed by a bench comparison before MicroVib-learned coefficients are used with
+  carrier readings. Open item.
+- **Rotor geometry.** Program Rotor mode: at most eight locations with angle and radius,
+  units labels such as GRAMS/FLATS/POINTS/PLATES, every solution split between two valid
+  locations, NEW SPLIT picks another pair (faqs/faq_mv2_rotor_geometry.htm). Standard Rotor
+  mode: any number of hand-entered angles, radius 1.0, units WTS. The group-file record
+  (name, channel, initial SENS, initial TACH, rotor mode, locations with units/name/angle/
+  radius) matches decode_grp.py.
+- **MicroBase Pro database** (faqs/faq_mbp_database_3rd_party.htm): dBase III/IV files in the
+  data folder's `mbase` subfolder. `header.dbf` has one row per data item (DATE, TIME,
+  AC_DESC1 aircraft, CP_DESC1 component, GROUP, TASK, ANLMODE, SAVEKEY). `histrecs.dbf` has
+  one row per balance run (DATE, TIME, RPM, NEWPK, NEWPH, TRIAL, REMOVE, SPLIT, SENS, TACH,
+  SAVEKEY). Spectra are log-packed one byte per bin in `specrecs.dbf` with MINVAL/MAXVAL/
+  COUNT/FMAX from `saverecs.dbf`; waveforms linear-packed over 254. These are DSS's own
+  decoded values and are the reference for checking mv2.js against, including the eight
+  A1090021 runs whose decoded levels disagree with the screen. Not yet obtained.
+- **Data identity.** MicroBase keys every item by aircraft ident/model/serial and component
+  name/model/serial (help: Identifying MicroVib II Data). The solver keys by aircraft; a
+  component field is still to be added.
+- **Tach limits.** Minimum input speed about 150-180 RPM; HIGH TACH on double pulses
+  (faqs/faq_accy_photo_tach.htm), the case the carrier now flags as ExtraTachPulses.
