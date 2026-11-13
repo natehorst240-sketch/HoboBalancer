@@ -41,6 +41,7 @@ const Preset presets[] = {
     {"alias-tone", "unreliable", "ips=0 tone_hz=1706.667 tone_g=1", "1 g tone aliasing onto 1/rev, no real 1/rev"},
     {"alias-tone-1rev", "stable_vector", "tone_hz=1706.667 tone_g=1", "the same tone over a real 0.3 IPS 1/rev"},
     {"first-edge-late", "stable_vector", "first_edge=12", "first tach edge late in a FIFO block"},
+    {"dss-simulator", "stable_vector", "rpm=1920 ips=0.8 phase=272.5", "DSS 1117-2 signal simulator nominal; DSS field-check tolerance is 0.5 RPM, 5%, 0.8 deg"},
 };
 
 const char *qualityName(Quality q) {

@@ -191,3 +191,7 @@ Read from dssmicro.com; everything below was previously inferred from the two hi
   component field is still to be added.
 - **Tach limits.** Minimum input speed about 150-180 RPM; HIGH TACH on double pulses
   (faqs/faq_accy_photo_tach.htm), the case the carrier now flags as ExtraTachPulses.
+- **Field-check reference.** DSS Signal Simulator P/N 1117-2: 1920 RPM, 0.8 IN/S at 272.5 deg;
+  accuracy 0.5 RPM, 5%, 0.8 deg (faqs product compatibility page). Carrier simulator preset
+  `dss-simulator`; the bench comparison against a MicroVib II should be judged to the same
+  tolerance. DSS accelerometers are 20 mV/g ICP; the magnetic pickup is a 900-1100 ohm coil.
