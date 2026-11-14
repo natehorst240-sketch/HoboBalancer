@@ -132,17 +132,21 @@
 <script>
 (function () {
   const M = window.MV2;
-  // A109 profile, decoded from profiles/A109.grp (revision below is M.groupRev of that file, so
-  // A1090731.HST, which embeds the same group, imports under it). Correction planes are explicit:
-  // only tasks naming the same plane share hardware.
+  // A109 profile: tasks and seeds decoded from profiles/A109.grp (revision below is M.groupRev
+  // of that file, so A1090731.HST, which embeds the same group, imports under it); limits and
+  // placement rules from DSS AN-MV2-A109 Rev 03: 400 g per bolt and "only adjacent blades should
+  // have balance weights" on the main rotor; a twelve-position wheel, four bolts at most, 25 g
+  // per bolt and 100 g per flange on the tail rotor (the group template's six positions were a
+  // placeholder). Correction planes are explicit: only tasks naming the same plane share hardware.
+  const MR_RULES = { maxLoaded: 2, adjacentOnly: true };
   const A109 = { name: 'A109', rev: 'grp-3c129433', tasks: [
-    { name: 'GND LT', sens: 320, tach: 340, unit: 'GRAMS', plane: 'MR hub weights', positions: [0, 90, 180, 270], max: 400 },
-    { name: 'HOV LT', sens: 320, tach: 340, unit: 'GRAMS', plane: 'MR hub weights', positions: [0, 90, 180, 270], max: 400 },
+    { name: 'GND LT', sens: 320, tach: 340, unit: 'GRAMS', plane: 'MR hub weights', positions: [0, 90, 180, 270], max: 400, rules: MR_RULES },
+    { name: 'HOV LT', sens: 320, tach: 340, unit: 'GRAMS', plane: 'MR hub weights', positions: [0, 90, 180, 270], max: 400, rules: MR_RULES },
     { name: 'HOV VT', sens: 3, tach: 340, unit: 'NO ADJ', plane: '', positions: [0, 90, 180, 270], max: 8 },
     { name: '80KT VT', sens: 8, tach: 340, unit: 'TAB DG', plane: 'MR tabs', positions: [0, 90, 180, 270], max: 8 },
     { name: '140KT VT', sens: 8, tach: 340, unit: 'TAB DG', plane: 'MR tabs', positions: [0, 90, 180, 270], max: 8 },
     { name: 'MCP VT', sens: 8, tach: 340, unit: 'TAB DG', plane: 'MR tabs', positions: [0, 90, 180, 270], max: 8 },
-    { name: 'T/R BAL', sens: 16, tach: 120, unit: 'GRAMS', plane: 'TR wheel', positions: [0, 60, 120, 180, 240, 300], max: 25,
+    { name: 'T/R BAL', sens: 16, tach: 120, unit: 'GRAMS', plane: 'TR wheel', positions: [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330], max: 25, rules: { maxLoaded: 4, maxTotal: 100 },
       aux: { name: 'Blade-bolt washers', ipsPerGram: 0.25, stations: [350, 10, 170, 190], gMin: 5, gMax: 16, step: 1 } }
   ] };
   const LABELS = { 0: 'TARGET', 90: 'BLD A', 180: 'BLD B', 270: 'BLD C' };
@@ -159,6 +163,13 @@
   // Version 1 kept runs and coefficients by task name alone. Keep them, under an explicit
   // 'unassigned' aircraft and 'legacy' session, so nothing silently merges with a real job.
   function migrate(o) {
+    // Saved copies of the built-in A109 profile predate the rotor rules and the 12-position
+    // wheel; refresh them from the current definition (same revision, same seeds).
+    if (o.profile && o.profile.name === 'A109' && o.profile.rev === A109.rev) {
+      const planes = {}; (o.profile.tasks || []).forEach(t => { planes[t.name] = t.plane; });
+      o.profile = JSON.parse(JSON.stringify(A109));
+      o.profile.tasks.forEach(t => { if (planes[t.name] !== undefined) t.plane = planes[t.name]; });
+    }
     if (o.version === 3) return o;
     // Version 2 keyed coefficients aircraft|profileRev|task and shared them across sensor
     // calibrations; version 3 adds the calibration. A v2 coefficient is assigned to a calibration
@@ -231,7 +242,7 @@
     $('aircraft').value = state.aircraft; $('session').value = state.session; $('calibration').value = state.calibration || '';
     $('tabs').innerHTML = state.profile.tasks.map(x => `<button class="${x.name === t.name ? 'on' : ''}" data-t="${esc(x.name)}">${esc(x.name)}</button>`).join('');
     $('tabs').querySelectorAll('button').forEach(b => b.onclick = () => { state.task = b.dataset.t; save(); render(); });
-    $('taskInfo').textContent = `${t.unit}, positions ${t.positions.join(', ')} deg, seed SENS ${t.sens} per IPS, TACH ${t.tach} deg`;
+    $('taskInfo').textContent = `${t.unit}, positions ${t.positions.join(', ')} deg, seed SENS ${t.sens} per IPS, TACH ${t.tach} deg${t.rules ? '; rules: ' + rulesText(t) : ''}`;
     $('plane').value = t.plane || '';
     $('coefKey').textContent = `aircraft "${state.aircraft || '(none)'}", profile ${state.profile.rev}, calibration "${state.calibration || '(none)'}", task ${t.name}`;
     const pend = pendingChg[pendKey(t)] || (pendingChg[pendKey(t)] = {});
@@ -261,17 +272,31 @@
     $('runs').querySelectorAll('[data-del]').forEach(b => b.onclick = () => { state.runs.splice(+b.dataset.del, 1); save(); render(); });
   }
 
+  // Installable move for a requested correction under the task's rotor rules. Null when the
+  // weights recorded as installed already break a rule (then nothing can be offered).
+  function placeFor(t, mag, angle) {
+    const inst = signedUnit(t) ? null : t.positions.map(a => installed(t, a));
+    return M.placeConstrained(mag, angle, stations(t), t.rules || {}, inst);
+  }
+  function rulesText(t) {
+    const r = t.rules || {}, parts = [];
+    if (r.maxLoaded) parts.push(`at most ${r.maxLoaded} positions loaded`);
+    if (r.adjacentOnly) parts.push('adjacent positions only');
+    if (r.maxTotal != null) parts.push(`${r.maxTotal} ${unitOf(t)} total`);
+    return parts.join(', ');
+  }
   function solutionFor(t, c) {
     const rs = usable(t.name);
     if (!rs.length) return null;
     const last = rs[rs.length - 1];
     const req = M.solve([{ level: last.level, phase: last.phase, sens: c.sens, tach: c.tach }]);
     if (!req) return null;
-    return { last, req, place: M.place(req.mag, req.angle, stations(t)) };
+    return { last, req, place: placeFor(t, req.mag, req.angle) };
   }
 
   function movesHtml(t, place, unit) {
     const maxPos = +$('maxPos').value || t.max, step = +$('roundTo').value || 0, d = step && step < 1 ? 1 : step ? 0 : 2;
+    if (!place) return `<span class="pos warn">installed weights break the rotor rule (${esc(rulesText(t))}); correct the installation first</span>`;
     if (!place.moves.length) return '<span class="pos">no installable move reduces vibration</span>';
     return place.moves.map(m => {
       const after = signedUnit(t) ? null : installed(t, m.angle) + m.amount;
@@ -285,12 +310,13 @@
     const s = solutionFor(t, c);
     if (!s) { $('solVec').textContent = 'no usable runs'; $('solPos').innerHTML = ''; $('solNote').textContent = ''; return; }
     const unit = unitOf(t), { last, req, place } = s;
+    if (!place) { $('solVec').textContent = 'no move offered'; $('solPos').innerHTML = movesHtml(t, null, unit); $('solNote').textContent = `Exact correction ${fmt(req.mag, 2)} ${unit} at ${fmt(req.angle, 1)} deg.`; return; }
     $('solVec').textContent = `${fmt(place.achieved.mag, 2)} ${unit} at ${fmt(place.achieved.angle, 1)} deg`;
     $('solPos').innerHTML = movesHtml(t, place, unit);
     const tgt = +$('target').value || 0.2;
     const pred = M.predict({ level: last.level, phase: last.phase, sens: c.sens, tach: c.tach }, place.achieved.mag, place.achieved.angle);
     const reqNote = Math.abs(place.achieved.mag - req.mag) > 1e-6 || place.moves.length === 0
-      ? ` The exact correction is ${fmt(req.mag, 2)} ${unit} at ${fmt(req.angle, 1)} deg; the stations, installed weights, limits and step allow the move shown.` : '';
+      ? ` The exact correction is ${fmt(req.mag, 2)} ${unit} at ${fmt(req.angle, 1)} deg; the stations, installed weights, limits, step${t.rules ? ' and rotor rules (' + rulesText(t) + ')' : ''} allow the move shown.${place.capped ? ' Additions were scaled down to the total limit.' : ''}` : '';
     $('solNote').textContent = last.level <= tgt
       ? `Latest level ${fmt(last.level, 3)} IPS is at or below the ${tgt} IPS target. No move needed.`
       : `Latest level ${fmt(last.level, 3)} IPS at phase ${fmt(last.phase, 1)}. Predicted level after the move shown: ${fmt(pred.level, 3)} IPS.${reqNote}`;
@@ -303,7 +329,7 @@
     let h = '<tr><th>Regime</th><th>Latest level</th><th>Phase</th><th>SENS</th><th>TACH</th><th>Weight</th><th>Predicted after move</th></tr>';
     const wKey = name => [state.aircraft, t.plane, name].join('|');
     const regs = same.map(x => { const rs = usable(x.name), l = rs[rs.length - 1], c = coef(x); const w = state.weights[wKey(x.name)] == null ? 1 : state.weights[wKey(x.name)]; return { name: x.name, level: l.level, phase: l.phase, sens: c.sens, tach: c.tach, weight: w }; });
-    const req = M.solve(regs), place = req ? M.place(req.mag, req.angle, stations(t)) : null;
+    const req = M.solve(regs), place = req ? placeFor(t, req.mag, req.angle) : null;
     regs.forEach(r => { const p = place ? M.predict(r, place.achieved.mag, place.achieved.angle) : null; h += `<tr><td>${esc(r.name)}</td><td>${fmt(r.level, 3)}</td><td>${fmt(r.phase, 1)}</td><td>${fmt(r.sens, 1)}</td><td>${fmt(r.tach, 1)}</td><td><input type="number" step="0.1" min="0" value="${r.weight}" data-w="${esc(r.name)}" style="width:70px"></td><td>${p ? fmt(p.level, 3) : ''}</td></tr>`; });
     $('multi').innerHTML = h;
     $('multi').querySelectorAll('[data-w]').forEach(i => i.onchange = () => { state.weights[wKey(i.dataset.w)] = +i.value; save(); render(); });
@@ -354,7 +380,8 @@
       }
       for (const d of ranges[i]) { delta[i] = d; rec(i + 1); }
     })(0);
-    const wheel = M.place(best.rem * c.sens, best.ang, stations(t));
+    const wheel = placeFor(t, best.rem * c.sens, best.ang);
+    if (!wheel) { $('auxVec').textContent = 'no move offered'; $('auxPos').innerHTML = movesHtml(t, null, 'g'); $('auxNote').textContent = ''; return; }
     // Total applied correction in wheel units: washers converted through IPS, plus the wheel move.
     let ax = 0, ay = 0;
     best.delta.forEach((d, k) => { ax += d * ipsPerG * c.sens * Math.cos(st[k] * D2R); ay += d * ipsPerG * c.sens * Math.sin(st[k] * D2R); });

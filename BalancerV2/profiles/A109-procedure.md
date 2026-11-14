@@ -195,3 +195,57 @@ Read from dssmicro.com; everything below was previously inferred from the two hi
   accuracy 0.5 RPM, 5%, 0.8 deg (faqs product compatibility page). Carrier simulator preset
   `dss-simulator`; the bench comparison against a MicroVib II should be judged to the same
   tolerance. DSS accelerometers are 20 mV/g ICP; the magnetic pickup is a 900-1100 ohm coil.
+
+## From DSS AN-MV2-A109 Rev 03 (19 Oct 2021), the A109 application note (read 2026-11-14)
+
+- **Tasks and channels.** GND LT and HOV LT on CH:1A (lateral sensor, axis right); HOV VT,
+  80KT VT, 140KT VT, MCP VT on CH:2A (vertical sensor, axis up); both sensors on one triaxial
+  bracket on the beam between the seats. Tach from the magnetic pickup, cannon plug above the
+  left pilot seat (photo-tach alternative: beam up and slightly forward, tape on the target
+  blade grip when it is forward-right). T/R BAL on CH:4D: sensor on the T/R gearbox cover,
+  axis up; photo-tach on the fin trailing edge, beam parallel to the output shaft, tape on a
+  blade grip at the 2:00 position viewed from the left.
+- **Angles.** Main rotor viewed from above: 360 TARGET forward-right, 90 A aft-right, 180 B
+  aft-left, 270 C forward-left; A109E/SP has the magnetic pickup aft instead of forward. Tail
+  rotor turns clockwise viewed from the left (protractor red side); wheel 360 at top, 90 left,
+  180 bottom, 270 right. On both rotors the position numbers increase against the direction
+  of rotation, the DSS protractor convention.
+- **Limits.** Main rotor: 400 g maximum in a single bolt; only adjacent blades should carry
+  balance weights; trim tab +/-8 deg; one pitch-link graduation about 0.12 in of track.
+  Tail rotor: twelve-position balance wheel on the standard balance program; at most four
+  bolts on the flange; 25 g per bolt including bolt and nut; 100 g per flange; head toward
+  the hub. The solver's built-in A109 profile now carries all of these as placement rules;
+  its group-file template listed six T/R positions, which was wrong.
+- **Procedure.** Ground track to 0.5 in spread, then GND LT lateral; hover track, HOV VT for
+  reference; HOV LT preliminary balance; 80KT, 140KT and MCP track and vertical, the first
+  vertical correction by tab from the track picture entered into all three tasks (tab up on
+  the TARGET blade = +1.0 at 360), later ones from the displayed solution, always split across
+  90/180/270/360; final HOV LT; autorotation check; 140KT spectrum. Acceptance 0.2 in/s on
+  every task. Minimum 5 averages (AVGS=5) on every balance reading.
+- **Speeds.** Main rotor 385 NR at 100% (4P blade rate 1540 CPM, 25.67 Hz); tail rotor 2096
+  RPM. These set the expected speed bands for the carrier profiles.
+- **DVA.** Absorbers tuned to 1524 CPM pilot / 1530 CPM copilot (A109E/S/SP), 2 mm washer
+  about 6 CPM; cabin 4P at 140 kt 100% NR should be 0.6 in/s or less. Spectrum feature only.
+
+## MicroBase Pro database cross-check (histrecs.dbf, header.dbf; read 2026-11-14)
+
+DSS's own decoded balance history, from the `mbase` folder (dBase files; layout per the DSS FAQ
+"MicroBase Pro Database & 3rd Party Applications"; fields SAVEKEY, NUMREC, TRIAL, REMOVE, SPLIT,
+RPM, NEWPK, NEWPH, OLDPK, OLDPH, WT1/LOC1/RAD1, WT2/LOC2/RAD2, SENS, TACH, CWT/CLC, DATE, TIME,
+AVGTYPE, AVGS, BW, FS, PK). Analyzer: MV2 serial 2004, firmware 1.34.101.75.
+
+- **A1090731.HST agrees exactly.** The five identified runs (SAVEKEY 1077-1081; 1078 is a
+  duplicate of GND LT, and HOV LT at 13:09:16 was never identified) match mv2.js on level,
+  phase, RPM, both solution weights and locations, SENS and TACH, to the four decimals stored:
+  GND LT 0.0849 at 151.2785, 17.9214 g at 0 and 20.4147 g at 90; HOV VT 0.1693 at 262.5645;
+  80KT VT 0.0926 at 181.4615; MCP VT 0.1443 at 190.8888. The averages byte (+21) also agrees
+  (2, 1, 2, 2), so that field is confirmed; those runs were taken with fewer than the AVGS=5
+  the application note calls for. `FS` is the auto-range full scale (1.638); `PK` (0.1964,
+  0.5167...) is not the +28 level field and is not identified.
+- **A1090021.HST is not in the database.** Its eight runs were never identified into
+  MicroBase, so DSS's reading of the garbled records is still unavailable. Identifying that
+  file in MicroBase (Data Manager, preview, Save Item) and re-exporting histrecs.dbf would
+  settle it.
+- The DSS sample jobs in the same table (M-20J prop, AS350 driveshaft and main rotor, PT6
+  props, 2016-2017 props) carry OLDPK/OLDPH, the move installed, and the SENS/TACH learned
+  from it: a direct check of the learning formula on DSS's own numbers (see the solver test).

@@ -87,4 +87,29 @@ near(prad.moves[0].amount, 5, 1e-9, 'station radius scales the mass');
 const pmax = M.place(10, 0, [{ angle: 0, lo: 0, hi: 4, step: 1 }]);
 check(pmax.moves[0].amount === 4, 'per-station maximum respected');
 
+// ---- rotor rules (DSS AN-MV2-A109) ----
+const mr = [0, 90, 180, 270].map(a => ({ angle: a, lo: 0, hi: 400, step: 1 }));
+const adj = { maxLoaded: 2, adjacentOnly: true };
+let pc = M.placeConstrained(100, 45, mr, adj, [0, 0, 0, 0]);
+check(pc && pc.set.length === 2 && pc.set[0] === 0 && pc.set[1] === 1, 'empty rotor: adjacent pair bracketing the request');
+// 100 g already on BLD B (180); request at 0 must not load TARGET (opposite blade).
+const mrB = [0, 90, 180, 270].map((a, i) => ({ angle: a, lo: i === 2 ? -100 : 0, hi: i === 2 ? 300 : 400, step: 1 }));
+pc = M.placeConstrained(50, 0, mrB, adj, [0, 0, 100, 0]);
+check(pc && !pc.moves.some(m => m.angle === 0), 'weight on 180 forbids loading 0: ' + JSON.stringify(pc.moves));
+check(pc.moves.some(m => m.angle === 180 && m.amount < 0), 'opposite request is met by removal from the loaded blade');
+check(pc.set.every(i => i === 2 || i === 1 || i === 3) && pc.set.length <= 2, 'set stays adjacent to the loaded blade');
+check(M.placeConstrained(50, 0, mrB, adj, [10, 0, 100, 0]) === null, 'already non-adjacent installation: no placement offered');
+const tr = Array.from({ length: 12 }, (_, i) => ({ angle: i * 30, lo: 0, hi: 25, step: 1 }));
+const trRules = { maxLoaded: 4, maxTotal: 100 };
+pc = M.placeConstrained(40, 15, tr, trRules, new Array(12).fill(0));
+check(pc && pc.set.length <= 4 && pc.moves.reduce((q, m) => q + m.amount, 0) <= 100, 'tail rotor within four bolts and 100 g');
+const trLoaded = tr.map((s, i) => i < 4 ? { angle: s.angle, lo: -10, hi: 15, step: 1 } : s);
+const inst4 = tr.map((_, i) => i < 4 ? 10 : 0);
+pc = M.placeConstrained(30, 200, trLoaded, trRules, inst4);
+check(pc && pc.moves.every(m => m.angle < 120), 'four bolts loaded: no fifth bolt, only those four move');
+const trHeavy = tr.map((s, i) => i === 0 ? { angle: 0, lo: -90, hi: 25 - 90 + 90, step: 1 } : s);
+pc = M.placeConstrained(20, 0, trHeavy, trRules, tr.map((_, i) => i === 0 ? 90 : 0));
+check(pc && 90 + pc.moves.reduce((q, m) => q + m.amount, 0) <= 100 + 1e-9, 'flange total capped at 100 g');
+check(M.placeConstrained(10, 0, mr, {}, [0, 0, 0, 0]).moves.length === 1, 'no rules: plain placement');
+
 console.log(`PASS: ${checks} checks, mv2.js`);

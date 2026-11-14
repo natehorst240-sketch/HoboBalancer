@@ -222,6 +222,64 @@
     };
   };
 
+  // Placement under rotor rules from the aircraft procedure (DSS AN-MV2-A109 rev 03: main rotor
+  // "only adjacent blades should have balance weights"; tail rotor "maximum number of bolts on
+  // the balance flange is four", "maximum weight per balance flange is 100 grams").
+  // rules: {maxLoaded, adjacentOnly, maxTotal}; installed: weight now at each station, parallel
+  // to `stations` (stations in angular order, so index neighbours are angular neighbours).
+  // Every allowed set of stations is tried: the loaded ones must stay in the set (a loaded
+  // station may still be emptied by a removal), others are added up to maxLoaded, adjacency and
+  // the total are checked on the result, and the M.place result with the smallest miss wins.
+  // Returns that result plus `set` (station indices), or null when the current installation
+  // already breaks the rules so no placement can be offered.
+  M.placeConstrained = function (mag, angle, stations, rules, installed) {
+    const n = stations.length, inst = installed || new Array(n).fill(0), r = rules || {};
+    const loaded = []; inst.forEach((w, i) => { if (w > 1e-9) loaded.push(i); });
+    const maxLoaded = r.maxLoaded > 0 ? r.maxLoaded : n;
+    const maxTotal = r.maxTotal != null ? r.maxTotal : Infinity;
+    if (loaded.length > maxLoaded) return null;
+    const adjacentSet = set => {
+      if (set.length < 2) return true;
+      if (set.length > 2) return false;
+      const d = set[1] - set[0];
+      return d === 1 || (set[0] === 0 && set[1] === n - 1);
+    };
+    let best = null;
+    const subset = [];
+    const consider = () => {
+      const set = loaded.concat(subset).sort((x, y) => x - y);
+      if (r.adjacentOnly && !adjacentSet(set)) return;
+      const st = stations.map((s, i) => set.includes(i) ? s : Object.assign({}, s, { lo: 0, hi: 0 }));
+      let p = M.place(mag, angle, st);
+      let total = 0; inst.forEach(w => { total += w; }); p.moves.forEach(m => { total += m.amount; });
+      if (total > maxTotal + 1e-9) {
+        // Over the total limit: scale the additions down to what the limit leaves, keep the
+        // removals, snap to steps, and take the partial correction that results.
+        const adds = p.moves.filter(m => m.amount > 0).reduce((q, m) => q + m.amount, 0);
+        const allow = Math.max(0, maxTotal - (total - adds));
+        if (!adds) return;
+        const moves = p.moves.map(m => {
+          if (m.amount <= 0) return m;
+          const s = stations.find(x => x.angle === m.angle), step = s && s.step > 0 ? s.step : 0;
+          const v = m.amount * allow / adds;
+          return { angle: m.angle, amount: step ? Math.floor(v / step + 1e-9) * step : v };
+        }).filter(m => Math.abs(m.amount) > 1e-9);
+        let ax = 0, ay = 0;
+        for (const m of moves) { const s = stations.find(x => x.angle === m.angle); const rr = s.radius || 1; ax += m.amount * rr * Math.cos(m.angle * D2R); ay += m.amount * rr * Math.sin(m.angle * D2R); }
+        const miss = Math.hypot(mag * Math.cos(angle * D2R) - ax, mag * Math.sin(angle * D2R) - ay);
+        p = { moves, achieved: { mag: Math.hypot(ax, ay), angle: mod360(Math.atan2(ay, ax) * R2D) }, miss, capped: true };
+      }
+      if (!best || p.miss < best.miss - 1e-12 || (Math.abs(p.miss - best.miss) <= 1e-12 && set.length < best.set.length)) best = Object.assign({ set }, p);
+    };
+    const free = []; for (let i = 0; i < n; i++) if (!loaded.includes(i)) free.push(i);
+    (function rec(start) {
+      consider();
+      if (loaded.length + subset.length >= maxLoaded) return;
+      for (let k = start; k < free.length; k++) { subset.push(free[k]); rec(k + 1); subset.pop(); }
+    })(0);
+    return best;
+  };
+
   // Split a vector (mag at angle) onto the two adjacent positions bracketing it. Exact only when
   // the two bracketing positions are less than 180 deg apart and negative amounts are allowed;
   // use M.place for anything that will be installed.
