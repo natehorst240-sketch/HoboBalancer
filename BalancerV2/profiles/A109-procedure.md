@@ -128,9 +128,14 @@ Two things learned:
 Spectrum average, 200 points, Hann window, 4 averages, units IN/S PK, x-axis 75 to
 15000 RPM (CPM), i.e. 1.25 Hz per line over 250 Hz; overall 0.5057. Peak table: main
 rotor 353 CPM at 0.264, main rotor 2x 736 CPM at 0.094, 4x at 0.167, 8x at 0.115, tail
-rotor 0.030. The 200 IEEE floats in the file are the line amplitudes; bin 5 = 0.2647 and
-bin 9 = 0.0943 match the listed 1x and 2x magnitudes, so the file stores displayed IN/S
-PK directly. Exact bin-to-CPM alignment (k x 75 vs (k+1) x 75) still to be pinned.
+rotor 0.030. CORRECTED 2026-11-14: the 200 values are NOT IEEE floats but the MicroVib's
+C32 format; read as floats they came out off by powers of two, and "bin 5 = 0.2647 matches
+the 1x" was a coincidence of that misread. Decoded as C32 (decode_grp.py, verified bin by
+bin against MicroBase's own unpacked spectrum, test_decode_spc.py) the bins are peak IN/S,
+bin k at (k+1) x 1.25 Hz with no DC bin, and the 1x/2x/4x/8x peaks sit on bins 4, 9, 19, 40
+(0.255, 0.094, 0.147, 0.115); the screen's 0.264 at 353 CPM and 0.167 for 4x are evidently
+peak-interpolated between bins. RSS of bins 3.. is 0.498 against the screen overall 0.5057;
+how the overall is formed is not pinned.
 
 ## MicroBase settings relevant to the solver (mbsys.ini, read 2026-10-22, not stored: it holds a login)
 
@@ -249,15 +254,17 @@ AVGTYPE, AVGS, BW, FS, PK). Analyzer: MV2 serial 2004, firmware 1.34.101.75.
 - The DSS sample jobs in the same table (M-20J prop, AS350 driveshaft and main rotor, PT6
   props, 2016-2017 props) carry OLDPK/OLDPH, the move installed, and the SENS/TACH learned
   from it: a direct check of the learning formula on DSS's own numbers (see the solver test).
-- **PLOT0093.SPC against saverecs row 1082** (the same plot, identified 2026-09-03): the
+- **PLOT0093.SPC against saverecs row 1082 and specrecs** (same plot, identified 2026-09-03): the
   .SPC header F16 fields at 0x2a, 0x2e and 0x32 read 3.0, 250 and 1.25, matching DSS's FLOW,
   FMAX and DELTA (Hz per bin); COUNT 200, 4 averages, Hann window, IN/S, integrated from
   acceleration. DSS's stored MAXVAL 0.47308543 equals the file's bin 0 (1.89234173) divided by
   exactly 4, but bins 1-4 (1.23, 0.45, 0.38, 1.02) fit no single scaling and the stored MINVAL
   0.00039589 matches no bin closer than 0.2%. How MicroBase scales the first bins is therefore
-  not established; the bins from 5 up (1x at bin 5 = 0.2647, 2x at bin 9 = 0.0943) match the
-  screen as before. specrecs.dbf, which holds the 200 displayed values log-packed between
-  MINVAL and MAXVAL, would settle every bin. Not yet obtained.
+  not established at first; specrecs.dbf settled it: the file values are C32, not float
+  (see the corrected PLOT0093 section above and test_decode_spc.py).
+- **trakrecs.dbf / waverecs.dbf / tags.dbf / system.dbf**: only DSS sample track and waveform
+  data; 731H1.TRK and PLOT0101.TRK were downloaded but never identified (next SAVEKEY 1083).
+  tags.dbf records the aircraft as N731HC, AW109SP, S/N 22474.
 - **manager.dbf**: A1090021.HST was downloaded from the MV2 on 2026-09-04 but never identified,
   which is why header.dbf and histrecs.dbf have no rows for it. machrecs FACTOR is the
   machine-file linking factor (measured over nominal speed) per spectrum.
