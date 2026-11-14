@@ -37,7 +37,7 @@ const S = require('path').resolve(__dirname, '..', '..');
   ok((await p.$$('#runs tr')).length === 1 && (await p.$eval('#sens', e => e.value)) === '320.0', 'other aircraft starts clean at the seed');
   // 4. imports
   await p.setInputFiles('#file', S + '/profiles/A1090021.HST');
-  const m4 = await txt('addMsg'); ok(/8 runs, 0 passed checks, 8 kept out/.test(m4), 'A1090021 all rejected: ' + m4);
+  const m4 = await txt('addMsg'); ok(/8 runs, 8 passed checks, 0 kept out/.test(m4), 'A1090021 imports (levels verified against MicroBase): ' + m4);
   await p.setInputFiles('#file', S + '/profiles/A1090731.HST');
   const m5 = await txt('addMsg'); ok(/5 runs, 5 passed checks/.test(m5) && /Showing session/.test(m5), 'A1090731 imported: ' + m5);
   ok(/0\.08[45]/.test(await p.$eval('#runs', e => e.textContent)), 'imported GND LT level shown');
