@@ -476,7 +476,9 @@
       let ok = 0, seeded = 0;
       h.runs.forEach(r => {
         state.runs.push({ task: r.task, aircraft: state.aircraft, session, profileRev: h.group.rev, calibration: 'MicroVib', when: r.when, rpm: r.rpm,
-          level: r.level, phase: r.phase, change: { moves: r.verified && r.change.mag ? [{ amount: r.change.mag, angle: r.change.loc }] : [] },
+          // Split, signed entries as MicroBase shows them (previous row's CHG columns); the combined
+          // vector is the fallback for a first run with no previous record.
+          level: r.level, phase: r.phase, change: { moves: !r.verified ? [] : r.changeMoves.length ? r.changeMoves : r.change.mag ? [{ amount: r.change.mag, angle: r.change.loc }] : [] },
           sens: r.sens, tach: r.tach, verified: r.verified, problems: r.problems, source: 'import' });
         if (!r.verified) return;
         ok++;

@@ -46,4 +46,25 @@ for (const [task, pk, ph, sens, tach, w1, l1, w2, l2] of solved) {
   const at = a => { const x = sp.find(p => p.angle === a % 360); return x ? x.amount : 0; };
   check(Math.abs(at(l1) - w1) < 0.005 && Math.abs(at(l2) - w2) < 0.005, `${task}: split ${JSON.stringify(sp)} vs DSS ${w1}@${l1} ${w2}@${l2}`);
 }
+// A1090021.HST as MicroBase's Identify Data preview shows it (2026-11-14): decoded file vs screen.
+const fs = require('fs'), path = require('path');
+const h = M.decodeHistory(fs.readFileSync(path.join(__dirname, '..', 'profiles', 'A1090021.HST')));
+const preview = [[0.682, 354, 320.0, 340], [0.789, 25, 320.0, 340], [0.933, 37, 1206.0, 97], [0.682, 271, 739.2, 75],
+  [0.248, 253, 666.5, 79], [0.197, 183, 394.3, 61], [0.410, 147, 276.7, 328], [0.213, 185, 184.8, 332]];
+preview.forEach(([lv, ph, se, ta], i) => {
+  const r = h.runs[i];
+  check(r.verified && Math.abs(r.level - lv) < 0.0006 && angNear(r.phase, ph, 0.6) && Math.abs(r.sens - se) < Math.max(0.06, se * 3e-4) && angNear(r.tach, ta, 0.6),
+    `A1090021 run ${i + 1}: ${r.level} ${r.phase} ${r.sens} ${r.tach} vs preview ${lv} ${ph} ${se} ${ta}`);
+});
+// MicroBase Balance History panel for the same file (2026-11-14): CHG1@LOC1, CHG2@LOC2 per row,
+// AVGS, FS and PK columns. Entries are the change entered after that run.
+const panel = [[[0, 180], [0, 270], 6], [[0, 90], [278.7, 180], 1], [[753.2, 90], [-753.2, 180], 7], [[0, 90], [301.8, 180], 7],
+  [[0, 90], [102.8, 180], 7], [[-76.3, 90], [0, 180], 7], [[50.9, 90], [0, 180], 7], [[15.7, 90], [-36.1, 180], 6]];
+panel.forEach(([c1, c2, avgs], i) => {
+  const r = h.runs[i];
+  const near = (x, y) => Math.abs(x - y) < 0.06;
+  check(near(r.adj[0][0], c1[0]) && near(r.adj[0][1], c1[1]) && near(r.adj[1][0], c2[0]) && near(r.adj[1][1], c2[1]),
+    `A1090021 row ${i + 1} change entries ${JSON.stringify(r.adj)} vs panel ${JSON.stringify([c1, c2])}`);
+  check(r.avgs === avgs, `A1090021 row ${i + 1} AVGS ${r.avgs} vs panel ${avgs}`);
+});
 console.log(`PASS: ${checks} checks, mv2.js against MicroBase Pro histrecs rows`);

@@ -18,8 +18,13 @@ def f16(w):
     return lo * 2.0 ** (hi - 72) if (hi or lo) else 0.0
 
 def c32(w):
+    # Sign is bit 7 of the exponent byte (verified against MicroBase 2026-11-14: -753.2 is
+    # stored as cd 4c bc ca, +753.2 as cd 4c bc 4a).
     m0, m1, m2, e = w
-    return (m2 + m1 / 256 + m0 / 65536) * 2.0 ** (e - 72) if e else 0.0
+    if not e:
+        return 0.0
+    v = (m2 + m1 / 256 + m0 / 65536) * 2.0 ** ((e & 0x7F) - 72)
+    return -v if e & 0x80 else v
 
 def s(x):
     return x.split(b'\0')[0].decode('ascii', 'replace')

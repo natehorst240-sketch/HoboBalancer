@@ -106,17 +106,26 @@ a wrong sensitivity setting that day.
 | Run | VIB IPS | PHS | SENS | TACH | entered change before this run |
 |---|---|---|---|---|---|
 | 1 | 0.682 | 354 | 320 | 340 | none |
-| 2 | 0.789 | 25 | 320 | 340 | (block holds prev 0.682 at 354, change 7.9 at 0) |
+| 2 | 0.789 | 25 | 320 | 340 | none (row 1 CHG columns are 0) |
 | 3 | 0.933 | 37 | 1206 | 97 | 278.7 g at 180 |
-| 4 | 0.682 | 271 | 739 | 75 | 301.8 g at 180 |
-| 5 | 0.248 | 253 | 666 | 79 | 102.8 g at 180 |
-| 6 | 0.197 | 183 | 394 | 61 | ... |
-| 7 | 0.410 | 147 | 277 | 328 | 50.9 g at 90 |
-| 8 | 0.213 | 185 | 185 | 332 | 15.7 g at 90 |
+| 4 | 0.682 | 271 | 739.2 | 75 | +753.2 g at 90 and -753.2 g at 180 (combined 1065.2 at 45) |
+| 5 | 0.248 | 253 | 666.5 | 79 | 301.8 g at 180 |
+| 6 | 0.197 | 183 | 394.3 | 61 | 102.8 g at 180 |
+| 7 | 0.410 | 147 | 276.7 | 328 | -76.3 g at 90 |
+| 8 | 0.213 | 185 | 184.8 | 332 | 50.9 g at 90 |
+
+(Change column corrected 2026-11-14 from MicroBase's Balance History panel: its CHG1/LOC1,
+CHG2/LOC2 columns on row N are the change entered AFTER run N, i.e. before run N+1; the +44/+48
+field of record N+1 holds the same change as one combined vector, and that is what run N+1's
+SENS/TACH were learned from, which reproduces every value above. After run 8 the panel shows
+15.7 g at 90 and -36.1 g at 180 entered with no run 9. Negative entries are removals: the C32
+sign is bit 7 of the exponent byte, which earlier decoding read as 2^130 and called garbled.)
 
 Two things learned:
-- The stored level field is the displayed level times a range factor (x8 on this file,
-  x1/x2/x4 on A1090731); mag/SENS always gives the displayed value, so use that.
+- CORRECTED 2026-11-14: the level field at +28 is C32, not float32, and read that way it IS
+  the displayed level on every run of both files (the "range factor" was the float misread,
+  the same bug as in the .SPC decoder). mag/SENS only checks the stored solution block, which
+  is garbled in runs 3, 6 and 8 here; MicroBase shows those runs normally and so does mv2.js.
 - SENS and TACH are re-learned after every entered change, as a single-step replacement:
   SENS = |W| / |V_after - V_before|, TACH from the response angle. Checked on runs 2 to 3:
   278.7 g at 180 moved the vector from 0.789 at 24.8 to 0.933 at 36.9, which gives
@@ -247,10 +256,12 @@ AVGTYPE, AVGS, BW, FS, PK). Analyzer: MV2 serial 2004, firmware 1.34.101.75.
   (2, 1, 2, 2), so that field is confirmed; those runs were taken with fewer than the AVGS=5
   the application note calls for. `FS` is the auto-range full scale (1.638); `PK` (0.1964,
   0.5167...) is not the +28 level field and is not identified.
-- **A1090021.HST is not in the database.** Its eight runs were never identified into
-  MicroBase, so DSS's reading of the garbled records is still unavailable. Identifying that
-  file in MicroBase (Data Manager, preview, Save Item) and re-exporting histrecs.dbf would
-  settle it.
+- **A1090021.HST** was read from MicroBase's Identify Data preview on 2026-11-14 (eight GND LT
+  runs, 28 Aug 2025, flags LS, RPM 384): levels 0.682, 0.789, 0.933, 0.682, 0.248, 0.197,
+  0.410, 0.213 with the phases and SENS/TACH of the table above. The level field decoded as
+  C32 matches all eight; the previously "garbled" values were the float misread, and the
+  "corrupt" solution blocks of runs 3, 6 and 8 were negative C32 entries (-753.2, -76.3, -36.1)
+  read without the sign bit. Nothing in the file is corrupt.
 - The DSS sample jobs in the same table (M-20J prop, AS350 driveshaft and main rotor, PT6
   props, 2016-2017 props) carry OLDPK/OLDPH, the move installed, and the SENS/TACH learned
   from it: a direct check of the learning formula on DSS's own numbers (see the solver test).

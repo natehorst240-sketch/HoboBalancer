@@ -6,7 +6,9 @@
   // ---- number formats used by the MicroVib ----
   // F16: [mant u8][exp u8], value = mant * 2^(exp-72). C32: [m0 m1 m2 exp], mant = m2 + m1/256 + m0/65536.
   M.f16 = (b, o) => (b[o + 1] || b[o]) ? b[o] * Math.pow(2, b[o + 1] - 72) : 0;
-  M.c32 = (b, o) => b[o + 3] ? (b[o + 2] + b[o + 1] / 256 + b[o] / 65536) * Math.pow(2, b[o + 3] - 72) : 0;
+  // C32 sign: bit 7 of the exponent byte (A1090021.HST record 3 holds 753.2 as cd 4c bc 4a and
+  // -753.2 as cd 4c bc ca; MicroBase shows both). Verified 2026-11-14.
+  M.c32 = (b, o) => { const e = b[o + 3]; if (!e) return 0; const v = (b[o + 2] + b[o + 1] / 256 + b[o] / 65536) * Math.pow(2, (e & 0x7f) - 72); return e & 0x80 ? -v : v; };
   M.f32 = (b, o) => new DataView(b.buffer, b.byteOffset + o, 4).getFloat32(0, true);
   M.u16 = (b, o) => b[o] | (b[o + 1] << 8);
   const str = (b, o, n) => { let s = ''; for (let i = 0; i < n && b[o + i]; i++) s += String.fromCharCode(b[o + i]); return s; };
@@ -38,6 +40,10 @@
   };
 
   // ---- .hst run records (86 bytes each after the 1816-byte group section) ----
+  // Field formats verified 2026-11-14 against MicroBase Pro's own decoding of A1090731 and
+  // A1090021 (13 runs): RPM at +24 is IEEE float32 x 60/64; the level at +28, phase, previous
+  // level/phase, entered change, SENS, TACH and the solution vectors are all C32. Reading the
+  // level as float32 was wrong by powers of two (the "range factor" of earlier notes).
   M.decodeHistory = function (bytes) {
     const b = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
     const g = M.decodeGroup(b);
@@ -55,26 +61,37 @@
       const mag = (d === 90 || d === 270) ? Math.hypot(adj[0][0], adj[1][0]) : d === 180 ? Math.abs(adj[0][0] - adj[1][0]) : adj[0][0] + adj[1][0];
       const run = {
         task: g.tasks[ti] ? g.tasks[ti].name : String(ti), taskIndex: ti, when, avgs: b[o + 21], rpm: M.f32(b, o + 24) * 60 / 64,
-        levelRaw: M.f32(b, o + 28), phase: M.c32(b, o + 32), prevLevel: M.c32(b, o + 36), prevPhase: M.c32(b, o + 40),
+        levelStored: M.c32(b, o + 28), phase: M.c32(b, o + 32), prevLevel: M.c32(b, o + 36), prevPhase: M.c32(b, o + 40),
         change: { mag: M.c32(b, o + 44), loc: M.c32(b, o + 48) }, sens, tach, adj,
+        // `adj` is the change entered AFTER this run (MicroBase's CHG1/LOC1, CHG2/LOC2 columns on
+        // this row), as the two split entries, signed. `change` is the combined vector of the
+        // change entered BEFORE this run, which is what this run's SENS/TACH were learned from.
         levelFromSolution: sens ? mag / sens : NaN
       };
       run.problems = M.checkRun(run, g);
       run.verified = run.problems.length === 0;
       // An unverified record carries no level: nothing downstream can mistake it for a measurement.
-      run.level = run.verified ? run.levelFromSolution : null;
+      run.level = run.verified ? run.levelStored : null;
+      // The split entries that make up this run's `change`: the previous record's adj block,
+      // but only when a change was actually entered (combined change non-zero) and the rows
+      // belong to the same task. Otherwise the previous adj is DSS's proposed solution, not an
+      // entry (A1090731: every run is the first of its task, TRIAL still set), and there is no
+      // change. Consistent when the entries' vector sum equals the combined change within 1%.
+      const prev = runs[runs.length - 1];
+      const cm = M.changeVector(run.change);
+      run.changeMoves = cm && prev && prev.taskIndex === run.taskIndex ? prev.adj.filter(([a]) => Math.abs(a) > 1e-9).map(([a, l]) => ({ amount: a, angle: l })) : [];
+      const cv = M.changeVector({ moves: run.changeMoves });
+      run.changeOk = !cm ? true : !!cv && Math.hypot(cv[0] - cm[0], cv[1] - cm[1]) <= 0.01 * Math.hypot(cm[0], cm[1]) + 1e-6;
       runs.push(run);
       o += 86;
     }
     return { group: g, runs };
   };
 
-  // Plausibility of one decoded .hst record. The layout is reverse engineered (decode_grp.py) and
-  // is known to come out garbled on some files (A1090021.HST: run 3 decodes to 2e38 IPS against
-  // 0.933 on the MicroVib screen), so a record is used only if it is internally consistent.
-  // The key check: the stored level field is the displayed level times a range factor that has
-  // only ever been a power of two (x1/4 to x8 seen), and mag/SENS gives the displayed level. If
-  // the two do not agree to a power of two within 1%, the amplitude cannot be trusted.
+  // Plausibility of one decoded .hst record: the measurement fields (level, phase, RPM, SENS,
+  // TACH, entered change) must be finite and in range. The solution block is checked
+  // separately (run.solutionOk) because it is garbled in some records while the measurement is
+  // fine; MicroBase shows those runs normally.
   M.checkRun = function (r, g) {
     const p = [];
     const fin = x => typeof x === 'number' && isFinite(x);
@@ -84,14 +101,7 @@
     if (!(fin(r.sens) && r.sens > 0 && r.sens < 1e5)) p.push('SENS implausible');
     if (!(fin(r.tach) && r.tach >= 0 && r.tach < 360)) p.push('TACH outside 0-360');
     if (![r.change.mag, r.change.loc].every(x => fin(x) && Math.abs(x) < 1e5)) p.push('entered change garbled');
-    if (!r.adj.every(([a, l]) => fin(a) && Math.abs(a) < 1e5 && fin(l))) p.push('solution fields garbled');
-    const lv = r.levelFromSolution, raw = r.levelRaw;
-    if (!(fin(lv) && lv > 0 && lv < 50)) p.push('level from solution implausible');
-    else if (!(fin(raw) && raw > 0)) p.push('stored level missing');
-    else {
-      const k = Math.log2(raw / lv), n = Math.round(k);
-      if (Math.abs(raw / lv / Math.pow(2, n) - 1) > 0.01 || n < -4 || n > 4) p.push('stored level is not a power-of-two multiple of solution/SENS');
-    }
+    if (!(fin(r.levelStored) && r.levelStored >= 0 && r.levelStored < 50)) p.push('level implausible');
     return p;
   };
 
