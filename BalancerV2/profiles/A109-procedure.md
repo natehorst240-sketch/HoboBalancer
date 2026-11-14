@@ -249,3 +249,15 @@ AVGTYPE, AVGS, BW, FS, PK). Analyzer: MV2 serial 2004, firmware 1.34.101.75.
 - The DSS sample jobs in the same table (M-20J prop, AS350 driveshaft and main rotor, PT6
   props, 2016-2017 props) carry OLDPK/OLDPH, the move installed, and the SENS/TACH learned
   from it: a direct check of the learning formula on DSS's own numbers (see the solver test).
+- **PLOT0093.SPC against saverecs row 1082** (the same plot, identified 2026-09-03): the
+  .SPC header F16 fields at 0x2a, 0x2e and 0x32 read 3.0, 250 and 1.25, matching DSS's FLOW,
+  FMAX and DELTA (Hz per bin); COUNT 200, 4 averages, Hann window, IN/S, integrated from
+  acceleration. DSS's stored MAXVAL 0.47308543 equals the file's bin 0 (1.89234173) divided by
+  exactly 4, but bins 1-4 (1.23, 0.45, 0.38, 1.02) fit no single scaling and the stored MINVAL
+  0.00039589 matches no bin closer than 0.2%. How MicroBase scales the first bins is therefore
+  not established; the bins from 5 up (1x at bin 5 = 0.2647, 2x at bin 9 = 0.0943) match the
+  screen as before. specrecs.dbf, which holds the 200 displayed values log-packed between
+  MINVAL and MAXVAL, would settle every bin. Not yet obtained.
+- **manager.dbf**: A1090021.HST was downloaded from the MV2 on 2026-09-04 but never identified,
+  which is why header.dbf and histrecs.dbf have no rows for it. machrecs FACTOR is the
+  machine-file linking factor (measured over nominal speed) per spectrum.
