@@ -25,7 +25,10 @@ while o + 85 <= numel(b)
     if d == 90 || d == 270, mag = hypot(r.adj(1,1), r.adj(2,1));
     elseif d == 180, mag = abs(r.adj(1,1) - r.adj(2,1));
     else, mag = r.adj(1,1) + r.adj(2,1); end
-    if r.sens > 0, r.level = mag / r.sens; else, r.level = le_f32(b, o+28); end
+    % Level is C32 at +28 (verified against MicroBase Pro 2026-11-14). r.adj is the change
+    % entered AFTER this run (MicroBase CHG1/LOC1, CHG2/LOC2), signed; r.change the combined
+    % vector of the change entered BEFORE this run, which this run's SENS/TACH were learned from.
+    r.level = mv2_c32(b, o+28);
     runs(end+1) = r;
     o = o + 86;
 end

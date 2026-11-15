@@ -17,6 +17,15 @@ def f16(w):
     hi, lo = w[1], w[0]
     return lo * 2.0 ** (hi - 72) if (hi or lo) else 0.0
 
+def c32(w):
+    # Sign is bit 7 of the exponent byte (verified against MicroBase 2026-11-14: -753.2 is
+    # stored as cd 4c bc ca, +753.2 as cd 4c bc 4a).
+    m0, m1, m2, e = w
+    if not e:
+        return 0.0
+    v = (m2 + m1 / 256 + m0 / 65536) * 2.0 ** ((e & 0x7F) - 72)
+    return -v if e & 0x80 else v
+
 def s(x):
     return x.split(b'\0')[0].decode('ascii', 'replace')
 
@@ -49,15 +58,24 @@ if __name__ == '__main__' and len(sys.argv) == 2:
 # 731H1.TRK (96 bytes): "A109" + regime "HOV VT" + 0x50 bytes of fields, mixed
 # 16-bit F16 and 32-bit values; field meanings not yet mapped (need the MicroVib
 # screen values for the same record).
-# PLOT0093.SPC (860 bytes): 0x3c header ("A109", "DVA VT", F16 fields incl.
-# 0x48fa=250 and 0x41a0=1.25, read as span 250 and 1.25 per bin), then 200 IEEE
-# little-endian float32 amplitudes.
+# PLOT0093.SPC (860 bytes): 0x3c header ("A109", "DVA VT", F16 fields: 0x2a = FLOW 3 Hz,
+# 0x2e = FMAX 250 Hz, 0x32 = DELTA 1.25 Hz per bin, all three confirmed against MicroBase's
+# saverecs row for this plot), then 200 amplitudes in the MicroVib's C32 format (see c32
+# below), NOT IEEE float32. Reading them as float32 gave values off by powers of two, which
+# went unnoticed until MicroBase's own unpacked bins (specrecs.dbf) were compared
+# bin by bin on 2026-11-14: C32 reproduces every bin within DSS's 2.8% log-packing step, and the
+# file's max and min equal DSS's MAXVAL/MINVAL exactly. Bin k is at (k + 1) x DELTA: the
+# first stored bin is 1.25 Hz and there is no DC bin (the 1x/2x/4x/8x peaks of 385 RPM fall on
+# bins 4, 9, 19, 40). Displayed units are peak IN/S after integration (saverecs INTMODE).
 def decode_spc(path):
     b = open(path, 'rb').read()
     n = (len(b) - 0x3c) // 4
+    delta = f16(b[0x32:0x34])
+    bins = [c32(b[0x3c + 4 * k:0x40 + 4 * k]) for k in range(n)]
     return {'name': s(b[2:10]), 'regime': s(b[10:18]),
+            'flow_hz': f16(b[0x2a:0x2c]), 'fmax_hz': f16(b[0x2e:0x30]), 'delta_hz': delta,
             'hdr16': [(hex(i), f16(b[i:i + 2])) for i in range(0x12, 0x3c, 2)],
-            'bins': struct.unpack('<%df' % n, b[0x3c:0x3c + 4 * n])}
+            'hz': [(k + 1) * delta for k in range(n)], 'bins': bins}
 
 
 # --- .HST history files -------------------------------------------------------
@@ -74,9 +92,6 @@ def decode_spc(path):
 #   Solution angle convention: -(phase + tach + 180) mod 360; magnitude = sens * level.
 import datetime, math
 
-def c32(w):
-    m0, m1, m2, e = w
-    return (m2 + m1 / 256 + m0 / 65536) * 2.0 ** (e - 72) if e else 0.0
 
 def decode_hst(path):
     b = open(path, 'rb').read()

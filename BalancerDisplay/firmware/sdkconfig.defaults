@@ -1,0 +1,26 @@
+# Freenove FNK0115 family: ESP32-S3-WROOM-1-N16R8 (16 MB flash, 8 MB octal PSRAM), per the
+# Freenove tutorial ("all four models are equipped with the N16R8 module"; "enable OPI PSRAM").
+# Octal PSRAM takes GPIO35-37. The USB-C connector is a CH340C on UART0, so the console stays
+# on UART0, unlike the carrier's native USB-serial-JTAG console.
+CONFIG_IDF_TARGET="esp32s3"
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="16MB"
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+CONFIG_PARTITION_TABLE_FILENAME="partitions.csv"
+
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_OCT=y
+CONFIG_SPIRAM_SPEED_80M=y
+CONFIG_SPIRAM_USE_MALLOC=y
+CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=4096
+
+CONFIG_ESP_CONSOLE_UART_DEFAULT=y
+CONFIG_ESP_CONSOLE_UART_BAUDRATE=115200
+
+CONFIG_FREERTOS_HZ=1000
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+CONFIG_COMPILER_CXX_EXCEPTIONS=n
+# The frame buffer lives in PSRAM and the RGB peripheral reads it continuously; keep the
+# panel driver's ISR in IRAM so flash cache misses cannot starve it.
+CONFIG_LCD_RGB_ISR_IRAM_SAFE=y

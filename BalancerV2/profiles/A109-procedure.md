@@ -106,17 +106,26 @@ a wrong sensitivity setting that day.
 | Run | VIB IPS | PHS | SENS | TACH | entered change before this run |
 |---|---|---|---|---|---|
 | 1 | 0.682 | 354 | 320 | 340 | none |
-| 2 | 0.789 | 25 | 320 | 340 | (block holds prev 0.682 at 354, change 7.9 at 0) |
+| 2 | 0.789 | 25 | 320 | 340 | none (row 1 CHG columns are 0) |
 | 3 | 0.933 | 37 | 1206 | 97 | 278.7 g at 180 |
-| 4 | 0.682 | 271 | 739 | 75 | 301.8 g at 180 |
-| 5 | 0.248 | 253 | 666 | 79 | 102.8 g at 180 |
-| 6 | 0.197 | 183 | 394 | 61 | ... |
-| 7 | 0.410 | 147 | 277 | 328 | 50.9 g at 90 |
-| 8 | 0.213 | 185 | 185 | 332 | 15.7 g at 90 |
+| 4 | 0.682 | 271 | 739.2 | 75 | +753.2 g at 90 and -753.2 g at 180 (combined 1065.2 at 45) |
+| 5 | 0.248 | 253 | 666.5 | 79 | 301.8 g at 180 |
+| 6 | 0.197 | 183 | 394.3 | 61 | 102.8 g at 180 |
+| 7 | 0.410 | 147 | 276.7 | 328 | -76.3 g at 90 |
+| 8 | 0.213 | 185 | 184.8 | 332 | 50.9 g at 90 |
+
+(Change column corrected 2026-11-14 from MicroBase's Balance History panel: its CHG1/LOC1,
+CHG2/LOC2 columns on row N are the change entered AFTER run N, i.e. before run N+1; the +44/+48
+field of record N+1 holds the same change as one combined vector, and that is what run N+1's
+SENS/TACH were learned from, which reproduces every value above. After run 8 the panel shows
+15.7 g at 90 and -36.1 g at 180 entered with no run 9. Negative entries are removals: the C32
+sign is bit 7 of the exponent byte, which earlier decoding read as 2^130 and called garbled.)
 
 Two things learned:
-- The stored level field is the displayed level times a range factor (x8 on this file,
-  x1/x2/x4 on A1090731); mag/SENS always gives the displayed value, so use that.
+- CORRECTED 2026-11-14: the level field at +28 is C32, not float32, and read that way it IS
+  the displayed level on every run of both files (the "range factor" was the float misread,
+  the same bug as in the .SPC decoder). mag/SENS only checks the stored solution block, which
+  is garbled in runs 3, 6 and 8 here; MicroBase shows those runs normally and so does mv2.js.
 - SENS and TACH are re-learned after every entered change, as a single-step replacement:
   SENS = |W| / |V_after - V_before|, TACH from the response angle. Checked on runs 2 to 3:
   278.7 g at 180 moved the vector from 0.789 at 24.8 to 0.933 at 36.9, which gives
@@ -128,9 +137,14 @@ Two things learned:
 Spectrum average, 200 points, Hann window, 4 averages, units IN/S PK, x-axis 75 to
 15000 RPM (CPM), i.e. 1.25 Hz per line over 250 Hz; overall 0.5057. Peak table: main
 rotor 353 CPM at 0.264, main rotor 2x 736 CPM at 0.094, 4x at 0.167, 8x at 0.115, tail
-rotor 0.030. The 200 IEEE floats in the file are the line amplitudes; bin 5 = 0.2647 and
-bin 9 = 0.0943 match the listed 1x and 2x magnitudes, so the file stores displayed IN/S
-PK directly. Exact bin-to-CPM alignment (k x 75 vs (k+1) x 75) still to be pinned.
+rotor 0.030. CORRECTED 2026-11-14: the 200 values are NOT IEEE floats but the MicroVib's
+C32 format; read as floats they came out off by powers of two, and "bin 5 = 0.2647 matches
+the 1x" was a coincidence of that misread. Decoded as C32 (decode_grp.py, verified bin by
+bin against MicroBase's own unpacked spectrum, test_decode_spc.py) the bins are peak IN/S,
+bin k at (k+1) x 1.25 Hz with no DC bin, and the 1x/2x/4x/8x peaks sit on bins 4, 9, 19, 40
+(0.255, 0.094, 0.147, 0.115); the screen's 0.264 at 353 CPM and 0.167 for 4x are evidently
+peak-interpolated between bins. RSS of bins 3.. is 0.498 against the screen overall 0.5057;
+how the overall is formed is not pinned.
 
 ## MicroBase settings relevant to the solver (mbsys.ini, read 2026-10-22, not stored: it holds a login)
 
@@ -149,3 +163,119 @@ TARGET blade (tape, 0 deg) bolt head 350, nut 10; blade 2 bolt head 170, nut 190
 knows the wheel; the solver searches the station combinations for least added mass with
 the wheel inside 25 g per position. Direction confirmed by the user. Still open: whether
 washers already on the bolts may be removed.
+
+## Confirmed against DSS's own public material (2026-11-13)
+
+Read from dssmicro.com; everything below was previously inferred from the two history files.
+
+- **Learning formulas.** The DSS Balance Worksheet (download/Balwksht.pdf) prints
+  `Ws = M/Vm` and `To = -(Vd+L)`: weight sensitivity is weight magnitude over vibration
+  change magnitude, and tach offset is minus the sum of the vibration-change angle and the
+  weight location. `mv2.js` `M.learn` computes exactly this. Its columns (RPM, VIB-IN/S,
+  VIB-PHS, WHT-1/LOC-1, WHT-2/LOC-2, SENS, TACH) are the .HST record field order.
+- **Units.** Vibration level is peak velocity in inches per second
+  (faqs/faq_mv2_balance_readings.htm). Default prop factors: 80 g/IPS, tach offset 90 deg
+  for the recommended 90 deg accelerometer-to-photo-tach installation
+  (faqs/faq_mv2_balance_solutions.htm). The factors are a seed; learning replaces them after
+  run 2, which is how the solver treats the profile values.
+- **Phase definition.** DSS: "the rotation angle between the heavy spot of the rotor pushing
+  the accelerometer in its positive direction, and the tach signal." That is an
+  acceleration-peak reference. The carrier's `adjusted_velocity_phase_deg` is the positive
+  velocity peak, 90 deg away; its `signed_acceleration_phase_deg` is the comparable quantity.
+  Which of the two, and in which angular direction (DSS protractor: BLUE side for apparent
+  CCW rotation, RED for CW, 0/360 on the adjustment location nearest the phase reference),
+  must be fixed by a bench comparison before MicroVib-learned coefficients are used with
+  carrier readings. Open item.
+- **Rotor geometry.** Program Rotor mode: at most eight locations with angle and radius,
+  units labels such as GRAMS/FLATS/POINTS/PLATES, every solution split between two valid
+  locations, NEW SPLIT picks another pair (faqs/faq_mv2_rotor_geometry.htm). Standard Rotor
+  mode: any number of hand-entered angles, radius 1.0, units WTS. The group-file record
+  (name, channel, initial SENS, initial TACH, rotor mode, locations with units/name/angle/
+  radius) matches decode_grp.py.
+- **MicroBase Pro database** (faqs/faq_mbp_database_3rd_party.htm): dBase III/IV files in the
+  data folder's `mbase` subfolder. `header.dbf` has one row per data item (DATE, TIME,
+  AC_DESC1 aircraft, CP_DESC1 component, GROUP, TASK, ANLMODE, SAVEKEY). `histrecs.dbf` has
+  one row per balance run (DATE, TIME, RPM, NEWPK, NEWPH, TRIAL, REMOVE, SPLIT, SENS, TACH,
+  SAVEKEY). Spectra are log-packed one byte per bin in `specrecs.dbf` with MINVAL/MAXVAL/
+  COUNT/FMAX from `saverecs.dbf`; waveforms linear-packed over 254. These are DSS's own
+  decoded values and are the reference for checking mv2.js against, including the eight
+  A1090021 runs whose decoded levels disagree with the screen. Not yet obtained.
+- **Data identity.** MicroBase keys every item by aircraft ident/model/serial and component
+  name/model/serial (help: Identifying MicroVib II Data). The solver keys by aircraft; a
+  component field is still to be added.
+- **Tach limits.** Minimum input speed about 150-180 RPM; HIGH TACH on double pulses
+  (faqs/faq_accy_photo_tach.htm), the case the carrier now flags as ExtraTachPulses.
+- **Field-check reference.** DSS Signal Simulator P/N 1117-2: 1920 RPM, 0.8 IN/S at 272.5 deg;
+  accuracy 0.5 RPM, 5%, 0.8 deg (faqs product compatibility page). Carrier simulator preset
+  `dss-simulator`; the bench comparison against a MicroVib II should be judged to the same
+  tolerance. DSS accelerometers are 20 mV/g ICP; the magnetic pickup is a 900-1100 ohm coil.
+
+## From DSS AN-MV2-A109 Rev 03 (19 Oct 2021), the A109 application note (read 2026-11-14)
+
+- **Tasks and channels.** GND LT and HOV LT on CH:1A (lateral sensor, axis right); HOV VT,
+  80KT VT, 140KT VT, MCP VT on CH:2A (vertical sensor, axis up); both sensors on one triaxial
+  bracket on the beam between the seats. Tach from the magnetic pickup, cannon plug above the
+  left pilot seat (photo-tach alternative: beam up and slightly forward, tape on the target
+  blade grip when it is forward-right). T/R BAL on CH:4D: sensor on the T/R gearbox cover,
+  axis up; photo-tach on the fin trailing edge, beam parallel to the output shaft, tape on a
+  blade grip at the 2:00 position viewed from the left.
+- **Angles.** Main rotor viewed from above: 360 TARGET forward-right, 90 A aft-right, 180 B
+  aft-left, 270 C forward-left; A109E/SP has the magnetic pickup aft instead of forward. Tail
+  rotor turns clockwise viewed from the left (protractor red side); wheel 360 at top, 90 left,
+  180 bottom, 270 right. On both rotors the position numbers increase against the direction
+  of rotation, the DSS protractor convention.
+- **Limits.** Main rotor: 400 g maximum in a single bolt; only adjacent blades should carry
+  balance weights; trim tab +/-8 deg; one pitch-link graduation about 0.12 in of track.
+  Tail rotor: twelve-position balance wheel on the standard balance program; at most four
+  bolts on the flange; 25 g per bolt including bolt and nut; 100 g per flange; head toward
+  the hub. The solver's built-in A109 profile now carries all of these as placement rules;
+  its group-file template listed six T/R positions, which was wrong.
+- **Procedure.** Ground track to 0.5 in spread, then GND LT lateral; hover track, HOV VT for
+  reference; HOV LT preliminary balance; 80KT, 140KT and MCP track and vertical, the first
+  vertical correction by tab from the track picture entered into all three tasks (tab up on
+  the TARGET blade = +1.0 at 360), later ones from the displayed solution, always split across
+  90/180/270/360; final HOV LT; autorotation check; 140KT spectrum. Acceptance 0.2 in/s on
+  every task. Minimum 5 averages (AVGS=5) on every balance reading.
+- **Speeds.** Main rotor 385 NR at 100% (4P blade rate 1540 CPM, 25.67 Hz); tail rotor 2096
+  RPM. These set the expected speed bands for the carrier profiles.
+- **DVA.** Absorbers tuned to 1524 CPM pilot / 1530 CPM copilot (A109E/S/SP), 2 mm washer
+  about 6 CPM; cabin 4P at 140 kt 100% NR should be 0.6 in/s or less. Spectrum feature only.
+
+## MicroBase Pro database cross-check (histrecs.dbf, header.dbf; read 2026-11-14)
+
+DSS's own decoded balance history, from the `mbase` folder (dBase files; layout per the DSS FAQ
+"MicroBase Pro Database & 3rd Party Applications"; fields SAVEKEY, NUMREC, TRIAL, REMOVE, SPLIT,
+RPM, NEWPK, NEWPH, OLDPK, OLDPH, WT1/LOC1/RAD1, WT2/LOC2/RAD2, SENS, TACH, CWT/CLC, DATE, TIME,
+AVGTYPE, AVGS, BW, FS, PK). Analyzer: MV2 serial 2004, firmware 1.34.101.75.
+
+- **A1090731.HST agrees exactly.** The five identified runs (SAVEKEY 1077-1081; 1078 is a
+  duplicate of GND LT, and HOV LT at 13:09:16 was never identified) match mv2.js on level,
+  phase, RPM, both solution weights and locations, SENS and TACH, to the four decimals stored:
+  GND LT 0.0849 at 151.2785, 17.9214 g at 0 and 20.4147 g at 90; HOV VT 0.1693 at 262.5645;
+  80KT VT 0.0926 at 181.4615; MCP VT 0.1443 at 190.8888. The averages byte (+21) also agrees
+  (2, 1, 2, 2), so that field is confirmed; those runs were taken with fewer than the AVGS=5
+  the application note calls for. `FS` is the auto-range full scale (1.638); `PK` (0.1964,
+  0.5167...) is not the +28 level field and is not identified.
+- **A1090021.HST** was read from MicroBase's Identify Data preview on 2026-11-14 (eight GND LT
+  runs, 28 Aug 2025, flags LS, RPM 384): levels 0.682, 0.789, 0.933, 0.682, 0.248, 0.197,
+  0.410, 0.213 with the phases and SENS/TACH of the table above. The level field decoded as
+  C32 matches all eight; the previously "garbled" values were the float misread, and the
+  "corrupt" solution blocks of runs 3, 6 and 8 were negative C32 entries (-753.2, -76.3, -36.1)
+  read without the sign bit. Nothing in the file is corrupt.
+- The DSS sample jobs in the same table (M-20J prop, AS350 driveshaft and main rotor, PT6
+  props, 2016-2017 props) carry OLDPK/OLDPH, the move installed, and the SENS/TACH learned
+  from it: a direct check of the learning formula on DSS's own numbers (see the solver test).
+- **PLOT0093.SPC against saverecs row 1082 and specrecs** (same plot, identified 2026-09-03): the
+  .SPC header F16 fields at 0x2a, 0x2e and 0x32 read 3.0, 250 and 1.25, matching DSS's FLOW,
+  FMAX and DELTA (Hz per bin); COUNT 200, 4 averages, Hann window, IN/S, integrated from
+  acceleration. DSS's stored MAXVAL 0.47308543 equals the file's bin 0 (1.89234173) divided by
+  exactly 4, but bins 1-4 (1.23, 0.45, 0.38, 1.02) fit no single scaling and the stored MINVAL
+  0.00039589 matches no bin closer than 0.2%. How MicroBase scales the first bins is therefore
+  not established at first; specrecs.dbf settled it: the file values are C32, not float
+  (see the corrected PLOT0093 section above and test_decode_spc.py).
+- **trakrecs.dbf / waverecs.dbf / tags.dbf / system.dbf**: only DSS sample track and waveform
+  data; 731H1.TRK and PLOT0101.TRK were downloaded but never identified (next SAVEKEY 1083).
+  tags.dbf records the aircraft as N731HC, AW109SP, S/N 22474.
+- **manager.dbf**: A1090021.HST was downloaded from the MV2 on 2026-09-04 but never identified,
+  which is why header.dbf and histrecs.dbf have no rows for it. machrecs FACTOR is the
+  machine-file linking factor (measured over nominal speed) per spectrum.
