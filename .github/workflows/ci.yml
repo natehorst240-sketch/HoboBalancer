@@ -1,0 +1,55 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  host-checks:
+    # Everything that runs without a target: firmware host tests under both sanitizers, pin maps,
+    # simulator presets, solver library and DSS cross-checks, and the solver page in Chromium.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1.63.0
+          npx playwright install --with-deps chromium
+      - name: Run every host check
+        run: sh ci/run_all.sh
+
+  firmware-builds:
+    # The two ESP32-S3 targets must link with their pinned platform. Caches the ~5 GB
+    # toolchain and framework between runs.
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [BalancerCarrier/firmware, BalancerDisplay/firmware]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: platformio-${{ runner.os }}-${{ hashFiles('**/platformio.ini') }}
+      - name: Install PlatformIO
+        run: pip install platformio
+      - name: Build
+        run: pio run -d ${{ matrix.project }}
+      - name: Report image size
+        run: |
+          pio run -d ${{ matrix.project }} 2>&1 | grep -E '^(RAM|Flash):' || true
+      - name: Build must not modify tracked files
+        # A generated sdkconfig or anything else the build writes into the tree would be the
+        # same mistake as the tracked sdkconfig that disabled PSRAM.
+        run: |
+          git status --porcelain
+          test -z "$(git status --porcelain)"
